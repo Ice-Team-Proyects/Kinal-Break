@@ -1,17 +1,17 @@
-version: '3.8'
+
 services:
   postgres:
-    image: postgres:15
+    image: postgres:13
     container_name: kinal-break-postgres
     environment:
       POSTGRES_USER: iceteam
       POSTGRES_PASSWORD: admin
-      POSTGRES_DB: Kinal-Break
+      POSTGRES_DB: Kinal_Break
     ports:
       - "5436:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-    restart: unless-stoped
+    restart: unless-stopped
 
 volumes:
   postgres_data:

@@ -47,7 +47,7 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
-            "CloudinaryDotNet": {
+            "CloudinaryDotnet": {
               "target": "Package",
               "version": "[1.27.7, )"
             },
