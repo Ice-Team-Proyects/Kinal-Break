@@ -1,0 +1,12 @@
+C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Domain\bin\Debug\net8.0\AuthService.Domain.deps.json
+C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Domain\bin\Debug\net8.0\AuthService.Domain.dll
+C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Domain\bin\Debug\net8.0\AuthService.Domain.pdb
+C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.AssemblyInfoInputs.cache
+C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.AssemblyInfo.cs
+C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.csproj.CoreCompileInputs.cache
+C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.sourcelink.json
+C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.dll
+C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\refint\AuthService.Domain.dll
+C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.pdb
+C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\ref\AuthService.Domain.dll
