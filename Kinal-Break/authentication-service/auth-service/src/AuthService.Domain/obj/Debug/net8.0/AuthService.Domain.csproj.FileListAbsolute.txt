@@ -1,3 +1,47 @@
+D:\Kinal\2. Diversificado\3. Sexto Diversificado\8. Taller\2. Tecnología\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\bin\Debug\net8.0\AuthService.Domain.deps.json
+D:\Kinal\2. Diversificado\3. Sexto Diversificado\8. Taller\2. Tecnología\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\bin\Debug\net8.0\AuthService.Domain.dll
+D:\Kinal\2. Diversificado\3. Sexto Diversificado\8. Taller\2. Tecnología\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\bin\Debug\net8.0\AuthService.Domain.pdb
+D:\Kinal\2. Diversificado\3. Sexto Diversificado\8. Taller\2. Tecnología\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.GeneratedMSBuildEditorConfig.editorconfig
+D:\Kinal\2. Diversificado\3. Sexto Diversificado\8. Taller\2. Tecnología\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.AssemblyInfoInputs.cache
+D:\Kinal\2. Diversificado\3. Sexto Diversificado\8. Taller\2. Tecnología\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.AssemblyInfo.cs
+D:\Kinal\2. Diversificado\3. Sexto Diversificado\8. Taller\2. Tecnología\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.csproj.CoreCompileInputs.cache
+D:\Kinal\2. Diversificado\3. Sexto Diversificado\8. Taller\2. Tecnología\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.dll
+D:\Kinal\2. Diversificado\3. Sexto Diversificado\8. Taller\2. Tecnología\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\refint\AuthService.Domain.dll
+D:\Kinal\2. Diversificado\3. Sexto Diversificado\8. Taller\2. Tecnología\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.pdb
+D:\Kinal\2. Diversificado\3. Sexto Diversificado\8. Taller\2. Tecnología\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\ref\AuthService.Domain.dll
+C:\Users\Informatica\Documents\IN6AV\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\bin\Debug\net8.0\AuthService.Domain.deps.json
+C:\Users\Informatica\Documents\IN6AV\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\bin\Debug\net8.0\AuthService.Domain.dll
+C:\Users\Informatica\Documents\IN6AV\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\bin\Debug\net8.0\AuthService.Domain.pdb
+C:\Users\Informatica\Documents\IN6AV\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Informatica\Documents\IN6AV\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.AssemblyInfoInputs.cache
+C:\Users\Informatica\Documents\IN6AV\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.AssemblyInfo.cs
+C:\Users\Informatica\Documents\IN6AV\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.csproj.CoreCompileInputs.cache
+C:\Users\Informatica\Documents\IN6AV\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.dll
+C:\Users\Informatica\Documents\IN6AV\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\refint\AuthService.Domain.dll
+C:\Users\Informatica\Documents\IN6AV\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.pdb
+C:\Users\Informatica\Documents\IN6AV\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\ref\AuthService.Domain.dll
+C:\Users\Informatica\Documents\IN6AV_2024247\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\bin\Debug\net8.0\AuthService.Domain.deps.json
+C:\Users\Informatica\Documents\IN6AV_2024247\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\bin\Debug\net8.0\AuthService.Domain.dll
+C:\Users\Informatica\Documents\IN6AV_2024247\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\bin\Debug\net8.0\AuthService.Domain.pdb
+C:\Users\Informatica\Documents\IN6AV_2024247\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Informatica\Documents\IN6AV_2024247\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.AssemblyInfoInputs.cache
+C:\Users\Informatica\Documents\IN6AV_2024247\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.AssemblyInfo.cs
+C:\Users\Informatica\Documents\IN6AV_2024247\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.csproj.CoreCompileInputs.cache
+C:\Users\Informatica\Documents\IN6AV_2024247\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.dll
+C:\Users\Informatica\Documents\IN6AV_2024247\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\refint\AuthService.Domain.dll
+C:\Users\Informatica\Documents\IN6AV_2024247\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.pdb
+C:\Users\Informatica\Documents\IN6AV_2024247\Kinal Sports\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\ref\AuthService.Domain.dll
+C:\Users\joj\Desktop\Sistema Bancario ICE\authentication-service\auth-service\src\AuthService.Domain\bin\Debug\net8.0\AuthService.Domain.deps.json
+C:\Users\joj\Desktop\Sistema Bancario ICE\authentication-service\auth-service\src\AuthService.Domain\bin\Debug\net8.0\AuthService.Domain.dll
+C:\Users\joj\Desktop\Sistema Bancario ICE\authentication-service\auth-service\src\AuthService.Domain\bin\Debug\net8.0\AuthService.Domain.pdb
+C:\Users\joj\Desktop\Sistema Bancario ICE\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\joj\Desktop\Sistema Bancario ICE\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.AssemblyInfoInputs.cache
+C:\Users\joj\Desktop\Sistema Bancario ICE\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.AssemblyInfo.cs
+C:\Users\joj\Desktop\Sistema Bancario ICE\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.csproj.CoreCompileInputs.cache
+C:\Users\joj\Desktop\Sistema Bancario ICE\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.dll
+C:\Users\joj\Desktop\Sistema Bancario ICE\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\refint\AuthService.Domain.dll
+C:\Users\joj\Desktop\Sistema Bancario ICE\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\AuthService.Domain.pdb
+C:\Users\joj\Desktop\Sistema Bancario ICE\authentication-service\auth-service\src\AuthService.Domain\obj\Debug\net8.0\ref\AuthService.Domain.dll
 C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Domain\bin\Debug\net8.0\AuthService.Domain.deps.json
 C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Domain\bin\Debug\net8.0\AuthService.Domain.dll
 C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Domain\bin\Debug\net8.0\AuthService.Domain.pdb

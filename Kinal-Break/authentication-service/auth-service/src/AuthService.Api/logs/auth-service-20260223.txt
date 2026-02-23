@@ -1,0 +1,193 @@
+[2026-02-23 00:07:25 INF] Verificando conexión a la base de datos... {"SourceContext":"Program"}
+[2026-02-23 00:07:25 ERR] Ocurrió un error al inicializar la base de datos {"SourceContext":"Program"}
+Npgsql.PostgresException (0x80004005): 28P01: password authentication failed for user "ICE"
+   at Npgsql.Internal.NpgsqlConnector.ReadMessageLong(Boolean async, DataRowLoadingMode dataRowLoadingMode, Boolean readingNotifications, Boolean isReadingPrependedMessage)
+   at System.Runtime.CompilerServices.PoolingAsyncValueTaskMethodBuilder`1.StateMachineBox`1.System.Threading.Tasks.Sources.IValueTaskSource<TResult>.GetResult(Int16 token)
+   at Npgsql.Internal.NpgsqlConnector.Authenticate(String username, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.<Open>g__OpenCore|214_1(NpgsqlConnector conn, SslMode sslMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.Open(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.UnpooledDataSource.Get(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.<Open>g__OpenAsync|42_0(Boolean async, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlDatabaseCreator.Exists(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlDatabaseCreator.Exists(Boolean async, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabaseCreator.EnsureCreatedAsync(CancellationToken cancellationToken)
+   at Program.<Main>$(String[] args) in C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Api\Program.cs:line 131
+  Exception data:
+    Severity: FATAL
+    SqlState: 28P01
+    MessageText: password authentication failed for user "ICE"
+    File: auth.c
+    Line: 339
+    Routine: auth_failed
+[2026-02-23 00:10:56 INF] Verificando conexión a la base de datos... {"SourceContext":"Program"}
+[2026-02-23 00:10:58 INF] Base de datos lista. Ejecutando datos semilla... {"SourceContext":"Program"}
+[2026-02-23 00:10:59 INF] Inicialización de base de datos completada exitosamente {"SourceContext":"Program"}
+[2026-02-23 00:10:59 INF] API de AuthService está ejecutándose en http://localhost:5296. Endpoint de salud: http://localhost:5296/api/v1/health {"SourceContext":"Program"}
+[2026-02-23 00:31:51 WRN] Failed to determine the https port for redirect. {"EventId":{"Id":3,"Name":"FailedToDeterminePort"},"SourceContext":"Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware","RequestId":"0HNJIKKTAL6VC:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNJIKKTAL6VC"}
+[2026-02-23 00:32:06 INF] User rgodinez registered successfully {"EventId":{"Id":1001,"Name":"LogUserRegistered"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"370c1e38-14f3-4908-9d7e-8354f66b7a8f","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNJIKKTAL6VC:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNJIKKTAL6VC"}
+[2026-02-23 00:32:06 INF] HTTP POST /api/v1/auth/register responded 201 in 14637.3139 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNJIKKTAL6VC:00000001","ConnectionId":"0HNJIKKTAL6VC"}
+[2026-02-23 00:32:06 WRN] Validación de certificados SSL deshabilitada. Solo usar en desarrollo. {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"370c1e38-14f3-4908-9d7e-8354f66b7a8f","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNJIKKTAL6VC:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNJIKKTAL6VC"}
+[2026-02-23 00:32:06 ERR] Error al enviar el email {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"370c1e38-14f3-4908-9d7e-8354f66b7a8f","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNJIKKTAL6VC:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNJIKKTAL6VC"}
+System.Net.Sockets.SocketException (11001): Host desconocido.
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at MailKit.Net.SocketUtils.ConnectAsync(String host, Int32 port, IPEndPoint localEndPoint, CancellationToken cancellationToken)
+   at MailKit.Net.SocketUtils.ConnectAsync(String host, Int32 port, IPEndPoint localEndPoint, Int32 timeout, CancellationToken cancellationToken)
+   at MailKit.MailService.ConnectNetworkAsync(String host, Int32 port, CancellationToken cancellationToken)
+   at MailKit.Net.Smtp.SmtpClient.ConnectAsync(String host, Int32 port, SecureSocketOptions options, CancellationToken cancellationToken)
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 141
+[2026-02-23 00:32:06 ERR] Error al enviar el email {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"370c1e38-14f3-4908-9d7e-8354f66b7a8f","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNJIKKTAL6VC:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNJIKKTAL6VC"}
+System.Net.Sockets.SocketException (11001): Host desconocido.
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at MailKit.Net.SocketUtils.ConnectAsync(String host, Int32 port, IPEndPoint localEndPoint, CancellationToken cancellationToken)
+   at MailKit.Net.SocketUtils.ConnectAsync(String host, Int32 port, IPEndPoint localEndPoint, Int32 timeout, CancellationToken cancellationToken)
+   at MailKit.MailService.ConnectNetworkAsync(String host, Int32 port, CancellationToken cancellationToken)
+   at MailKit.Net.Smtp.SmtpClient.ConnectAsync(String host, Int32 port, SecureSocketOptions options, CancellationToken cancellationToken)
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 141
+[2026-02-23 00:32:06 ERR] Failed to send verification email {"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"370c1e38-14f3-4908-9d7e-8354f66b7a8f","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNJIKKTAL6VC:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNJIKKTAL6VC"}
+System.InvalidOperationException: Error al enviar el email: Host desconocido.
+ ---> System.Net.Sockets.SocketException (11001): Host desconocido.
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at MailKit.Net.SocketUtils.ConnectAsync(String host, Int32 port, IPEndPoint localEndPoint, CancellationToken cancellationToken)
+   at MailKit.Net.SocketUtils.ConnectAsync(String host, Int32 port, IPEndPoint localEndPoint, Int32 timeout, CancellationToken cancellationToken)
+   at MailKit.MailService.ConnectNetworkAsync(String host, Int32 port, CancellationToken cancellationToken)
+   at MailKit.Net.Smtp.SmtpClient.ConnectAsync(String host, Int32 port, SecureSocketOptions options, CancellationToken cancellationToken)
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 141
+   --- End of inner exception stack trace ---
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 193
+   at AuthService.Application.Services.EmailService.SendEmailVerificationAsync(String email, String username, String token) in C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 31
+   at AuthService.Application.Services.AuthService.<>c__DisplayClass9_0.<<RegisterAsync>b__0>d.MoveNext() in C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 139
+[2026-02-23 01:44:08 INF] Verificando conexión a la base de datos... {"SourceContext":"Program"}
+[2026-02-23 01:44:26 INF] Verificando conexión a la base de datos... {"SourceContext":"Program"}
+[2026-02-23 01:44:31 ERR] Ocurrió un error al inicializar la base de datos {"SourceContext":"Program"}
+Npgsql.NpgsqlException (0x80004005): Failed to connect to 127.0.0.1:5436
+ ---> System.Net.Sockets.SocketException (10061): No se puede establecer una conexión ya que el equipo de destino denegó expresamente dicha conexión.
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.ThrowException(SocketError error, CancellationToken cancellationToken)
+   at System.Net.Sockets.Socket.AwaitableSocketAsyncEventArgs.System.Threading.Tasks.Sources.IValueTaskSource.GetResult(Int16 token)
+   at System.Net.Sockets.Socket.<ConnectAsync>g__WaitForConnectWithCancellation|285_0(AwaitableSocketAsyncEventArgs saea, ValueTask connectTask, CancellationToken cancellationToken)
+   at Npgsql.TaskTimeoutAndCancellation.ExecuteAsync(Func`2 getTaskFunc, NpgsqlTimeout timeout, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.ConnectAsync(NpgsqlTimeout timeout, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.ConnectAsync(NpgsqlTimeout timeout, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.RawOpen(SslMode sslMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.<Open>g__OpenCore|214_1(NpgsqlConnector conn, SslMode sslMode, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.Internal.NpgsqlConnector.Open(NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.UnpooledDataSource.Get(NpgsqlConnection conn, NpgsqlTimeout timeout, Boolean async, CancellationToken cancellationToken)
+   at Npgsql.NpgsqlConnection.<Open>g__OpenAsync|42_0(Boolean async, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenInternalAsync(Boolean errorsExpected, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalConnection.OpenAsync(CancellationToken cancellationToken, Boolean errorsExpected)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlDatabaseCreator.Exists(Boolean async, CancellationToken cancellationToken)
+   at Npgsql.EntityFrameworkCore.PostgreSQL.Storage.Internal.NpgsqlDatabaseCreator.Exists(Boolean async, CancellationToken cancellationToken)
+   at Microsoft.EntityFrameworkCore.Storage.RelationalDatabaseCreator.EnsureCreatedAsync(CancellationToken cancellationToken)
+   at Program.<Main>$(String[] args) in C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Api\Program.cs:line 131
+[2026-02-23 01:45:01 INF] Verificando conexión a la base de datos... {"SourceContext":"Program"}
+[2026-02-23 01:45:02 INF] Base de datos lista. Ejecutando datos semilla... {"SourceContext":"Program"}
+[2026-02-23 01:45:02 INF] Inicialización de base de datos completada exitosamente {"SourceContext":"Program"}
+[2026-02-23 01:45:02 INF] API de AuthService está ejecutándose en http://localhost:5296. Endpoint de salud: http://localhost:5296/api/v1/health {"SourceContext":"Program"}
+[2026-02-23 01:45:28 WRN] Failed to determine the https port for redirect. {"EventId":{"Id":3,"Name":"FailedToDeterminePort"},"SourceContext":"Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware","RequestId":"0HNJILU1N7MDQ:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNJILU1N7MDQ"}
+[2026-02-23 01:45:30 WRN] Registration rejected: username already exists {"EventId":{"Id":1005,"Name":"LogRegistrationWithExistingUsername"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"73a8ec64-3662-4ef1-9912-1920d883aa34","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNJILU1N7MDQ:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNJILU1N7MDQ"}
+[2026-02-23 01:45:30 ERR] An unhandled exception occurred {"SourceContext":"AuthService.Api.Middlewares.GlobalExceptionMiddleware","RequestId":"0HNJILU1N7MDQ:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNJILU1N7MDQ"}
+AuthService.Application.Exceptions.BusinessException: Username already exists
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 40
+   at AuthService.Api.Controllers.AuthController.Register(RegisterDto registerDto) in C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Api\Controllers\AuthController.cs:line 73
+   at lambda_method20(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at AuthService.Api.Middlewares.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Api\Middlewares\GlobalExceptionMiddleware.cs:line 18
+[2026-02-23 01:45:30 INF] HTTP POST /api/v1/auth/register responded 400 in 2069.3524 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNJILU1N7MDQ:00000001","ConnectionId":"0HNJILU1N7MDQ"}
+[2026-02-23 01:45:50 INF] User rfajardo registered successfully {"EventId":{"Id":1001,"Name":"LogUserRegistered"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"73a8ec64-3662-4ef1-9912-1920d883aa34","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNJILU1N7MDQ:00000002","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNJILU1N7MDQ"}
+[2026-02-23 01:45:50 INF] HTTP POST /api/v1/auth/register responded 201 in 9260.5100 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNJILU1N7MDQ:00000002","ConnectionId":"0HNJILU1N7MDQ"}
+[2026-02-23 01:45:50 WRN] Validación de certificados SSL deshabilitada. Solo usar en desarrollo. {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"73a8ec64-3662-4ef1-9912-1920d883aa34","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNJILU1N7MDQ:00000002","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNJILU1N7MDQ"}
+[2026-02-23 01:45:50 ERR] Error al enviar el email {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"73a8ec64-3662-4ef1-9912-1920d883aa34","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNJILU1N7MDQ:00000002","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNJILU1N7MDQ"}
+System.Net.Sockets.SocketException (11001): Host desconocido.
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at MailKit.Net.SocketUtils.ConnectAsync(String host, Int32 port, IPEndPoint localEndPoint, CancellationToken cancellationToken)
+   at MailKit.Net.SocketUtils.ConnectAsync(String host, Int32 port, IPEndPoint localEndPoint, Int32 timeout, CancellationToken cancellationToken)
+   at MailKit.MailService.ConnectNetworkAsync(String host, Int32 port, CancellationToken cancellationToken)
+   at MailKit.Net.Smtp.SmtpClient.ConnectAsync(String host, Int32 port, SecureSocketOptions options, CancellationToken cancellationToken)
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 141
+[2026-02-23 01:45:50 ERR] Error al enviar el email {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"73a8ec64-3662-4ef1-9912-1920d883aa34","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNJILU1N7MDQ:00000002","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNJILU1N7MDQ"}
+System.Net.Sockets.SocketException (11001): Host desconocido.
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at MailKit.Net.SocketUtils.ConnectAsync(String host, Int32 port, IPEndPoint localEndPoint, CancellationToken cancellationToken)
+   at MailKit.Net.SocketUtils.ConnectAsync(String host, Int32 port, IPEndPoint localEndPoint, Int32 timeout, CancellationToken cancellationToken)
+   at MailKit.MailService.ConnectNetworkAsync(String host, Int32 port, CancellationToken cancellationToken)
+   at MailKit.Net.Smtp.SmtpClient.ConnectAsync(String host, Int32 port, SecureSocketOptions options, CancellationToken cancellationToken)
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 141
+[2026-02-23 01:45:50 ERR] Failed to send verification email {"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"73a8ec64-3662-4ef1-9912-1920d883aa34","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNJILU1N7MDQ:00000002","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNJILU1N7MDQ"}
+System.InvalidOperationException: Error al enviar el email: Host desconocido.
+ ---> System.Net.Sockets.SocketException (11001): Host desconocido.
+   at System.Net.NameResolutionPal.ProcessResult(SocketError errorCode, GetAddrInfoExContext* context)
+   at System.Net.NameResolutionPal.GetAddressInfoExCallback(Int32 error, Int32 bytes, NativeOverlapped* overlapped)
+--- End of stack trace from previous location ---
+   at MailKit.Net.SocketUtils.ConnectAsync(String host, Int32 port, IPEndPoint localEndPoint, CancellationToken cancellationToken)
+   at MailKit.Net.SocketUtils.ConnectAsync(String host, Int32 port, IPEndPoint localEndPoint, Int32 timeout, CancellationToken cancellationToken)
+   at MailKit.MailService.ConnectNetworkAsync(String host, Int32 port, CancellationToken cancellationToken)
+   at MailKit.Net.Smtp.SmtpClient.ConnectAsync(String host, Int32 port, SecureSocketOptions options, CancellationToken cancellationToken)
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 141
+   --- End of inner exception stack trace ---
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 193
+   at AuthService.Application.Services.EmailService.SendEmailVerificationAsync(String email, String username, String token) in C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 31
+   at AuthService.Application.Services.AuthService.<>c__DisplayClass9_0.<<RegisterAsync>b__0>d.MoveNext() in C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 139
+[2026-02-23 01:55:54 INF] Verificando conexión a la base de datos... {"SourceContext":"Program"}
+[2026-02-23 01:55:56 INF] Base de datos lista. Ejecutando datos semilla... {"SourceContext":"Program"}
+[2026-02-23 01:55:57 INF] Inicialización de base de datos completada exitosamente {"SourceContext":"Program"}
+[2026-02-23 01:55:57 INF] API de AuthService está ejecutándose en http://localhost:5296. Endpoint de salud: http://localhost:5296/api/v1/health {"SourceContext":"Program"}
+[2026-02-23 01:56:19 WRN] Failed to determine the https port for redirect. {"EventId":{"Id":3,"Name":"FailedToDeterminePort"},"SourceContext":"Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware","RequestId":"0HNJIM43N3Q13:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNJIM43N3Q13"}
+[2026-02-23 01:56:21 WRN] Registration rejected: email already exists {"EventId":{"Id":1004,"Name":"LogRegistrationWithExistingEmail"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"8fb306bb-bc09-4730-90f0-b2bcbf50ad97","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNJIM43N3Q13:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNJIM43N3Q13"}
+[2026-02-23 01:56:21 ERR] An unhandled exception occurred {"SourceContext":"AuthService.Api.Middlewares.GlobalExceptionMiddleware","RequestId":"0HNJIM43N3Q13:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNJIM43N3Q13"}
+AuthService.Application.Exceptions.BusinessException: Email already exists
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 33
+   at AuthService.Api.Controllers.AuthController.Register(RegisterDto registerDto) in C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Api\Controllers\AuthController.cs:line 73
+   at lambda_method20(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at AuthService.Api.Middlewares.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Api\Middlewares\GlobalExceptionMiddleware.cs:line 18
+[2026-02-23 01:56:22 INF] HTTP POST /api/v1/auth/register responded 400 in 2733.6902 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNJIM43N3Q13:00000001","ConnectionId":"0HNJIM43N3Q13"}
+[2026-02-23 01:58:35 INF] User rgalvez registered successfully {"EventId":{"Id":1001,"Name":"LogUserRegistered"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"8fb306bb-bc09-4730-90f0-b2bcbf50ad97","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNJIM43N3Q15:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNJIM43N3Q15"}
+[2026-02-23 01:58:36 INF] HTTP POST /api/v1/auth/register responded 201 in 11332.9998 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNJIM43N3Q15:00000001","ConnectionId":"0HNJIM43N3Q15"}
+[2026-02-23 01:58:36 WRN] Validación de certificados SSL deshabilitada. Solo usar en desarrollo. {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"8fb306bb-bc09-4730-90f0-b2bcbf50ad97","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNJIM43N3Q15:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNJIM43N3Q15"}
+[2026-02-23 01:58:40 INF] Email enviado exitosamente {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"8fb306bb-bc09-4730-90f0-b2bcbf50ad97","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNJIM43N3Q15:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNJIM43N3Q15"}
+[2026-02-23 01:58:40 INF] Pipeline de email completado {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"8fb306bb-bc09-4730-90f0-b2bcbf50ad97","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNJIM43N3Q15:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNJIM43N3Q15"}
+[2026-02-23 01:58:40 INF] Email processed {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"8fb306bb-bc09-4730-90f0-b2bcbf50ad97","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNJIM43N3Q15:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNJIM43N3Q15"}
+[2026-02-23 01:58:40 INF] Verification email sent {"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"8fb306bb-bc09-4730-90f0-b2bcbf50ad97","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNJIM43N3Q15:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNJIM43N3Q15"}
+[2026-02-23 02:00:57 WRN] Validación de certificados SSL deshabilitada. Solo usar en desarrollo. {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"2e88efa8-0ff1-4cae-bace-77cd4a4649b6","ActionName":"AuthService.Api.Controllers.AuthController.VerifyEmail (AuthService.Api)","RequestId":"0HNJIM43N3Q17:00000001","RequestPath":"/api/v1/auth/verify-email","ConnectionId":"0HNJIM43N3Q17"}
+[2026-02-23 02:01:00 INF] Email enviado exitosamente {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"2e88efa8-0ff1-4cae-bace-77cd4a4649b6","ActionName":"AuthService.Api.Controllers.AuthController.VerifyEmail (AuthService.Api)","RequestId":"0HNJIM43N3Q17:00000001","RequestPath":"/api/v1/auth/verify-email","ConnectionId":"0HNJIM43N3Q17"}
+[2026-02-23 02:01:00 INF] Pipeline de email completado {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"2e88efa8-0ff1-4cae-bace-77cd4a4649b6","ActionName":"AuthService.Api.Controllers.AuthController.VerifyEmail (AuthService.Api)","RequestId":"0HNJIM43N3Q17:00000001","RequestPath":"/api/v1/auth/verify-email","ConnectionId":"0HNJIM43N3Q17"}
+[2026-02-23 02:01:00 INF] Email processed {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"2e88efa8-0ff1-4cae-bace-77cd4a4649b6","ActionName":"AuthService.Api.Controllers.AuthController.VerifyEmail (AuthService.Api)","RequestId":"0HNJIM43N3Q17:00000001","RequestPath":"/api/v1/auth/verify-email","ConnectionId":"0HNJIM43N3Q17"}
+[2026-02-23 02:01:00 INF] Email verified successfully for user rgalvez {"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"2e88efa8-0ff1-4cae-bace-77cd4a4649b6","ActionName":"AuthService.Api.Controllers.AuthController.VerifyEmail (AuthService.Api)","RequestId":"0HNJIM43N3Q17:00000001","RequestPath":"/api/v1/auth/verify-email","ConnectionId":"0HNJIM43N3Q17"}
+[2026-02-23 02:01:00 INF] HTTP POST /api/v1/auth/verify-email responded 200 in 4051.1109 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNJIM43N3Q17:00000001","ConnectionId":"0HNJIM43N3Q17"}
+[2026-02-23 02:01:59 INF] User login succeeded {"EventId":{"Id":1002,"Name":"LogUserLoggedIn"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"323f09c8-e505-41ac-b714-90937fbcf2d3","ActionName":"AuthService.Api.Controllers.AuthController.Login (AuthService.Api)","RequestId":"0HNJIM43N3Q19:00000001","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNJIM43N3Q19"}
+[2026-02-23 02:01:59 INF] HTTP POST /api/v1/auth/login responded 200 in 1334.9752 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNJIM43N3Q19:00000001","ConnectionId":"0HNJIM43N3Q19"}
