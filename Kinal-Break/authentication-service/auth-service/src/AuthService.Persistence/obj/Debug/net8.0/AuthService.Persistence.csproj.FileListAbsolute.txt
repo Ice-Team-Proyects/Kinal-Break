@@ -1,8 +1,11 @@
 C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Persistence\bin\Debug\net8.0\AuthService.Persistence.deps.json
+C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Persistence\bin\Debug\net8.0\AuthService.Persistence.runtimeconfig.json
 C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Persistence\bin\Debug\net8.0\AuthService.Persistence.dll
 C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Persistence\bin\Debug\net8.0\AuthService.Persistence.pdb
+C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Persistence\bin\Debug\net8.0\AuthService.Application.dll
 C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Persistence\bin\Debug\net8.0\AuthService.Domain.dll
 C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Persistence\bin\Debug\net8.0\AuthService.Domain.pdb
+C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Persistence\bin\Debug\net8.0\AuthService.Application.pdb
 C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Persistence\obj\Debug\net8.0\AuthService.Persistence.csproj.AssemblyReference.cache
 C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Persistence\obj\Debug\net8.0\AuthService.Persistence.GeneratedMSBuildEditorConfig.editorconfig
 C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Persistence\obj\Debug\net8.0\AuthService.Persistence.AssemblyInfoInputs.cache
@@ -13,6 +16,5 @@ C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\
 C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Persistence\obj\Debug\net8.0\AuthService.Persistence.dll
 C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Persistence\obj\Debug\net8.0\refint\AuthService.Persistence.dll
 C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Persistence\obj\Debug\net8.0\AuthService.Persistence.pdb
-C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Persistence\obj\Debug\net8.0\ref\AuthService.Persistence.dll
-C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Persistence\bin\Debug\net8.0\AuthService.Persistence.runtimeconfig.json
 C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Persistence\obj\Debug\net8.0\AuthService.Persistence.genruntimeconfig.cache
+C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Persistence\obj\Debug\net8.0\ref\AuthService.Persistence.dll
