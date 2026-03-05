@@ -7683,19 +7683,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\rigof\\.nuget\\packages\\": {}
+    "C:\\Users\\Informatica\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\gitIN6AV2026\\Kinal-Break\\Kinal-Break\\authentication-service\\auth-service\\src\\AuthService.Api\\AuthService.Api.csproj",
+      "projectUniqueName": "C:\\Users\\Informatica\\Documents\\cnavarro\\Kinal-Break\\Kinal-Break\\authentication-service\\auth-service\\src\\AuthService.Api\\AuthService.Api.csproj",
       "projectName": "AuthService.Api",
-      "projectPath": "C:\\gitIN6AV2026\\Kinal-Break\\Kinal-Break\\authentication-service\\auth-service\\src\\AuthService.Api\\AuthService.Api.csproj",
-      "packagesPath": "C:\\Users\\rigof\\.nuget\\packages\\",
-      "outputPath": "C:\\gitIN6AV2026\\Kinal-Break\\Kinal-Break\\authentication-service\\auth-service\\src\\AuthService.Api\\obj\\",
+      "projectPath": "C:\\Users\\Informatica\\Documents\\cnavarro\\Kinal-Break\\Kinal-Break\\authentication-service\\auth-service\\src\\AuthService.Api\\AuthService.Api.csproj",
+      "packagesPath": "C:\\Users\\Informatica\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Informatica\\Documents\\cnavarro\\Kinal-Break\\Kinal-Break\\authentication-service\\auth-service\\src\\AuthService.Api\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\rigof\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        "C:\\Users\\Informatica\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -7707,11 +7707,11 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\gitIN6AV2026\\Kinal-Break\\Kinal-Break\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj": {
-              "projectPath": "C:\\gitIN6AV2026\\Kinal-Break\\Kinal-Break\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj"
+            "C:\\Users\\Informatica\\Documents\\cnavarro\\Kinal-Break\\Kinal-Break\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj": {
+              "projectPath": "C:\\Users\\Informatica\\Documents\\cnavarro\\Kinal-Break\\Kinal-Break\\authentication-service\\auth-service\\src\\AuthService.Application\\AuthService.Application.csproj"
             },
-            "C:\\gitIN6AV2026\\Kinal-Break\\Kinal-Break\\authentication-service\\auth-service\\src\\AuthService.Persistence\\AuthService.Persistence.csproj": {
-              "projectPath": "C:\\gitIN6AV2026\\Kinal-Break\\Kinal-Break\\authentication-service\\auth-service\\src\\AuthService.Persistence\\AuthService.Persistence.csproj"
+            "C:\\Users\\Informatica\\Documents\\cnavarro\\Kinal-Break\\Kinal-Break\\authentication-service\\auth-service\\src\\AuthService.Persistence\\AuthService.Persistence.csproj": {
+              "projectPath": "C:\\Users\\Informatica\\Documents\\cnavarro\\Kinal-Break\\Kinal-Break\\authentication-service\\auth-service\\src\\AuthService.Persistence\\AuthService.Persistence.csproj"
             }
           }
         }
@@ -7785,7 +7785,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.416/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.417/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
