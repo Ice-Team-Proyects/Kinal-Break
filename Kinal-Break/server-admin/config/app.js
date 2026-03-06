@@ -8,9 +8,13 @@ import { dbConnection } from './db.js';
 import { corsOptions } from './cors.configuration.js';
 import { helmetOptions } from './helmet.configuration.js';
 import { requestLimit } from './rateLimit.configuration.js';
-import { errorHandler} from '../middleware/handle-errors';
+import { errorHandler} from '../middlewares/handle-errors.js';
+import { deleteFileOnError } from '../middlewares/delete-file-on-error.js';
 
 const BASE_PATH = '/KinalBreak/v1';
+
+import productRoutes from '../src/Products/product.routes.js'
+import accompanimentRoutes from '../src/Accompaniment/accompaniment.routes.js'
 
 const middlewares = (app) =>{
     app.use(express.urlencoded({extended: false, limit: '10mb'}));
@@ -23,7 +27,8 @@ const middlewares = (app) =>{
 
 const routes = (app) =>{
     // Poner las rutas
-
+    app.use(`${BASE_PATH}/products`, productRoutes);
+    app.use(`${BASE_PATH}/accompaniment`, accompanimentRoutes);
 
     app.get(`${BASE_PATH}/health`, (req, res)=>{
         res.status(200).json({
@@ -41,13 +46,14 @@ const routes = (app) =>{
 
 export const initServer = async ()=>{
     const app = express();
-    const PORT = process.env.PORT;
+    const PORT = process.env.PORT || 3000; // puerto por defecto 3000 si no se especifica
     app.set('trust proxy', 1);
 
     try{
         await dbConnection();
         middlewares(app);
         routes(app);
+        app.use(deleteFileOnError);
         app.use(errorHandler);
 
         app.listen(PORT, () =>{
