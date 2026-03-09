@@ -15,6 +15,7 @@ const BASE_PATH = '/KinalBreak/v1';
 
 import productRoutes from '../src/Products/product.routes.js'
 import accompanimentRoutes from '../src/Accompaniment/accompaniment.routes.js'
+import orderRoutes from '../src/order/order.routes.js' // <--- LÍNEA AGREGADA
 
 const middlewares = (app) =>{
     app.use(express.urlencoded({extended: false, limit: '10mb'}));
@@ -29,6 +30,7 @@ const routes = (app) =>{
     // Poner las rutas
     app.use(`${BASE_PATH}/products`, productRoutes);
     app.use(`${BASE_PATH}/accompaniment`, accompanimentRoutes);
+    app.use(`${BASE_PATH}/orders`, orderRoutes); // <--- LÍNEA AGREGADA
 
     app.get(`${BASE_PATH}/health`, (req, res)=>{
         res.status(200).json({
