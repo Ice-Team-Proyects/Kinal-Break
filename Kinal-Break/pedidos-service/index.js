@@ -12,8 +12,8 @@ app.use(express.json());
 // Rutas
 app.use('/api/pedidos', pedidoRoutes);
 
-const PORT = process.env.PORT || 3003; 
-const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/kinal_break'; 
+const PORT = process.env.PORT || 3010; 
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/KinalBreak'; 
 
 mongoose.connect(MONGO_URI)
     .then(() => {
