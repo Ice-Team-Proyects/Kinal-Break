@@ -1,0 +1,51 @@
+[2026-03-08 19:04:34 INF] Verificando conexión a la base de datos... {"SourceContext":"Program"}
+[2026-03-08 19:04:35 INF] Base de datos lista. Ejecutando datos semilla... {"SourceContext":"Program"}
+[2026-03-08 19:04:35 INF] Inicialización de base de datos completada exitosamente {"SourceContext":"Program"}
+[2026-03-08 19:04:35 INF] API de AuthService está ejecutándose en http://localhost:5296. Endpoint de salud: http://localhost:5296/api/v1/health {"SourceContext":"Program"}
+[2026-03-08 19:06:20 WRN] Failed to determine the https port for redirect. {"EventId":{"Id":3,"Name":"FailedToDeterminePort"},"SourceContext":"Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware","RequestId":"0HNJTF09KNAVF:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNJTF09KNAVF"}
+[2026-03-08 19:06:22 WRN] Registration rejected: email already exists {"EventId":{"Id":1004,"Name":"LogRegistrationWithExistingEmail"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"5d292d98-7e4c-4efa-92d2-cfa2f48664ee","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNJTF09KNAVF:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNJTF09KNAVF"}
+[2026-03-08 19:06:22 ERR] An unhandled exception occurred {"SourceContext":"AuthService.Api.Middlewares.GlobalExceptionMiddleware","RequestId":"0HNJTF09KNAVF:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNJTF09KNAVF"}
+AuthService.Application.Exceptions.BusinessException: Email already exists
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 33
+   at AuthService.Api.Controllers.AuthController.Register(RegisterDto registerDto) in C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Api\Controllers\AuthController.cs:line 73
+   at lambda_method20(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at AuthService.Api.Middlewares.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Api\Middlewares\GlobalExceptionMiddleware.cs:line 18
+[2026-03-08 19:06:22 INF] HTTP POST /api/v1/auth/register responded 400 in 2058.3464 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNJTF09KNAVF:00000001","ConnectionId":"0HNJTF09KNAVF"}
+[2026-03-08 19:06:48 WRN] Registration rejected: email already exists {"EventId":{"Id":1004,"Name":"LogRegistrationWithExistingEmail"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"5d292d98-7e4c-4efa-92d2-cfa2f48664ee","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNJTF09KNAVF:00000002","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNJTF09KNAVF"}
+[2026-03-08 19:06:48 ERR] An unhandled exception occurred {"SourceContext":"AuthService.Api.Middlewares.GlobalExceptionMiddleware","RequestId":"0HNJTF09KNAVF:00000002","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNJTF09KNAVF"}
+AuthService.Application.Exceptions.BusinessException: Email already exists
+   at AuthService.Application.Services.AuthService.RegisterAsync(RegisterDto registerDto) in C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 33
+   at AuthService.Api.Controllers.AuthController.Register(RegisterDto registerDto) in C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Api\Controllers\AuthController.cs:line 73
+   at lambda_method20(Closure, Object)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.AwaitableObjectResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.Authentication.AuthenticationMiddleware.Invoke(HttpContext context)
+   at Microsoft.AspNetCore.RateLimiting.RateLimitingMiddleware.InvokeInternal(HttpContext context, EnableRateLimitingAttribute enableRateLimitingAttribute)
+   at AuthService.Api.Middlewares.GlobalExceptionMiddleware.InvokeAsync(HttpContext context) in C:\gitIN6AV2026\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Api\Middlewares\GlobalExceptionMiddleware.cs:line 18
+[2026-03-08 19:06:48 INF] HTTP POST /api/v1/auth/register responded 400 in 947.9851 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNJTF09KNAVF:00000002","ConnectionId":"0HNJTF09KNAVF"}
+[2026-03-08 19:06:58 INF] User login succeeded {"EventId":{"Id":1002,"Name":"LogUserLoggedIn"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"3eb888ad-7ec7-4680-9af8-aedec11e1e04","ActionName":"AuthService.Api.Controllers.AuthController.Login (AuthService.Api)","RequestId":"0HNJTF09KNAVF:00000003","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNJTF09KNAVF"}
+[2026-03-08 19:06:58 INF] HTTP POST /api/v1/auth/login responded 200 in 1143.9849 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNJTF09KNAVF:00000003","ConnectionId":"0HNJTF09KNAVF"}
+[2026-03-08 20:47:57 INF] User login succeeded {"EventId":{"Id":1002,"Name":"LogUserLoggedIn"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"3eb888ad-7ec7-4680-9af8-aedec11e1e04","ActionName":"AuthService.Api.Controllers.AuthController.Login (AuthService.Api)","RequestId":"0HNJTF09KNAVH:00000001","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNJTF09KNAVH"}
+[2026-03-08 20:47:57 INF] HTTP POST /api/v1/auth/login responded 200 in 1024.8589 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNJTF09KNAVH:00000001","ConnectionId":"0HNJTF09KNAVH"}
+[2026-03-08 21:54:01 INF] User login succeeded {"EventId":{"Id":1002,"Name":"LogUserLoggedIn"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"3eb888ad-7ec7-4680-9af8-aedec11e1e04","ActionName":"AuthService.Api.Controllers.AuthController.Login (AuthService.Api)","RequestId":"0HNJTF09KNAVJ:00000001","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNJTF09KNAVJ"}
+[2026-03-08 21:54:01 INF] HTTP POST /api/v1/auth/login responded 200 in 2456.2245 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNJTF09KNAVJ:00000001","ConnectionId":"0HNJTF09KNAVJ"}

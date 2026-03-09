@@ -1,9 +1,9 @@
-import mongoose from "mongoose";
+import mongoose from 'mongoose';
 
 const productSchema = new mongoose.Schema({
-    price: Number,
-    isActive: Boolean,
-    isDeleted: Boolean
+    price: { type: Number },
+    isActive: { type: Boolean, default: true },
+    isDeleted: { type: Boolean, default: false }
 });
 
-export default mongoose.model("Product", productSchema, "products");
+export default mongoose.model('Product', productSchema, 'products');
