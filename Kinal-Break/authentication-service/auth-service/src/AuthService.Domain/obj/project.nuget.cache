@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "cDjZDKuBmac=",
+  "dgSpecHash": "er2VIR6nLiM=",
   "success": true,
-  "projectFilePath": "C:\\gitIN6AV2026\\Kinal-Break\\Kinal-Break\\authentication-service\\auth-service\\src\\AuthService.Domain\\AuthService.Domain.csproj",
+  "projectFilePath": "C:\\Users\\usuario\\Desktop\\2024242\\proyectos\\Kinal-Break\\Kinal-Break\\authentication-service\\auth-service\\src\\AuthService.Domain\\AuthService.Domain.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\rigof\\.nuget\\packages\\system.componentmodel.annotations\\5.0.0\\system.componentmodel.annotations.5.0.0.nupkg.sha512"
+    "C:\\Users\\usuario\\.nuget\\packages\\system.componentmodel.annotations\\5.0.0\\system.componentmodel.annotations.5.0.0.nupkg.sha512"
   ],
   "logs": []
 }

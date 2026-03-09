@@ -16,6 +16,9 @@ const BASE_PATH = '/KinalBreak/v1';
 import productRoutes from '../src/Products/product.routes.js'
 import accompanimentRoutes from '../src/Accompaniment/accompaniment.routes.js'
 import orderRoutes from '../src/order/order.routes.js' // <--- LÍNEA AGREGADA
+import paymentRoutes from '../src/Payment/payment.routes.js';
+import transactionRoutes from '../src/transaction/transaction.routes.js';
+import reportRoutes from '../src/report/report.routes.js';
 
 const middlewares = (app) =>{
     app.use(express.urlencoded({extended: false, limit: '10mb'}));
@@ -31,6 +34,9 @@ const routes = (app) =>{
     app.use(`${BASE_PATH}/products`, productRoutes);
     app.use(`${BASE_PATH}/accompaniment`, accompanimentRoutes);
     app.use(`${BASE_PATH}/orders`, orderRoutes); // <--- LÍNEA AGREGADA
+    app.use(`${BASE_PATH}/payments`, paymentRoutes);
+    app.use(`${BASE_PATH}/transactions`, transactionRoutes);
+    app.use(`${BASE_PATH}/reports`, reportRoutes);
 
     app.get(`${BASE_PATH}/health`, (req, res)=>{
         res.status(200).json({
