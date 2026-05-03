@@ -1,7 +1,8 @@
+import axios from 'axios'; // NO OLVIDES IMPORTAR AXIOS
 import { Carrito, Pedido } from '../models/pedido.model.js';
 import Product from '../models/product.model.js'; 
 
-// 1. AGREGAR AL CARRITO
+// 1. AGREGAR AL CARRITO (Se mantiene igual)
 export const agregarAlCarrito = async (req, res) => {
     try {
         const usuarioId = req.user.id; 
@@ -32,7 +33,7 @@ export const agregarAlCarrito = async (req, res) => {
     }
 };
 
-// 2. CONFIRMAR PEDIDO
+// 2. 
 export const confirmarPedido = async (req, res) => {
     try {
         const usuarioId = req.user.id;
@@ -42,10 +43,21 @@ export const confirmarPedido = async (req, res) => {
             return res.status(400).json({ success: false, message: "El carrito está vacío" });
         }
 
+        for (const item of carrito.productos) {
+            const productoDB = await Product.findById(item.productoId);
+            if (!productoDB || !productoDB.isActive || productoDB.isDeleted) {
+                return res.status(400).json({ 
+                    success: false, 
+                    message: "Uno o más productos de tu carrito ya no están disponibles en cafetería." 
+                });
+            }
+        }
+
         const nuevoPedido = new Pedido({
             usuarioId: carrito.usuarioId,
             productos: carrito.productos,
-            totalFinal: carrito.totalTemporal
+            totalFinal: carrito.totalTemporal,
+            estado: 'Pendiente'
         });
 
         await nuevoPedido.save();
@@ -57,7 +69,6 @@ export const confirmarPedido = async (req, res) => {
     }
 };
 
-// 3. HISTORIAL Y CANCELACIÓN 
 export const obtenerHistorial = async (req, res) => {
     try {
         const pedidos = await Pedido.find({ usuarioId: req.user.id }).sort({ fechaCreacion: -1 });
@@ -77,6 +88,24 @@ export const cancelarPedido = async (req, res) => {
         );
         if (!pedido) return res.status(404).json({ message: "Pedido no encontrado o ya procesado" });
         res.status(200).json({ success: true, pedido });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};
+
+export const limpiarPedidosExpirados = async (req, res) => {
+    try {
+        const tiempoLimite = new Date(Date.now() - 30 * 60000);
+        
+        const resultado = await Pedido.updateMany(
+            { estado: 'Pendiente', fechaCreacion: { $lt: tiempoLimite } }, 
+            { $set: { estado: 'Cancelado' } }
+        );
+
+        res.status(200).json({ 
+            success: true, 
+            message: `Limpieza ejecutada. Se cancelaron ${resultado.modifiedCount} pedidos expirados.` 
+        });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }

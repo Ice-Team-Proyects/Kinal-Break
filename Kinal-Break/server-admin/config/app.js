@@ -15,7 +15,7 @@ const BASE_PATH = '/KinalBreak/v1';
 
 import productRoutes from '../src/Products/product.routes.js'
 import accompanimentRoutes from '../src/Accompaniment/accompaniment.routes.js'
-import orderRoutes from '../src/order/order.routes.js' // <--- LÍNEA AGREGADA
+import orderRoutes from '../src/order/order.routes.js' 
 import paymentRoutes from '../src/Payment/payment.routes.js';
 import transactionRoutes from '../src/transaction/transaction.routes.js';
 import reportRoutes from '../src/report/report.routes.js';
@@ -33,7 +33,7 @@ const routes = (app) =>{
     // Poner las rutas
     app.use(`${BASE_PATH}/products`, productRoutes);
     app.use(`${BASE_PATH}/accompaniment`, accompanimentRoutes);
-    app.use(`${BASE_PATH}/orders`, orderRoutes); // <--- LÍNEA AGREGADA
+    app.use(`${BASE_PATH}/orders`, orderRoutes); 
     app.use(`${BASE_PATH}/payments`, paymentRoutes);
     app.use(`${BASE_PATH}/transactions`, transactionRoutes);
     app.use(`${BASE_PATH}/reports`, reportRoutes);
@@ -54,7 +54,7 @@ const routes = (app) =>{
 
 export const initServer = async ()=>{
     const app = express();
-    const PORT = process.env.PORT || 3000; // puerto por defecto 3000 si no se especifica
+    const PORT = process.env.PORT || 3000; 
     app.set('trust proxy', 1);
 
     try{

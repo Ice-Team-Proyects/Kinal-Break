@@ -65,11 +65,23 @@ public class AuthController(IAuthService authService) : ControllerBase
             data = user
         });
     }
+
     [HttpPost("register")]
     [RequestSizeLimit(10 * 1024 * 1024)] // 10MB límite
     [EnableRateLimiting("AuthPolicy")]
     public async Task<ActionResult<RegisterResponseDto>> Register([FromForm] RegisterDto registerDto)
     {
+        // Fase 1: Validación rápida de correo institucional para la Demo
+        // Asegúrate de que la propiedad en RegisterDto se llame 'Email'
+        if (string.IsNullOrEmpty(registerDto.Email) || !registerDto.Email.EndsWith("@kinal.edu.gt", StringComparison.OrdinalIgnoreCase))
+        {
+            return BadRequest(new 
+            { 
+                success = false, 
+                message = "Acceso denegado: Se requiere un correo institucional (@kinal.edu.gt)." 
+            });
+        }
+
         var result = await authService.RegisterAsync(registerDto);
         return StatusCode(201, result);
     }
