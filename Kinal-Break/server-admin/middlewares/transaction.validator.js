@@ -1,6 +1,6 @@
 import { body, param } from 'express-validator';
-import { validateJWT } from '../validate-JWT.js';
-import { checkValidators } from '../check-validators.js';
+import { validateJWT } from './validate-JWT.js';
+import { checkValidators } from './check-validator.js';
 
 export const validateCreateTransaction = [
     validateJWT,

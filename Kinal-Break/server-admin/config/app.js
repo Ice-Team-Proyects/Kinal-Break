@@ -11,6 +11,9 @@ import { requestLimit } from './rateLimit.configuration.js';
 import { errorHandler} from '../middlewares/handle-errors.js';
 import { deleteFileOnError } from '../middlewares/delete-file-on-error.js';
 
+// 1. Tu importación limpia desde la carpeta config:
+import { swaggerDocs, swaggerUi } from './documentation.js';
+
 const BASE_PATH = '/KinalBreak/v1';
 
 import productRoutes from '../src/Products/product.routes.js'
@@ -18,7 +21,7 @@ import accompanimentRoutes from '../src/Accompaniment/accompaniment.routes.js'
 import orderRoutes from '../src/order/order.routes.js' 
 import paymentRoutes from '../src/Payment/payment.routes.js';
 import transactionRoutes from '../src/transaction/transaction.routes.js';
-import reportRoutes from '../src/report/report.routes.js';
+import reportRoutes from '../src/Reporte/report.routes.js';
 
 const middlewares = (app) =>{
     app.use(express.urlencoded({extended: false, limit: '10mb'}));
@@ -30,7 +33,9 @@ const middlewares = (app) =>{
 }
 
 const routes = (app) =>{
-    // Poner las rutas
+    // 2. Aquí conectamos la documentación a la ruta /docs
+    app.use('/KinalBreak/v1/docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+    
     app.use(`${BASE_PATH}/products`, productRoutes);
     app.use(`${BASE_PATH}/accompaniment`, accompanimentRoutes);
     app.use(`${BASE_PATH}/orders`, orderRoutes); 
@@ -47,7 +52,7 @@ const routes = (app) =>{
     app.use((req,res)=>{
         res.status(404).json({
             succes: false,
-            message:'Ruta no esxixste en este servidor'
+            message:'Ruta no existe en este servidor'
         })
     });
 }
@@ -67,6 +72,7 @@ export const initServer = async ()=>{
         app.listen(PORT, () =>{
             console.log(`Kinal Break server running on port ${PORT}`);
             console.log(`Health check: http://localhost:${PORT}${BASE_PATH}/health`);
+            console.log(`Swagger Docs: http://localhost:${PORT}${BASE_PATH}/docs`);
         });
     }catch(err){
         console.log(`Error al iniciar el servidor: ${err.message}`);

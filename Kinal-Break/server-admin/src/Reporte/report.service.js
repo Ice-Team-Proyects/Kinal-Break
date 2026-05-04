@@ -1,7 +1,6 @@
-import Payment from "../payments/payment.model.js";
-import Order from "../Orders/order.model.js";
-import ExcelJS from "exceljs";
 import Payment from "../Payment/payment.model.js";
+import Order from "../Order/order.model.js";
+import ExcelJS from "exceljs";
 import PDFDocument from "pdfkit";
 
 export const getTotalSales = async () => {
