@@ -15,18 +15,27 @@ public class EmailService(IConfiguration configuration, ILogger<EmailService> lo
     {
         var subject = "Verifica tu dirección de correo electrónico";
         var verificationUrl = $"{configuration["AppSettings:FrontendUrl"]}/verify-email?token={token}";
-
-        var body = $@"
-            <h2>¡Bienvenido {username}!</h2>
-            <p>Por favor, verifica tu dirección de correo electrónico haciendo clic en el enlace a continuación:</p>
-            <a href='{verificationUrl}' style='background-color: #007bff; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px;'>
-                Verificar Correo Electrónico
-            </a>
-            <p>Si no puedes hacer clic en el enlace, copia y pega esta URL en tu navegador:</p>
-            <p>{verificationUrl}</p>
-            <p>Este enlace expirará en 24 horas.</p>
-            <p>Si no creaste una cuenta, por favor ignora este correo.</p>
-        ";
+                var body = $@"
+                                <div style='font-family: Inter, Arial, Helvetica, sans-serif; background:#f5f7fb; padding:40px'>
+                                    <div style='max-width:650px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;border:1px solid #e6e9ef;box-shadow:0 8px 24px rgba(4,12,30,0.06)'>
+                                        <div style='padding:20px 28px;display:flex;align-items:center;gap:12px'>
+                                            <img src='{configuration["AppSettings:Assets:LogoUrl"] ?? ""}' alt='Kinal-Break' style='height:44px' />
+                                            <h2 style='margin:0;font-size:20px;color:#031633;font-weight:800'>Kinal-Break</h2>
+                                        </div>
+                                        <div style='padding:28px;color:#111'>
+                                            <h3 style='color:#031633;margin-top:0'>¡Hola {username}!</h3>
+                                            <p style='color:#4b5563'>Gracias por crear una cuenta en Kinal-Break. Para completar tu registro, verifica tu correo electrónico pulsando el botón a continuación.</p>
+                                            <div style='text-align:center;margin:28px 0'>
+                                                <a href='{verificationUrl}' style='background:#ff8928;color:#fff;padding:14px 26px;border-radius:12px;text-decoration:none;font-weight:800;display:inline-block'>Verificar correo</a>
+                                            </div>
+                                            <p style='font-size:13px;color:#6b7280'>Si el botón no funciona, copia y pega esta URL en tu navegador:</p>
+                                            <p style='font-size:13px;color:#6b7280;word-break:break-all'>{verificationUrl}</p>
+                                            <p style='font-size:13px;color:#6b7280'>Este enlace expirará en 24 horas. Si no solicitaste este registro, puedes ignorar este correo.</p>
+                                        </div>
+                                        <div style='background:#fafafa;padding:16px;text-align:center;color:#9aa3b2;font-size:13px'>© {DateTime.UtcNow.Year} Kinal-Break</div>
+                                    </div>
+                                </div>
+                        ";
 
         await SendEmailAsync(email, subject, body);
     }
@@ -51,18 +60,30 @@ public class EmailService(IConfiguration configuration, ILogger<EmailService> lo
 
         await SendEmailAsync(email, subject, body);
     }
-
+ 
     public async Task SendWelcomeEmailAsync(string email, string username)
     {
         var subject = "¡Bienvenido a Kinal Break!";
 
-        var body = $@"
-            <h2>¡Bienvenido a Kinal Break, {username}!</h2>
-            <p>Tu cuenta ha sido verificada y activada exitosamente.</p>
-            <p>Ahora puedes disfrutar de todas las funciones de nuestra plataforma.</p>
-            <p>Si tienes alguna pregunta, no dudes en contactar a nuestro equipo de soporte.</p>
-            <p>¡Gracias por unirte a nosotros!</p>
-        ";
+                var body = $@"
+                        <div style='font-family: Inter, Arial, Helvetica, sans-serif; background:#f5f7fb; padding:40px'>
+                            <div style='max-width:650px;margin:0 auto;background:#fff;border-radius:16px;overflow:hidden;border:1px solid #e6e9ef;box-shadow:0 8px 24px rgba(4,12,30,0.06)'>
+                                <div style='padding:20px 28px;display:flex;align-items:center;gap:12px'>
+                                    <img src='{configuration["AppSettings:Assets:LogoUrl"] ?? ""}' alt='Kinal-Break' style='height:44px' />
+                                    <h2 style='margin:0;font-size:20px;color:#031633;font-weight:800'>Kinal-Break</h2>
+                                </div>
+                                <div style='padding:28px;color:#111'>
+                                    <h3 style='color:#031633;margin-top:0'>¡Hola {username}!</h3>
+                                    <p style='color:#4b5563'>Tu cuenta ha sido verificada y activada exitosamente.</p>
+                                    <p style='color:#4b5563'>Ya puedes iniciar sesión y comenzar a usar Kinal-Break.</p>
+                                    <div style='text-align:center;margin-top:20px'>
+                                        <a href='{configuration["AppSettings:FrontendUrl"] ?? ""}/login' style='background:#ff8928;color:#fff;padding:12px 22px;border-radius:10px;text-decoration:none;font-weight:700;display:inline-block'>Iniciar sesión</a>
+                                    </div>
+                                </div>
+                                <div style='background:#fafafa;padding:16px;text-align:center;color:#9aa3b2;font-size:13px'>© {DateTime.UtcNow.Year} Kinal-Break</div>
+                            </div>
+                        </div>
+                ";
 
         await SendEmailAsync(email, subject, body);
     }
@@ -186,7 +207,9 @@ public class EmailService(IConfiguration configuration, ILogger<EmailService> lo
             var useFallback = bool.Parse(smtpSettings["UseFallback"] ?? "false");
             if (useFallback)
             {
-                logger.LogWarning("Usando respaldo de email");
+                logger.LogWarning("Usando respaldo de email. El email no se envió, pero la acción continúa.");
+                logger.LogWarning("Email fallback details: To={To}, Subject={Subject}", to, subject);
+                logger.LogInformation("Email body preview:\n{Body}", body.Length > 500 ? body[..500] + "..." : body);
                 return; // No fallar, solo logear
             }
 

@@ -73,12 +73,12 @@ public class AuthController(IAuthService authService) : ControllerBase
     {
         // Fase 1: Validación rápida de correo institucional para la Demo
         // Asegúrate de que la propiedad en RegisterDto se llame 'Email'
-        if (string.IsNullOrEmpty(registerDto.Email) || !registerDto.Email.EndsWith("@kinal.edu.gt", StringComparison.OrdinalIgnoreCase))
+        if (string.IsNullOrEmpty(registerDto.Email) || !(registerDto.Email.EndsWith("@kinal.edu.gt", StringComparison.OrdinalIgnoreCase) || registerDto.Email.EndsWith("@kinal.org.gt", StringComparison.OrdinalIgnoreCase)))
         {
             return BadRequest(new 
             { 
                 success = false, 
-                message = "Acceso denegado: Se requiere un correo institucional (@kinal.edu.gt)." 
+                message = "Acceso denegado: Se requiere un correo institucional (@kinal.edu.gt o @kinal.org.gt)." 
             });
         }
 
