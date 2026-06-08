@@ -1,0 +1,99 @@
+[2026-06-03 09:28:44 INF] Verificando conexión a la base de datos... {"SourceContext":"Program"}
+[2026-06-03 09:28:46 INF] Base de datos lista. Ejecutando datos semilla... {"SourceContext":"Program"}
+[2026-06-03 09:28:47 INF] Inicialización de base de datos completada exitosamente {"SourceContext":"Program"}
+[2026-06-03 09:28:47 INF] API de AuthService está ejecutándose en http://localhost:5296. Endpoint de salud: http://localhost:5296/api/v1/health {"SourceContext":"Program"}
+[2026-06-03 11:34:16 WRN] Failed to determine the https port for redirect. {"EventId":{"Id":3,"Name":"FailedToDeterminePort"},"SourceContext":"Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware","RequestId":"0HNM1IPB13VS8:00000001","RequestPath":"/api/v1/login%20","ConnectionId":"0HNM1IPB13VS8"}
+[2026-06-03 11:34:16 INF] HTTP POST /api/v1/login  responded 404 in 90.0336 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNM1IPB13VS8:00000001","ConnectionId":"0HNM1IPB13VS8"}
+[2026-06-03 11:34:24 INF] HTTP POST /api/v1/register responded 404 in 1.3400 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNM1IPB13VS8:00000002","ConnectionId":"0HNM1IPB13VS8"}
+[2026-06-03 11:36:01 INF] User cnavarro registered successfully {"EventId":{"Id":1001,"Name":"LogUserRegistered"},"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"531e2f76-0c45-4227-aa97-62dd31d9083b","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNM1IPB13VSA:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNM1IPB13VSA"}
+[2026-06-03 11:36:01 INF] HTTP POST /api/v1/auth/register responded 201 in 1415.7651 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNM1IPB13VSA:00000001","ConnectionId":"0HNM1IPB13VSA"}
+[2026-06-03 11:36:02 WRN] Validación de certificados SSL deshabilitada. Solo usar en desarrollo. {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"531e2f76-0c45-4227-aa97-62dd31d9083b","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNM1IPB13VSA:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNM1IPB13VSA"}
+[2026-06-03 11:36:03 ERR] La autenticación de Gmail falló. Verifica la contraseña de aplicación. {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"531e2f76-0c45-4227-aa97-62dd31d9083b","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNM1IPB13VSA:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNM1IPB13VSA"}
+MailKit.Security.AuthenticationException: 535: 5.7.8 Username and Password not accepted. For more information, go to
+5.7.8  https://support.google.com/mail/?p=BadCredentials 71dfb90a1353d-5a6d6fb9ca0sm3496546e0c.6 - gsmtp
+ ---> MailKit.Net.Smtp.SmtpCommandException: 5.7.8 Username and Password not accepted. For more information, go to
+5.7.8  https://support.google.com/mail/?p=BadCredentials 71dfb90a1353d-5a6d6fb9ca0sm3496546e0c.6 - gsmtp
+   --- End of inner exception stack trace ---
+   at MailKit.Net.Smtp.SmtpClient.AuthenticateAsync(Encoding encoding, ICredentials credentials, CancellationToken cancellationToken)
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\Users\Informatica\Desktop\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 153
+[2026-06-03 11:36:03 ERR] Error al enviar el email {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"531e2f76-0c45-4227-aa97-62dd31d9083b","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNM1IPB13VSA:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNM1IPB13VSA"}
+System.InvalidOperationException: La autenticación de Gmail falló: 535: 5.7.8 Username and Password not accepted. For more information, go to
+5.7.8  https://support.google.com/mail/?p=BadCredentials 71dfb90a1353d-5a6d6fb9ca0sm3496546e0c.6 - gsmtp. Por favor, verifica la contraseña de aplicación.
+ ---> MailKit.Security.AuthenticationException: 535: 5.7.8 Username and Password not accepted. For more information, go to
+5.7.8  https://support.google.com/mail/?p=BadCredentials 71dfb90a1353d-5a6d6fb9ca0sm3496546e0c.6 - gsmtp
+ ---> MailKit.Net.Smtp.SmtpCommandException: 5.7.8 Username and Password not accepted. For more information, go to
+5.7.8  https://support.google.com/mail/?p=BadCredentials 71dfb90a1353d-5a6d6fb9ca0sm3496546e0c.6 - gsmtp
+   --- End of inner exception stack trace ---
+   at MailKit.Net.Smtp.SmtpClient.AuthenticateAsync(Encoding encoding, ICredentials credentials, CancellationToken cancellationToken)
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\Users\Informatica\Desktop\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 153
+   --- End of inner exception stack trace ---
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\Users\Informatica\Desktop\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 172
+[2026-06-03 11:36:03 ERR] Failed to send verification email {"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"531e2f76-0c45-4227-aa97-62dd31d9083b","ActionName":"AuthService.Api.Controllers.AuthController.Register (AuthService.Api)","RequestId":"0HNM1IPB13VSA:00000001","RequestPath":"/api/v1/auth/register","ConnectionId":"0HNM1IPB13VSA"}
+System.InvalidOperationException: Error al enviar el email: La autenticación de Gmail falló: 535: 5.7.8 Username and Password not accepted. For more information, go to
+5.7.8  https://support.google.com/mail/?p=BadCredentials 71dfb90a1353d-5a6d6fb9ca0sm3496546e0c.6 - gsmtp. Por favor, verifica la contraseña de aplicación.
+ ---> System.InvalidOperationException: La autenticación de Gmail falló: 535: 5.7.8 Username and Password not accepted. For more information, go to
+5.7.8  https://support.google.com/mail/?p=BadCredentials 71dfb90a1353d-5a6d6fb9ca0sm3496546e0c.6 - gsmtp. Por favor, verifica la contraseña de aplicación.
+ ---> MailKit.Security.AuthenticationException: 535: 5.7.8 Username and Password not accepted. For more information, go to
+5.7.8  https://support.google.com/mail/?p=BadCredentials 71dfb90a1353d-5a6d6fb9ca0sm3496546e0c.6 - gsmtp
+ ---> MailKit.Net.Smtp.SmtpCommandException: 5.7.8 Username and Password not accepted. For more information, go to
+5.7.8  https://support.google.com/mail/?p=BadCredentials 71dfb90a1353d-5a6d6fb9ca0sm3496546e0c.6 - gsmtp
+   --- End of inner exception stack trace ---
+   at MailKit.Net.Smtp.SmtpClient.AuthenticateAsync(Encoding encoding, ICredentials credentials, CancellationToken cancellationToken)
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\Users\Informatica\Desktop\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 153
+   --- End of inner exception stack trace ---
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\Users\Informatica\Desktop\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 172
+   --- End of inner exception stack trace ---
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\Users\Informatica\Desktop\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 193
+   at AuthService.Application.Services.EmailService.SendEmailVerificationAsync(String email, String username, String token) in C:\Users\Informatica\Desktop\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 31
+   at AuthService.Application.Services.AuthService.<>c__DisplayClass9_0.<<RegisterAsync>b__0>d.MoveNext() in C:\Users\Informatica\Desktop\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 139
+[2026-06-03 11:36:50 WRN] Validación de certificados SSL deshabilitada. Solo usar en desarrollo. {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"15eaf1a5-fd11-49b5-97b8-88be32e03bbf","ActionName":"AuthService.Api.Controllers.AuthController.VerifyEmail (AuthService.Api)","RequestId":"0HNM1IPB13VSA:00000002","RequestPath":"/api/v1/auth/verify-email","ConnectionId":"0HNM1IPB13VSA"}
+[2026-06-03 11:36:52 ERR] La autenticación de Gmail falló. Verifica la contraseña de aplicación. {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"15eaf1a5-fd11-49b5-97b8-88be32e03bbf","ActionName":"AuthService.Api.Controllers.AuthController.VerifyEmail (AuthService.Api)","RequestId":"0HNM1IPB13VSA:00000002","RequestPath":"/api/v1/auth/verify-email","ConnectionId":"0HNM1IPB13VSA"}
+MailKit.Security.AuthenticationException: 535: 5.7.8 Username and Password not accepted. For more information, go to
+5.7.8  https://support.google.com/mail/?p=BadCredentials a1e0cc1a2514c-96413fcc8fdsm2497422241.7 - gsmtp
+ ---> MailKit.Net.Smtp.SmtpCommandException: 5.7.8 Username and Password not accepted. For more information, go to
+5.7.8  https://support.google.com/mail/?p=BadCredentials a1e0cc1a2514c-96413fcc8fdsm2497422241.7 - gsmtp
+   --- End of inner exception stack trace ---
+   at MailKit.Net.Smtp.SmtpClient.AuthenticateAsync(Encoding encoding, ICredentials credentials, CancellationToken cancellationToken)
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\Users\Informatica\Desktop\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 153
+[2026-06-03 11:36:52 ERR] Error al enviar el email {"SourceContext":"AuthService.Application.Services.EmailService","ActionId":"15eaf1a5-fd11-49b5-97b8-88be32e03bbf","ActionName":"AuthService.Api.Controllers.AuthController.VerifyEmail (AuthService.Api)","RequestId":"0HNM1IPB13VSA:00000002","RequestPath":"/api/v1/auth/verify-email","ConnectionId":"0HNM1IPB13VSA"}
+System.InvalidOperationException: La autenticación de Gmail falló: 535: 5.7.8 Username and Password not accepted. For more information, go to
+5.7.8  https://support.google.com/mail/?p=BadCredentials a1e0cc1a2514c-96413fcc8fdsm2497422241.7 - gsmtp. Por favor, verifica la contraseña de aplicación.
+ ---> MailKit.Security.AuthenticationException: 535: 5.7.8 Username and Password not accepted. For more information, go to
+5.7.8  https://support.google.com/mail/?p=BadCredentials a1e0cc1a2514c-96413fcc8fdsm2497422241.7 - gsmtp
+ ---> MailKit.Net.Smtp.SmtpCommandException: 5.7.8 Username and Password not accepted. For more information, go to
+5.7.8  https://support.google.com/mail/?p=BadCredentials a1e0cc1a2514c-96413fcc8fdsm2497422241.7 - gsmtp
+   --- End of inner exception stack trace ---
+   at MailKit.Net.Smtp.SmtpClient.AuthenticateAsync(Encoding encoding, ICredentials credentials, CancellationToken cancellationToken)
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\Users\Informatica\Desktop\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 153
+   --- End of inner exception stack trace ---
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\Users\Informatica\Desktop\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 172
+[2026-06-03 11:36:52 ERR] Failed to send welcome email to cnavarro-2024170@kinal.edu.gt {"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"15eaf1a5-fd11-49b5-97b8-88be32e03bbf","ActionName":"AuthService.Api.Controllers.AuthController.VerifyEmail (AuthService.Api)","RequestId":"0HNM1IPB13VSA:00000002","RequestPath":"/api/v1/auth/verify-email","ConnectionId":"0HNM1IPB13VSA"}
+System.InvalidOperationException: Error al enviar el email: La autenticación de Gmail falló: 535: 5.7.8 Username and Password not accepted. For more information, go to
+5.7.8  https://support.google.com/mail/?p=BadCredentials a1e0cc1a2514c-96413fcc8fdsm2497422241.7 - gsmtp. Por favor, verifica la contraseña de aplicación.
+ ---> System.InvalidOperationException: La autenticación de Gmail falló: 535: 5.7.8 Username and Password not accepted. For more information, go to
+5.7.8  https://support.google.com/mail/?p=BadCredentials a1e0cc1a2514c-96413fcc8fdsm2497422241.7 - gsmtp. Por favor, verifica la contraseña de aplicación.
+ ---> MailKit.Security.AuthenticationException: 535: 5.7.8 Username and Password not accepted. For more information, go to
+5.7.8  https://support.google.com/mail/?p=BadCredentials a1e0cc1a2514c-96413fcc8fdsm2497422241.7 - gsmtp
+ ---> MailKit.Net.Smtp.SmtpCommandException: 5.7.8 Username and Password not accepted. For more information, go to
+5.7.8  https://support.google.com/mail/?p=BadCredentials a1e0cc1a2514c-96413fcc8fdsm2497422241.7 - gsmtp
+   --- End of inner exception stack trace ---
+   at MailKit.Net.Smtp.SmtpClient.AuthenticateAsync(Encoding encoding, ICredentials credentials, CancellationToken cancellationToken)
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\Users\Informatica\Desktop\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 153
+   --- End of inner exception stack trace ---
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\Users\Informatica\Desktop\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 172
+   --- End of inner exception stack trace ---
+   at AuthService.Application.Services.EmailService.SendEmailAsync(String to, String subject, String body) in C:\Users\Informatica\Desktop\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 193
+   at AuthService.Application.Services.EmailService.SendWelcomeEmailAsync(String email, String username) in C:\Users\Informatica\Desktop\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\EmailService.cs:line 67
+   at AuthService.Application.Services.AuthService.VerifyEmailAsync(VerifyEmailDto verifyEmailDto) in C:\Users\Informatica\Desktop\Kinal-Break\Kinal-Break\authentication-service\auth-service\src\AuthService.Application\Services\AuthService.cs:line 265
+[2026-06-03 11:36:52 INF] Email verified successfully for user cnavarro {"SourceContext":"AuthService.Application.Services.AuthService","ActionId":"15eaf1a5-fd11-49b5-97b8-88be32e03bbf","ActionName":"AuthService.Api.Controllers.AuthController.VerifyEmail (AuthService.Api)","RequestId":"0HNM1IPB13VSA:00000002","RequestPath":"/api/v1/auth/verify-email","ConnectionId":"0HNM1IPB13VSA"}
+[2026-06-03 11:36:52 INF] HTTP POST /api/v1/auth/verify-email responded 200 in 2670.8939 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNM1IPB13VSA:00000002","ConnectionId":"0HNM1IPB13VSA"}
+[2026-06-03 11:40:08 INF] HTTP OPTIONS /api/auth/login responded 204 in 2.8894 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNM1IPB13VSB:00000001","ConnectionId":"0HNM1IPB13VSB"}
+[2026-06-03 11:42:00 INF] HTTP OPTIONS /api/auth/login responded 204 in 0.3162 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNM1IPB13VSB:00000002","ConnectionId":"0HNM1IPB13VSB"}
+[2026-06-03 11:45:31 INF] HTTP OPTIONS /api/v1/auth/login responded 204 in 0.5841 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNM1IPB13VSC:00000001","ConnectionId":"0HNM1IPB13VSC"}
+[2026-06-03 11:49:11 INF] HTTP OPTIONS /api/v1/auth/login responded 204 in 0.1044 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNM1IPB13VSD:00000001","ConnectionId":"0HNM1IPB13VSD"}
+[2026-06-03 11:49:44 INF] Verificando conexión a la base de datos... {"SourceContext":"Program"}
+[2026-06-03 11:49:45 INF] Base de datos lista. Ejecutando datos semilla... {"SourceContext":"Program"}
+[2026-06-03 11:49:45 INF] Inicialización de base de datos completada exitosamente {"SourceContext":"Program"}
+[2026-06-03 11:49:45 INF] API de AuthService está ejecutándose en http://localhost:5296. Endpoint de salud: http://localhost:5296/api/v1/health {"SourceContext":"Program"}
+[2026-06-03 11:49:54 WRN] Failed to determine the https port for redirect. {"EventId":{"Id":3,"Name":"FailedToDeterminePort"},"SourceContext":"Microsoft.AspNetCore.HttpsPolicy.HttpsRedirectionMiddleware","RequestId":"0HNM1J22G41ED:00000001","RequestPath":"/api/v1/auth/login","ConnectionId":"0HNM1J22G41ED"}
+[2026-06-03 11:49:54 INF] HTTP OPTIONS /api/v1/auth/login responded 204 in 13.0755 ms {"SourceContext":"Serilog.AspNetCore.RequestLoggingMiddleware","RequestId":"0HNM1J22G41ED:00000001","ConnectionId":"0HNM1J22G41ED"}

@@ -181,6 +181,7 @@ public class AuthService(
         // Verificar si el usuario está activo
         if (!user.Status)
         {
+            logger.LogDisabledAccountLogin(user.Username);
             logger.LogFailedLoginAttempt();
             throw new UnauthorizedAccessException("User account is disabled");
         }
