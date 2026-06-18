@@ -1,0 +1,96 @@
+services:
+
+  # Bases de datos
+
+  mongodb:
+    image: mongo:7.0
+    container_name: kinal-break-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    restart: unless-stopped
+
+  postgres:
+    image: postgres:13
+    container_name: kinal-break-postgres
+    environment:
+      POSTGRES_USER: iceteam
+      POSTGRES_PASSWORD: admin
+      POSTGRES_DB: kinal_break
+    ports:
+      - "5436:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./postgre_db/init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: unless-stopped
+
+  # Auth Service (.NET 8 + PostgreSQL)
+
+  auth-service:
+    build:
+      context: ./authentication-service
+      dockerfile: Dockerfile
+    container_name: kinal-break-auth-service
+    depends_on:
+      - postgres
+    ports:
+      - "5296:5296"
+    environment:
+      ConnectionStrings__DefaultConnection: "Host=postgres;Database=kinal_break;Username=iceteam;Password=admin;Port=5432"
+    restart: unless-stopped
+
+  # Server Admin (Node + Express + MongoDB)
+
+  server-admin:
+    build:
+      context: ./server-admin
+      dockerfile: Dockerfile
+    container_name: kinal-break-server-admin
+    depends_on:
+      - mongodb
+      - auth-service
+    ports:
+      - "3021:3021"
+    env_file:
+      - ./server-admin/.env
+    environment:
+      URI_MONGODB: mongodb://mongodb:27017/KinalBreak
+    restart: unless-stopped
+
+  # Pedidos Service (Node + Express + MongoDB)
+
+  pedidos-service:
+    build:
+      context: ./client-admin/pedidos-service
+      dockerfile: Dockerfile
+    container_name: kinal-break-pedidos-service
+    depends_on:
+      - mongodb
+      - auth-service
+    ports:
+      - "3010:3010"
+    env_file:
+      - ./client-admin/pedidos-service/.env
+    environment:
+      URI_MONGODB: mongodb://mongodb:27017/KinalBreak
+    restart: unless-stopped
+
+  # Client Admin (React + Vite, servido con nginx)
+
+  client-admin:
+    build:
+      context: ./client-admin
+      dockerfile: Dockerfile
+    container_name: kinal-break-client-admin
+    depends_on:
+      - server-admin
+      - pedidos-service
+      - auth-service
+    ports:
+      - "5173:80"
+    restart: unless-stopped
+
+volumes:
+  mongo_data:
+  postgres_data:
