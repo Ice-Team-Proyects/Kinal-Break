@@ -1,0 +1,9 @@
+bin/
+obj/
+*.user
+keys/
+logs/
+
+# Configuración con secretos reales — usar appsettings.Example.json como plantilla
+appsettings.json
+appsettings.Development.json
