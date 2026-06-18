@@ -1,0 +1,5 @@
+node_modules
+pedidos-service
+dist
+.env
+.git
