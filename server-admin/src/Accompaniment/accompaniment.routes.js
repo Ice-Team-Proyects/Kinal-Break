@@ -17,6 +17,7 @@ accompanimentIdValidator
 } from "../../middlewares/accompaniment-validator.js";
 
 import { validateJWT } from '../../middlewares/validate-JWT.js';
+import { requireRole } from '../../middlewares/validate-role.js';
 
 const router = express.Router();
 
@@ -35,6 +36,7 @@ const uploadPhotoOrImage = (req, res, next) => {
 router.post(
 "/",
 validateJWT,
+requireRole("ADMIN_ROLE"),
 uploadPhotoOrImage,
 cleanupUploadedFileOnFinish,
 createAccompanimentValidator,
@@ -49,6 +51,7 @@ getAccompaniments
 router.put(
 "/:id",
 validateJWT,
+requireRole("ADMIN_ROLE"),
 uploadPhotoOrImage,
 deleteFileOnError,
 updateAccompanimentValidator,
@@ -59,6 +62,7 @@ updateAccompaniment
 router.patch(
 "/delete/:id",
 validateJWT,
+requireRole("ADMIN_ROLE"),
 accompanimentIdValidator,
 deleteAccompaniment
 );
@@ -66,6 +70,7 @@ deleteAccompaniment
 router.patch(
 "/restore/:id",
 validateJWT,
+requireRole("ADMIN_ROLE"),
 accompanimentIdValidator,
 restoreAccompaniment
 );

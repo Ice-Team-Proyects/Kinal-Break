@@ -39,45 +39,15 @@ const uploadPhotoOrImage = (req, res, next) => {
  * @swagger
  * /products:
  *   post:
- *     summary: Crea un nuevo producto
- *     description: Sube un nuevo producto al catálogo incluyendo su imagen (photo o image).
+ *     summary: Crea un nuevo producto (solo ADMIN_ROLE)
  *     tags: [Productos]
  *     security:
  *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         multipart/form-data:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *                 description: Nombre del producto
- *               description:
- *                 type: string
- *                 description: Descripción del producto
- *               price:
- *                 type: number
- *                 description: Precio del producto
- *               category:
- *                 type: string
- *                 description: Categoría a la que pertenece
- *               photo:
- *                 type: string
- *                 format: binary
- *                 description: Imagen del producto
- *     responses:
- *       201:
- *         description: Producto creado exitosamente.
- *       400:
- *         description: Error de validación o formato de imagen.
- *       401:
- *         description: No autorizado.
  */
 router.post(
     "/",
     validateJWT,
+    requireRole("ADMIN_ROLE"),
     uploadPhotoOrImage,
     cleanupUploadedFileOnFinish,
     createProductValidator,
@@ -89,17 +59,11 @@ router.post(
  * /products:
  *   get:
  *     summary: Lista todos los productos
- *     description: Obtiene el catálogo de productos activos.
  *     tags: [Productos]
- *     responses:
- *       200:
- *         description: Lista de productos obtenida correctamente.
- *       500:
- *         description: Error interno del servidor.
  */
 router.get(
     "/",
-    queryProductValidator, // CORREGIDO: El validador va ANTES del controlador
+    queryProductValidator,
     getProducts
 );
 
@@ -107,46 +71,15 @@ router.get(
  * @swagger
  * /products/{id}:
  *   put:
- *     summary: Actualiza un producto
- *     description: Modifica los datos de un producto existente y permite actualizar su imagen.
+ *     summary: Actualiza un producto (solo ADMIN_ROLE)
  *     tags: [Productos]
  *     security:
  *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID de Mongo del producto
- *         schema:
- *           type: string
- *     requestBody:
- *       content:
- *         multipart/form-data:
- *           schema:
- *             type: object
- *             properties:
- *               name:
- *                 type: string
- *               description:
- *                 type: string
- *               price:
- *                 type: number
- *               category:
- *                 type: string
- *               photo:
- *                 type: string
- *                 format: binary
- *     responses:
- *       200:
- *         description: Producto actualizado correctamente.
- *       400:
- *         description: ID inválido o error en los datos.
- *       404:
- *         description: Producto no encontrado.
  */
 router.put(
     "/:id",
     validateJWT,
+    requireRole("ADMIN_ROLE"),
     uploadPhotoOrImage,
     cleanupUploadedFileOnFinish,
     updateProductValidator,
@@ -157,28 +90,16 @@ router.put(
  * @swagger
  * /products/delete/{id}:
  *   patch:
- *     summary: Elimina un producto lógicamente
- *     description: Desactiva un producto del catálogo sin borrarlo físicamente de la base de datos.
+ *     summary: Elimina un producto lógicamente (solo ADMIN_ROLE)
  *     tags: [Productos]
  *     security:
  *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID de Mongo del producto a eliminar
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Producto eliminado (desactivado) exitosamente.
- *       400:
- *         description: ID inválido.
  */
 router.patch(
     "/delete/:id",
     validateJWT,
-    productIdValidator, // CORREGIDO: El validador va ANTES del controlador
+    requireRole("ADMIN_ROLE"),
+    productIdValidator,
     deleteProduct
 );
 
@@ -186,28 +107,16 @@ router.patch(
  * @swagger
  * /products/restore/{id}:
  *   patch:
- *     summary: Restaura un producto eliminado
- *     description: Vuelve a activar un producto que había sido eliminado lógicamente.
+ *     summary: Restaura un producto eliminado (solo ADMIN_ROLE)
  *     tags: [Productos]
  *     security:
  *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         description: ID de Mongo del producto a restaurar
- *         schema:
- *           type: string
- *     responses:
- *       200:
- *         description: Producto restaurado exitosamente.
- *       400:
- *         description: ID inválido.
  */
 router.patch(
     "/restore/:id",
     validateJWT,
-    productIdValidator, // CORREGIDO: El validador va ANTES del controlador
+    requireRole("ADMIN_ROLE"),
+    productIdValidator,
     restoreProduct
 );
 

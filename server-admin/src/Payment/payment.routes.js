@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { validateCreatePayment, validatePaymentId } from "../../middlewares/payment.validator.js";
+import { validateJWT } from '../../middlewares/validate-JWT.js';
+import { requireRole } from '../../middlewares/validate-role.js';
 import {
     createPayment,
     getPayments,
@@ -44,7 +46,7 @@ const router = Router();
  *       500:
  *         description: Error interno del servidor al procesar el pago.
  */
-router.post("/", validateCreatePayment, createPayment);
+router.post("/", validateJWT, requireRole("ADMIN_ROLE"), validateCreatePayment, createPayment);
 
 /**
  * @swagger
@@ -59,7 +61,7 @@ router.post("/", validateCreatePayment, createPayment);
  *       500:
  *         description: Error interno del servidor.
  */
-router.get("/", getPayments);
+router.get("/", validateJWT, requireRole("ADMIN_ROLE"), getPayments);
 
 /**
  * @swagger
@@ -83,7 +85,7 @@ router.get("/", getPayments);
  *       500:
  *         description: Error interno del servidor.
  */
-router.get("/order/:orderId", getPaymentByOrder);
+router.get("/order/:orderId", validateJWT, requireRole("ADMIN_ROLE"), getPaymentByOrder);
 
 /**
  * @swagger
@@ -98,7 +100,7 @@ router.get("/order/:orderId", getPaymentByOrder);
  *       500:
  *         description: Error al generar el reporte.
  */
-router.get("/report/financial", financialReport);
+router.get("/report/financial", validateJWT, requireRole("ADMIN_ROLE"), financialReport);
 
 /**
  * @swagger
@@ -122,7 +124,7 @@ router.get("/report/financial", financialReport);
  *       500:
  *         description: Error al intentar cancelar el pago.
  */
-router.delete("/:id", validatePaymentId, removePayment);
+router.delete("/:id", validateJWT, requireRole("ADMIN_ROLE"), validatePaymentId, removePayment);
 
 /**
  * @swagger
@@ -146,7 +148,7 @@ router.delete("/:id", validatePaymentId, removePayment);
  *       500:
  *         description: Error al intentar restaurar el pago.
  */
-router.patch("/restore/:id", validatePaymentId, restorePaymentController);
+router.patch("/restore/:id", validateJWT, requireRole("ADMIN_ROLE"), validatePaymentId, restorePaymentController);
 
 /**
  * @swagger
@@ -181,6 +183,6 @@ router.patch("/restore/:id", validatePaymentId, restorePaymentController);
  *       500:
  *         description: Error interno del servidor.
  */
-router.patch("/unpaid/:id", validatePaymentId, setUnpaid);
+router.patch("/unpaid/:id", validateJWT, requireRole("ADMIN_ROLE"), validatePaymentId, setUnpaid);
 
 export default router;

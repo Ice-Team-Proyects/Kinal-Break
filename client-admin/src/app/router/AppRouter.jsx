@@ -4,9 +4,17 @@ import { RegisterPage } from "../../features/auth/page/RegisterPage.jsx";
 import { VerifyEmailPage } from "../../features/auth/page/VerifyEmailPage.jsx";
 import { useAuthStore } from "../../features/auth/store/authStore.js";
 import DashboardContainer from "../../shared/component/layout/DashboardContainer.jsx";
+import { ProductsPage } from "../../features/products/page/ProductsPage.jsx";
+import { OrdersPage } from "../../features/orders/page/OrdersPage.jsx";
+import { PaymentsPage } from "../../features/payments/page/PaymentsPage.jsx";
+import { ReportsPage } from "../../features/reports/page/ReportsPage.jsx";
+import DashboardIndex from "../../features/dashboard/page/DashboardIndex.jsx";
 
 export const AppRouter = () => {
     const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+    const user = useAuthStore((state) => state.user);
+    const isAdmin = user?.role === 'ADMIN_ROLE';
+    const isUser  = user?.role === 'USER_ROLE';
 
     return (
     <Routes>
@@ -16,18 +24,15 @@ export const AppRouter = () => {
         
         {isAuthenticated ? (
         <Route path="/" element={<DashboardContainer />}>
-            {/* 
-                Placeholder for other developers to add their routes 
-                Example: <Route path="products" element={<ProductsPage />} />
-            */}
-            <Route path="products" element={<div className="p-8 text-center bg-white rounded-3xl border-2 border-dashed border-slate-200 text-slate-400 font-bold">Módulo de Productos (En construcción)</div>} />
-            <Route path="orders" element={<div className="p-8 text-center bg-white rounded-3xl border-2 border-dashed border-slate-200 text-slate-400 font-bold">Módulo de Pedidos (En construcción)</div>} />
-            <Route path="accompaniments" element={<div className="p-8 text-center bg-white rounded-3xl border-2 border-dashed border-slate-200 text-slate-400 font-bold">Módulo de Acompañamientos (En construcción)</div>} />
-            <Route path="payments" element={<div className="p-8 text-center bg-white rounded-3xl border-2 border-dashed border-slate-200 text-slate-400 font-bold">Módulo de Pagos (En construcción)</div>} />
-            <Route path="reports" element={<div className="p-8 text-center bg-white rounded-3xl border-2 border-dashed border-slate-200 text-slate-400 font-bold">Módulo de Reportes (En construcción)</div>} />
+            {/* USER_ROLE lands on products; ADMIN_ROLE lands on dashboard */}
+            <Route index element={isUser ? <ProductsPage /> : <DashboardIndex />} />
+            <Route path="products" element={<ProductsPage />} />
+            <Route path="orders" element={<OrdersPage />} />
+            {/* Admin-only routes */}
+            {isAdmin && <Route path="payments" element={<PaymentsPage />} />}
+            {isAdmin && <Route path="reports" element={<ReportsPage />} />}
             
-            
-            <Route path="*" element={<div className="p-8 text-center text-slate-500 font-bold">Página no encontrada</div>} />
+            <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
         ) : (
             <Route path="*" element={<Navigate to="/login" replace />} />

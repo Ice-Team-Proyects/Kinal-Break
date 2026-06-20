@@ -1,26 +1,45 @@
 import React from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { 
   Utensils, 
   ReceiptText, 
   Package, 
-  
-  HelpCircle, 
-  Settings,
+  Banknote,
+  BarChart2,
+  LogOut,
+  CupSoda,
   X 
 } from "lucide-react";
+import Logo from "../../../assets/Logo.png";
+import { useAuthStore } from "../../../features/auth/store/authStore.js";
 
 export default function Sidebar({ isOpen, onClose }) {
+  const navigate = useNavigate();
+  const user = useAuthStore((s) => s.user);
+  const logout = useAuthStore((s) => s.logout);
+  const isAdmin = user?.role === 'ADMIN_ROLE';
+  const isUser  = user?.role === 'USER_ROLE';
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
+  // Build nav items based on role
   const navItems = [
-    { id: "dashboard", label: "Panel", icon: Utensils, path: "/" },
-    { id: "products", label: "Productos", icon: Package, path: "/products" },
+    // Dashboard only for ADMIN_ROLE
+    ...(isAdmin ? [{ id: "dashboard", label: "Panel", icon: Utensils, path: "/" }] : []),
+    { id: "products", label: "Productos", icon: Package, path: isUser ? "/" : "/products" },
     { id: "orders", label: "Pedidos", icon: ReceiptText, path: "/orders" },
-    
+    // Pagos y Reportes solo para ADMIN_ROLE
+    ...(isAdmin ? [
+      { id: "payments", label: "Pagos", icon: Banknote, path: "/payments" },
+      { id: "reports", label: "Reportes", icon: BarChart2, path: "/reports" },
+    ] : []),
   ];
 
   const sidebarContent = (
     <div className="flex flex-col h-full sidebar-gradient text-white border-r-2 border-[#031633] relative">
-      {/* Botón de cerrar para dispositivos móviles */}
       <button 
         onClick={onClose}
         className="absolute top-4 right-4 md:hidden text-white/80 hover:text-white p-1 hover:bg-white/10 rounded-lg transition-colors z-50 focus:outline-none"
@@ -28,22 +47,29 @@ export default function Sidebar({ isOpen, onClose }) {
         <X size={24} />
       </button>
 
-      {/* Cabecera de Marca (Logo e Identidad de Kinal-Break) */}
       <div className="p-6 flex flex-col items-center border-b-2 border-white/10 mb-4 relative z-10">
         <div className="bg-white p-3 rounded-2xl border-2 border-[#031633] shadow-[2px_2px_0_0_#ff8928] mb-3 transform -rotate-2 cursor-pointer transition-transform hover:rotate-0">
           <img 
             alt="Kinal-Break Logo" 
             className="w-20 h-20 object-contain" 
-            src="https://lh3.googleusercontent.com/aida/AP1WRLtnMJExCd2cDUpUye8d7i4szqQuSC8wdDN3mA4SiuJ4dqvrI_5yQ0QcM9viI2rA5zy9-bpz2rqoVa7FdLaqvam7lHqs-8j1L_0cXhOL9WG8k80XlYXWdU8IkukstVq2JH8ciR7QPV9BE1AhnqtvdwUp6ME66JeYJRX7CytCx_i02Y9EZs-_a--iVehjulY8sqmDHKoUwPJNv6nWL3J6F230K2ATdiSDfJiKyRv_hvhfKTiwxrT2RLLIs1w"
-            referrerPolicy="no-referrer"
+            src={Logo}
           />
         </div>
         <h1 className="text-2xl font-black text-[#ff8928] text-center leading-tight uppercase tracking-wider anime-glow-text-secondary">
-          Admin
+          {isAdmin ? 'Admin' : 'Menú'}
         </h1>
         <p className="text-xs text-[#8293b6] tracking-widest uppercase font-semibold opacity-90 text-center mt-1">
           Cafeteria
         </p>
+        {user?.role && (
+          <span className={`mt-2 text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full border ${
+            isAdmin 
+              ? 'bg-[#ff8928]/20 border-[#ff8928]/50 text-[#ff8928]' 
+              : 'bg-white/10 border-white/20 text-white/70'
+          }`}>
+            {isAdmin ? 'Administrador' : (user?.username || 'Estudiante')}
+          </span>
+        )}
       </div>
 
       {/* Lista de Navegación del Sidebar */}
@@ -54,6 +80,7 @@ export default function Sidebar({ isOpen, onClose }) {
               <NavLink
                 to={item.path}
                 end={item.path === "/"}
+                onClick={onClose}
                 className={({ isActive }) =>
                   `w-full flex items-center px-4 py-3 rounded-2xl transition-all duration-200 text-left ${
                     isActive
@@ -74,26 +101,15 @@ export default function Sidebar({ isOpen, onClose }) {
         </ul>
       </div>
 
-      {/* Botón inferior Generador de Reporte y Enlaces de Soporte */}
-      <div className="p-6 border-t-2 border-white/10 relative z-10 bg-[#031633]/20">
-        <button className="w-full py-3 px-4 bg-[#ff8928] text-white rounded-2xl font-bold text-sm uppercase tracking-wider border-2 border-[#031633] shadow-[3px_3px_0_0_#031633] hover:shadow-[5px_5px_0_0_#031633] transition-all cursor-pointer text-center">
-          Generate Report
+      {/* Botón Cerrar Sesión */}
+      <div className="p-4 border-t-2 border-white/10 relative z-10">
+        <button
+          onClick={handleLogout}
+          className="w-full flex items-center justify-center gap-3 py-3 px-4 bg-white/10 hover:bg-[#7d0a42]/60 text-white rounded-2xl font-bold text-sm uppercase tracking-wider border-2 border-white/20 hover:border-[#7d0a42] transition-all cursor-pointer"
+        >
+          <LogOut size={16} />
+          Cerrar Sesión
         </button>
-        
-        <ul className="mt-4 space-y-2">
-          <li>
-            <button className="w-full flex items-center px-3 py-2 text-white/70 hover:text-white hover:bg-[#364766]/30 rounded-xl transition-all text-left">
-              <HelpCircle size={16} className="mr-3 text-white/50" />
-              <span className="text-[11px] font-bold tracking-widest uppercase">Support</span>
-            </button>
-          </li>
-          <li>
-            <button className="w-full flex items-center px-3 py-2 text-white/70 hover:text-white hover:bg-[#364766]/30 rounded-xl transition-all text-left">
-              <Settings size={16} className="mr-3 text-white/50" />
-              <span className="text-[11px] font-bold tracking-widest uppercase">Settings</span>
-            </button>
-          </li>
-        </ul>
       </div>
     </div>
   );

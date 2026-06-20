@@ -34,7 +34,8 @@ export const createProductValidator = [
             "desayunos",
             "almuerzos",
             "bebidas",
-            "snacks"
+            "snacks",
+            "complementos"
         ])
         .withMessage("Categoría no válida"),
 
@@ -60,7 +61,8 @@ export const updateProductValidator = [
             "desayunos",
             "almuerzos",
             "bebidas",
-            "snacks"
+            "snacks",
+            "complementos"
         ])
         .withMessage("Categoría no válida"),
 
@@ -88,7 +90,8 @@ export const queryProductValidator = [
             "desayunos",
             "almuerzos",
             "bebidas",
-            "snacks"
+            "snacks",
+            "complementos"
         ])
         .withMessage("Categoría inválida"),
 

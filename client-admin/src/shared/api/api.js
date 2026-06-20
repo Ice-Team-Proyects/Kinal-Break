@@ -2,7 +2,7 @@ import adminAxios from './axios';
 import axios from 'axios';
 
 const authAxios = axios.create({
-  baseURL: import.meta.env.VITE_AUTH_URL,
+  baseURL: import.meta.env.VITE_AUTH_URL || 'http://localhost:5296/api/v1',
   timeout: 8000,
   headers: { 'Content-Type': 'application/json' },
 });

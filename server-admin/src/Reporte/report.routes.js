@@ -1,4 +1,6 @@
 import { Router } from "express";
+import { validateJWT } from '../../middlewares/validate-JWT.js';
+import { requireRole } from '../../middlewares/validate-role.js';
 
 import {
     totalSalesReport,
@@ -27,7 +29,7 @@ const router = Router();
  *       500:
  *         description: Error interno al generar el reporte.
  */
-router.get("/sales/total", totalSalesReport);
+router.get("/sales/total", validateJWT, requireRole("ADMIN_ROLE"), totalSalesReport);
 
 /**
  * @swagger
@@ -42,7 +44,7 @@ router.get("/sales/total", totalSalesReport);
  *       500:
  *         description: Error interno del servidor.
  */
-router.get("/sales/daily", dailySalesReport);
+router.get("/sales/daily", validateJWT, requireRole("ADMIN_ROLE"), dailySalesReport);
 
 /**
  * @swagger
@@ -57,7 +59,7 @@ router.get("/sales/daily", dailySalesReport);
  *       500:
  *         description: Error interno del servidor.
  */
-router.get("/sales/monthly", monthlySalesReport);
+router.get("/sales/monthly", validateJWT, requireRole("ADMIN_ROLE"), monthlySalesReport);
 
 /**
  * @swagger
@@ -72,7 +74,7 @@ router.get("/sales/monthly", monthlySalesReport);
  *       500:
  *         description: Error interno del servidor.
  */
-router.get("/sales/weekly", weeklySalesReport);
+router.get("/sales/weekly", validateJWT, requireRole("ADMIN_ROLE"), weeklySalesReport);
 
 /**
  * @swagger
@@ -87,7 +89,7 @@ router.get("/sales/weekly", weeklySalesReport);
  *       500:
  *         description: Error interno del servidor.
  */
-router.get("/products/top", topProductsReport);
+router.get("/products/top", validateJWT, requireRole("ADMIN_ROLE"), topProductsReport);
 
 /**
  * @swagger
@@ -102,7 +104,7 @@ router.get("/products/top", topProductsReport);
  *       500:
  *         description: Error interno del servidor.
  */
-router.get("/sales/average", averageOrderReport);
+router.get("/sales/average", validateJWT, requireRole("ADMIN_ROLE"), averageOrderReport);
 
 /**
  * @swagger
@@ -117,7 +119,7 @@ router.get("/sales/average", averageOrderReport);
  *       500:
  *         description: Error interno del servidor.
  */
-router.get("/metrics/operations", operationalReport);
+router.get("/metrics/operations", validateJWT, requireRole("ADMIN_ROLE"), operationalReport);
 
 /**
  * @swagger
@@ -137,7 +139,7 @@ router.get("/metrics/operations", operationalReport);
  *       500:
  *         description: Error al generar el archivo Excel.
  */
-router.get("/export/excel", exportExcelReport);
+router.get("/export/excel", validateJWT, requireRole("ADMIN_ROLE"), exportExcelReport);
 
 /**
  * @swagger
@@ -157,6 +159,6 @@ router.get("/export/excel", exportExcelReport);
  *       500:
  *         description: Error al generar el documento PDF.
  */
-router.get("/export/pdf", exportPDFReport);
+router.get("/export/pdf", validateJWT, requireRole("ADMIN_ROLE"), exportPDFReport);
 
 export default router;
