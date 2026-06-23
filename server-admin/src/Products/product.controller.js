@@ -6,6 +6,7 @@ import {
     deleteProduct as deleteProductService,
     restoreProduct as restoreProductService
 } from "../Products/product.service.js";
+import { broadcast } from "../events/sse.js";
 
 export const createProduct = async (req,res)=>{
     try{
@@ -21,6 +22,7 @@ export const createProduct = async (req,res)=>{
             photo: photoUrl
         });
 
+        broadcast('products', { action: 'created', product });
         res.json(product);
 
     }catch(error){
@@ -57,6 +59,7 @@ export const updateProduct = async(req,res)=>{
             { new:true }
         );
 
+        broadcast('products', { action: 'updated', product });
         res.json(product);
 
     }catch(error){
@@ -73,6 +76,7 @@ export const deleteProduct = async(req,res)=>{
             req.params.id
         );
 
+        broadcast('products', { action: 'deleted', id: req.params.id });
         res.json(product);
 
     }catch(error){
@@ -90,6 +94,7 @@ export const restoreProduct = async(req,res)=>{
             req.params.id
         );
 
+        broadcast('products', { action: 'restored', product });
         res.json(product);
 
     }catch(error){

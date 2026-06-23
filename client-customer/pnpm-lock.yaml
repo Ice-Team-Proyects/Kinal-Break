@@ -63,6 +63,12 @@ importers:
       globals:
         specifier: ^17.6.0
         version: 17.6.0
+      picomatch:
+        specifier: ^4.0.2
+        version: 4.0.4
+      rolldown:
+        specifier: ^1.0.0
+        version: 1.0.3
       vite:
         specifier: ^8.0.12
         version: 8.0.16(jiti@2.7.0)

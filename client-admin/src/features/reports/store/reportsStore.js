@@ -43,13 +43,21 @@ export const useReportsStore = create((set) => ({
         getOperationalReportRequest().catch(() => ({ data: [] }))
       ]);
 
+      const totalRaw = Array.isArray(totalRes.data) ? totalRes.data[0] : (totalRes.data?.data || totalRes.data);
+      const avgRaw = Array.isArray(avgRes.data) ? avgRes.data[0] : (avgRes.data?.data || avgRes.data);
+
       set({
-        totalSales: totalRes.data?.data || totalRes.data || { totalVentas: 0, cantidadTransacciones: 0 },
+        totalSales: {
+          totalVentas: totalRaw?.totalSales ?? totalRaw?.totalVentas ?? 0,
+          cantidadTransacciones: totalRaw?.totalTransactions ?? totalRaw?.cantidadTransacciones ?? 0,
+        },
         dailySales: dailyRes.data?.data || dailyRes.data || [],
         weeklySales: weeklyRes.data?.data || weeklyRes.data || [],
         monthlySales: monthlyRes.data?.data || monthlyRes.data || [],
         topProducts: topRes.data?.data || topRes.data || [],
-        averageOrder: avgRes.data?.data || avgRes.data || { promedioVenta: 0 },
+        averageOrder: {
+          promedioVenta: avgRaw?.average ?? avgRaw?.promedioVenta ?? 0,
+        },
         operationalMetrics: opsRes.data?.data || opsRes.data || [],
       });
     } catch (err) {

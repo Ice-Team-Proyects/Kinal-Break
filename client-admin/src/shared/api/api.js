@@ -9,8 +9,8 @@ const authAxios = axios.create({
 
 export const loginRequest = async ({ emailOrUsername, password }) => {
   return await authAxios.post('/auth/login', {
-    EmailOrUsername: emailOrUsername,
-    Password: password,
+    emailOrUsername,
+    password,
   });
 };
 

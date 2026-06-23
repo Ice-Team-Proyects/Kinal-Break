@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCartStore } from "../store/cartStore";
-import { ShoppingBag, ArrowRight, Trash2, Image as ImageIcon } from "lucide-react";
+import { ShoppingBag, ArrowRight, Image as ImageIcon } from "lucide-react";
 
 export function CartPage() {
   const { cartItems, totalTemporal, isLoading, fetchCart, confirmOrder } = useCartStore();
@@ -9,7 +9,7 @@ export function CartPage() {
 
   useEffect(() => {
     fetchCart();
-  }, []);
+  }, [fetchCart]);
 
   const handleConfirm = async () => {
     const success = await confirmOrder();

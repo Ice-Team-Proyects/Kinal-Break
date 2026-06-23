@@ -1,4 +1,5 @@
 import { cloudinary } from "../../middlewares/file-uploader.js";
+import { broadcast } from "../events/sse.js";
 import {
     createAccompaniment as createAccompanimentService,
     fetchAccompaniments,
@@ -22,6 +23,7 @@ export const createAccompaniment = async (req,res)=>{
             photo: photoUrl
         });
 
+        broadcast('accompaniments', { action: 'created', accompaniment: acc });
         res.json(acc);
 
     }catch(error){
@@ -55,6 +57,7 @@ export const updateAccompaniment = async (req,res)=>{
             req.body
         );
 
+        broadcast('accompaniments', { action: 'updated', accompaniment: acc });
         res.json(acc);
 
     }catch(error){
@@ -72,6 +75,7 @@ export const deleteAccompaniment = async (req,res)=>{
             req.params.id
         );
 
+        broadcast('accompaniments', { action: 'deleted', id: req.params.id });
         res.json(acc);
 
     }catch(error){
@@ -89,6 +93,7 @@ export const restoreAccompaniment = async (req,res)=>{
             req.params.id
         );
 
+        broadcast('accompaniments', { action: 'restored', accompaniment: acc });
         res.json(acc);
 
     }catch(error){

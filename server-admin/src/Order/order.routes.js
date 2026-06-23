@@ -1,53 +1,47 @@
 import { Router } from 'express';
-import { addOrder, listOrders, editOrder, removeOrder } from './order.controller.js';
+import { 
+    addOrder, 
+    listOrders, 
+    editOrder, 
+    removeOrder,
+    obtenerCarrito,
+    agregarAlCarrito,
+    confirmarPedido,
+    obtenerHistorial,
+    cancelarPedido,
+    limpiarPedidosExpirados
+} from './order.controller.js';
 import { validateMongoId } from '../../middlewares/validate-mongo-id.js';
 import { validateJWT } from '../../middlewares/validate-JWT.js';
 import { requireRole } from '../../middlewares/validate-role.js';
 
 const router = Router();
 
-/**
- * @swagger
- * /orders:
- *   post:
- *     summary: Crea una nueva orden (USER_ROLE o ADMIN_ROLE)
- *     tags: [Órdenes]
- *     security:
- *       - bearerAuth: []
- */
+// Rutas administrativas y creación de órdenes directa
 router.post('/', validateJWT, addOrder);
-
-/**
- * @swagger
- * /orders:
- *   get:
- *     summary: Lista órdenes (ADMIN_ROLE ve todas, USER_ROLE solo las propias)
- *     tags: [Órdenes]
- *     security:
- *       - bearerAuth: []
- */
 router.get('/', validateJWT, listOrders);
-
-/**
- * @swagger
- * /orders/{id}:
- *   put:
- *     summary: Actualiza estado de una orden (solo ADMIN_ROLE)
- *     tags: [Órdenes]
- *     security:
- *       - bearerAuth: []
- */
 router.put('/:id', validateJWT, requireRole('ADMIN_ROLE'), validateMongoId, editOrder);
-
-/**
- * @swagger
- * /orders/{id}:
- *   delete:
- *     summary: Elimina una orden (solo ADMIN_ROLE)
- *     tags: [Órdenes]
- *     security:
- *       - bearerAuth: []
- */
 router.delete('/:id', validateJWT, requireRole('ADMIN_ROLE'), validateMongoId, removeOrder);
+
+// Rutas de Carrito
+router.get('/carrito', validateJWT, obtenerCarrito);
+router.get('/pedidos/carrito', validateJWT, obtenerCarrito);
+
+router.post('/carrito', validateJWT, agregarAlCarrito);
+router.post('/pedidos/carrito', validateJWT, agregarAlCarrito);
+
+// Rutas de Confirmación e Historial para cliente
+router.post('/confirmar', validateJWT, confirmarPedido);
+router.post('/pedidos/confirmar', validateJWT, confirmarPedido);
+
+router.get('/historial', validateJWT, obtenerHistorial);
+router.get('/pedidos/historial', validateJWT, obtenerHistorial);
+
+router.delete('/cancelar/:id', validateJWT, validateMongoId, cancelarPedido);
+router.delete('/pedidos/cancelar/:id', validateJWT, validateMongoId, cancelarPedido);
+
+// Rutas de Limpieza
+router.post('/limpiar-expirados', limpiarPedidosExpirados);
+router.post('/pedidos/limpiar-expirados', limpiarPedidosExpirados);
 
 export default router;

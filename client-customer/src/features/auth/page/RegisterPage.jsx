@@ -1,4 +1,4 @@
-import React from "react";
+
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -13,7 +13,6 @@ export function RegisterPage() {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
   } = useForm({
     defaultValues: {
       name: "",
@@ -35,7 +34,7 @@ export function RegisterPage() {
     }
   };
 
-  const emailValue = watch("email");
+
 
   return (
     <div className="min-h-screen bg-background text-on-background flex flex-col justify-center items-center p-4 relative font-sans">

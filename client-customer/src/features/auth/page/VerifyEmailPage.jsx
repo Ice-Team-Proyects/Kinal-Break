@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useAuthStore } from "../store/authStore";
 import toast from "react-hot-toast";
@@ -11,13 +11,14 @@ export function VerifyEmailPage() {
 
   useEffect(() => {
     const token = searchParams.get("token");
-    if (!token) {
-      toast.error("Token de verificación ausente");
-      setStatus("error");
-      return;
-    }
 
     const performVerification = async () => {
+      if (!token) {
+        await Promise.resolve();
+        toast.error("Token de verificación ausente");
+        setStatus("error");
+        return;
+      }
       const result = await verifyEmail(token);
       if (result.success) {
         toast.success(result.message || "Correo verificado exitosamente");
@@ -30,7 +31,7 @@ export function VerifyEmailPage() {
     };
 
     performVerification();
-  }, [searchParams]);
+  }, [searchParams, navigate, verifyEmail]);
 
   return (
     <div className="min-h-screen bg-background text-on-background flex flex-col justify-center items-center p-4 relative font-sans">

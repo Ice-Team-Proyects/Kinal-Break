@@ -3,13 +3,15 @@ import {
     fetchPayments,
     fetchPaymentByOrder,
     getFinancialReport,
-    deletePayment, 
-    markAsUnpaid   
+    deletePayment,
+    markAsUnpaid
 } from "./payment.service.js";
+import { broadcast } from "../events/sse.js";
 
 export const createPayment = async (req, res) => {
     try {
         const payment = await createPaymentRecord(req.body);
+        broadcast('payments', { action: 'created', payment });
         res.status(201).json({ success: true, payment });
     } catch (error) {
         res.status(500).json({ success: false, message: "No Se Pudo Realizar El Pago", error: error.message });
@@ -48,6 +50,7 @@ export const removePayment = async (req, res) => {
     try {
         const { id } = req.params;
         const payment = await deletePayment(id);
+        broadcast('payments', { action: 'deleted', id });
         res.json({ message: "Pago Cancelado", payment });
     } catch (error) {
         res.status(500).json({ message: "No Se Pudo Cancelar El Pago" });
@@ -59,6 +62,7 @@ export const setUnpaid = async (req, res) => {
         const { id } = req.params;
         const { confirm } = req.body;
         const payment = await markAsUnpaid(id, confirm);
+        broadcast('payments', { action: 'updated', payment });
         res.json(payment);
     } catch (error) {
         res.status(400).json({ message: error.message });

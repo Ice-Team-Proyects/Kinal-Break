@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useMenuStore } from "../store/menuStore";
 import { useCartStore } from "../../cart/store/cartStore";
 import { Search, Plus, Image as ImageIcon, Clock, Check, X } from "lucide-react";
@@ -29,7 +29,7 @@ export function MenuPage() {
   useEffect(() => {
     fetchProducts();
     useCartStore.getState().fetchCart();
-  }, []);
+  }, [fetchProducts]);
 
   const categories = [
     { value: "", label: "Todos" },

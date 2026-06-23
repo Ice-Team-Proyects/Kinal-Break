@@ -21,6 +21,7 @@ import paymentRoutes from '../src/Payment/payment.routes.js';
 import transactionRoutes from '../src/transaction/transaction.routes.js';
 import reportRoutes from '../src/Reporte/report.routes.js';
 import accompanimentRoutes from '../src/Accompaniment/accompaniment.routes.js';
+import eventsRoutes from '../src/events/events.routes.js';
 
 const middlewares = (app) =>{
     app.use(express.urlencoded({extended: false, limit: '10mb'}));
@@ -41,6 +42,7 @@ const routes = (app) =>{
     app.use(`${BASE_PATH}/transactions`, transactionRoutes);
     app.use(`${BASE_PATH}/reports`, reportRoutes);
     app.use(`${BASE_PATH}/accompaniment`, accompanimentRoutes);
+    app.use(`${BASE_PATH}/events`, eventsRoutes);
 
     app.get(`${BASE_PATH}/health`, (req, res)=>{
         res.status(200).json({
