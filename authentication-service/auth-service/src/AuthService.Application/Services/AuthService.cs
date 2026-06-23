@@ -236,6 +236,7 @@ public class AuthService(
         {
             Id = user.Id,
             Username = user.Username,
+            Name = user.Name,
             ProfilePicture = _cloudinaryService.GetFullImageUrl(user.UserProfile?.ProfilePicture ?? string.Empty),
             Role = user.UserRoles.FirstOrDefault()?.Role?.Name ?? RoleConstants.USER_ROLE
         };

@@ -9,21 +9,25 @@ export const validateCreatePayment = [
         .notEmpty()
         .withMessage('Debe ingresar el ID de la orden'),
 
+    body('userId')
+        .notEmpty()
+        .withMessage('Debe ingresar el ID del usuario'),
+
     body('amount')
         .notEmpty()
         .withMessage('Debe ingresar el monto del pago')
         .isFloat({ min: 0 })
         .withMessage('El monto debe ser un número mayor o igual a 0'),
 
-    body('method')
+    body('paymentMethod')
         .notEmpty()
         .withMessage('Debe ingresar un método de pago')
-        .isIn(['Efectivo', 'Tarjeta', 'Transferencia'])
+        .isIn(['Efectivo', 'Transferencia'])
         .withMessage('Método de pago no válido'),
 
     body('status')
         .optional()
-        .isIn(['Pendiente', 'Completado', 'Cancelado'])
+        .isIn(['Pagado', 'Pendiente', 'No Pagado'])
         .withMessage('Estado de pago no válido'),
 
     checkValidators

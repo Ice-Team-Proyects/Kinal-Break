@@ -34,6 +34,7 @@ export const useAuthStore = create(
               user: {
                 id: userDetails?.id,
                 username: userDetails?.username,
+                name: userDetails?.name,
                 role: userDetails?.role,
                 email: email,
               },

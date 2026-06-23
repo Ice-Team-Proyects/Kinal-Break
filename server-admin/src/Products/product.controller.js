@@ -36,7 +36,7 @@ export const getProducts = async(req,res)=>{
         res.json(products);
 
     }catch(error){
-        res.status(500).json(error);
+        res.status(500).json({ success: false, msg: error.message });
     }
 }
 
@@ -60,7 +60,7 @@ export const updateProduct = async(req,res)=>{
         res.json(product);
 
     }catch(error){
-        res.status(500).json(error);
+        res.status(500).json({ success: false, msg: error.message });
     }
 
 };
@@ -76,7 +76,7 @@ export const deleteProduct = async(req,res)=>{
         res.json(product);
 
     }catch(error){
-        res.status(500).json(error);
+        res.status(500).json({ success: false, msg: error.message });
     }
 
 };
@@ -93,6 +93,6 @@ export const restoreProduct = async(req,res)=>{
         res.json(product);
 
     }catch(error){
-        res.status(500).json(error);
+        res.status(500).json({ success: false, msg: error.message });
     }
 };

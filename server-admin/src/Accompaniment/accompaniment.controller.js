@@ -25,7 +25,7 @@ export const createAccompaniment = async (req,res)=>{
         res.json(acc);
 
     }catch(error){
-        res.status(500).json(error);
+        res.status(500).json({ success: false, msg: error.message });
     }
 
 };
@@ -40,7 +40,7 @@ export const getAccompaniments = async (req,res)=>{
         res.json(acc);
 
     }catch(error){
-        res.status(500).json(error);
+        res.status(500).json({ success: false, msg: error.message });
     }
 
 };
@@ -58,7 +58,7 @@ export const updateAccompaniment = async (req,res)=>{
         res.json(acc);
 
     }catch(error){
-        res.status(500).json(error);
+        res.status(500).json({ success: false, msg: error.message });
     }
 
 };
@@ -75,7 +75,7 @@ export const deleteAccompaniment = async (req,res)=>{
         res.json(acc);
 
     }catch(error){
-        res.status(500).json(error);
+        res.status(500).json({ success: false, msg: error.message });
     }
 
 };
@@ -92,7 +92,7 @@ export const restoreAccompaniment = async (req,res)=>{
         res.json(acc);
 
     }catch(error){
-        res.status(500).json(error);
+        res.status(500).json({ success: false, msg: error.message });
     }
 
 };

@@ -6,7 +6,9 @@ export const createOrder = async (data) => {
 };
 
 export const getOrders = async (query) => {
-    const filtros = { activo: true }; 
+    // Include orders that either have activo:true OR don't have the activo field at all
+    // (pedidos-service documents don't have the activo field)
+    const filtros = { activo: { $ne: false } };
     
     if (query.estado) {
         filtros.estado = query.estado;
@@ -15,7 +17,10 @@ export const getOrders = async (query) => {
         filtros.usuarioId = query.usuarioId;
     }
 
-    return await Order.find(filtros).sort({ createdAt: -1 });
+    return await Order.find(filtros)
+        .populate('productos.productoId', 'name price photo category')
+        .populate('productos.acompanamientoId', 'name')
+        .sort({ createdAt: -1 });
 };
 
 export const updateOrderStatus = async (orderId, nuevoEstado, confirmacionDoble) => {
@@ -30,7 +35,7 @@ export const updateOrderStatus = async (orderId, nuevoEstado, confirmacionDoble)
     }
 
     const order = await Order.findOneAndUpdate(
-        { _id: orderId, activo: true }, 
+        { _id: orderId, activo: { $ne: false } }, 
         { estado: nuevoEstado }, 
         { new: true }
     );
