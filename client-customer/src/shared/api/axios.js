@@ -8,7 +8,7 @@ const adminAxios = axios.create({
 
 adminAxios.interceptors.request.use((config) => {
   try {
-    const stored = localStorage.getItem('ice-auth');
+    const stored = localStorage.getItem('ice-auth-customer');
     if (stored) {
       const parsedData = JSON.parse(stored);
       const token = parsedData?.state?.token;
@@ -16,7 +16,9 @@ adminAxios.interceptors.request.use((config) => {
         config.headers.Authorization = `Bearer ${token}`;
       }
     }
-  } catch (_) {}
+  } catch (error) {
+    console.warn(error);
+  }
   return config;
 });
 
@@ -28,7 +30,7 @@ const pedidosAxios = axios.create({
 
 pedidosAxios.interceptors.request.use((config) => {
   try {
-    const stored = localStorage.getItem('ice-auth');
+    const stored = localStorage.getItem('ice-auth-customer');
     if (stored) {
       const parsedData = JSON.parse(stored);
       const token = parsedData?.state?.token;
@@ -37,7 +39,9 @@ pedidosAxios.interceptors.request.use((config) => {
         config.headers['x-token'] = token;
       }
     }
-  } catch (_) {}
+  } catch (error) {
+    console.warn(error);
+  }
   return config;
 });
 

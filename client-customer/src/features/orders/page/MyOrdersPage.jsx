@@ -1,13 +1,13 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useOrdersStore } from "../store/ordersStore";
-import { Clock, Calendar, AlertTriangle, ShieldAlert } from "lucide-react";
+import { Clock, Calendar } from "lucide-react";
 
 export function MyOrdersPage() {
   const { ordersHistory, isLoading, fetchHistory, cancelOrder } = useOrdersStore();
 
   useEffect(() => {
     fetchHistory();
-  }, []);
+  }, [fetchHistory]);
 
   const getStatusBadgeStyle = (status) => {
     switch (status) {

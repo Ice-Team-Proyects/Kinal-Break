@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AppRouter } from './app/router/AppRouter';
 import { useAuthStore } from './features/auth/store/authStore';
+import { useSSE } from './shared/hooks/useSSE';
 
 export default function App() {
   const checkAuth = useAuthStore((state) => state.checkAuth);
@@ -10,6 +11,8 @@ export default function App() {
   useEffect(() => {
     checkAuth();
   }, [checkAuth]);
+
+  useSSE();
 
   return (
     <BrowserRouter>

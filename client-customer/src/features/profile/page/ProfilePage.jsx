@@ -1,7 +1,7 @@
-import React from "react";
+
 import { useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../auth/store/authStore";
-import { Power, User, Mail, Phone, Shield } from "lucide-react";
+import { Power, Mail, Shield } from "lucide-react";
 
 export function ProfilePage() {
   const navigate = useNavigate();

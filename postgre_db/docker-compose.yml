@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:13
+    container_name: ice_postgres
+    environment:
+      POSTGRES_USER: ICE
+      POSTGRES_PASSWORD: restaICE1@
+      POSTGRES_DB: restaurant_ice
+    ports:
+      - "5437:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
