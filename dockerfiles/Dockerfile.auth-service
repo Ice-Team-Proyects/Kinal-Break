@@ -1,16 +1,22 @@
-# Etapa 1: build
+# Etapa 1: build usando paquetes NuGet ya restaurados localmente
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
 WORKDIR /src
 
+# Copiar paquetes NuGet del caché local (evita necesidad de internet)
+COPY nuget-packages/ /root/.nuget/packages/
+
+# Copiar solución y proyectos
 COPY auth-service/AuthService.sln ./
 COPY auth-service/src/AuthService.Api/AuthService.Api.csproj src/AuthService.Api/
 COPY auth-service/src/AuthService.Application/AuthService.Application.csproj src/AuthService.Application/
 COPY auth-service/src/AuthService.Domain/AuthService.Domain.csproj src/AuthService.Domain/
 COPY auth-service/src/AuthService.Persistence/AuthService.Persistence.csproj src/AuthService.Persistence/
 
-RUN dotnet restore
+# Restaurar usando solo el caché local, sin acceso a internet
+RUN DOTNET_NUGET_SIGNATURE_VERIFICATION=false dotnet restore --source /root/.nuget/packages
 
+# Copiar el resto del código y compilar
 COPY auth-service/src/ src/
 
 WORKDIR /src/src/AuthService.Api
