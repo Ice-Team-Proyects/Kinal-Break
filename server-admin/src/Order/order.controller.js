@@ -81,6 +81,13 @@ export const confirmarPedido = async (req, res) => {
         broadcast('orders', { action: 'created', order: pedido });
         res.status(201).json({ success: true, message: 'Pedido confirmado', pedido });
     } catch (error) {
+        if (error.message === 'USUARIO_PENALIZADO') {
+            return res.status(403).json({
+                success: false,
+                penalizado: true,
+                msg: 'Tu cuenta tiene un pedido no pagado. No puedes realizar nuevos pedidos hasta que sea resuelto.'
+            });
+        }
         res.status(400).json({ success: false, msg: error.message });
     }
 };
@@ -127,6 +134,16 @@ export const limpiarPedidosExpirados = async (req, res) => {
             success: true, 
             message: `Limpieza ejecutada. Se cancelaron ${count} pedidos expirados.` 
         });
+    } catch (error) {
+        res.status(500).json({ success: false, msg: error.message });
+    }
+};
+
+export const obtenerEstadoPenalizacion = async (req, res) => {
+    try {
+        const usuarioId = req.user.id;
+        const estado = await OrderService.getUserPenaltyStatus(usuarioId);
+        res.status(200).json({ success: true, ...estado });
     } catch (error) {
         res.status(500).json({ success: false, msg: error.message });
     }

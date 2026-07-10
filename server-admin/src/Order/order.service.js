@@ -111,6 +111,16 @@ export const addToCart = async (usuarioId, { productoId, cantidad, acompanamient
 };
 
 export const confirmOrderFromCart = async (usuarioId) => {
+    const pedidoPendientePago = await Order.findOne({
+        usuarioId,
+        estado: 'No pagado',
+        activo: { $ne: false }
+    });
+
+    if (pedidoPendientePago) {
+        throw new Error('USUARIO_PENALIZADO');
+    }
+
     const cart = await Cart.findOne({ usuarioId });
     if (!cart || cart.productos.length === 0) {
         throw new Error('El carrito está vacío');
@@ -179,4 +189,17 @@ export const cleanExpiredOrders = async () => {
         { $set: { estado: 'Cancelado' } }
     );
     return result.modifiedCount;
+};
+
+export const getUserPenaltyStatus = async (usuarioId) => {
+    const pedido = await Order.findOne({
+        usuarioId,
+        estado: 'No pagado',
+        activo: { $ne: false }
+    });
+    return {
+        penalizado: !!pedido,
+        pedidoId: pedido?._id || null,
+        numeroPedido: pedido?.numeroPedido || null
+    };
 };
