@@ -13,10 +13,16 @@ export function CartPage() {
   }, [fetchCart, checkPenalty]);
 
   const handleConfirm = async () => {
-    const result = await confirmOrder();
-    if (result.success) {
-      navigate("/orders");
+    const order = await confirmOrder();
+    if (order) {
+      const orderId = order._id || order.id;
+      if (orderId) {
+        navigate(`/payment/${orderId}`);
+        return;
+      }
     }
+
+    navigate("/orders");
   };
 
   return (

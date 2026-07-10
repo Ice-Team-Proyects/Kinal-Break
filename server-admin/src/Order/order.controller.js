@@ -102,6 +102,19 @@ export const obtenerHistorial = async (req, res) => {
     }
 };
 
+export const getOrderById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const order = await OrderService.getOrderById(id, req.user);
+        if (!order) {
+            return res.status(404).json({ success: false, msg: 'Orden no encontrada' });
+        }
+        res.status(200).json({ success: true, data: order });
+    } catch (error) {
+        res.status(500).json({ success: false, msg: error.message });
+    }
+};
+
 export const cancelarPedido = async (req, res) => {
     try {
         const usuarioId = req.user.id;

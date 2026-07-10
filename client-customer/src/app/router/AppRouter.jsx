@@ -7,6 +7,9 @@ import { MenuPage } from "../../features/menu/page/MenuPage";
 import { CartPage } from "../../features/cart/page/CartPage";
 import { MyOrdersPage } from "../../features/orders/page/MyOrdersPage";
 import { ProfilePage } from "../../features/profile/page/ProfilePage";
+import { PaymentPage } from "../../features/payment/page/PaymentPage";
+import { PaymentSuccessPage } from "../../features/payment/page/PaymentSuccessPage";
+import { PaymentCancelPage } from "../../features/payment/page/PaymentCancelPage";
 import { useAuthStore } from "../../features/auth/store/authStore";
 import CustomerLayout from "../../shared/layout/CustomerLayout";
 
@@ -24,6 +27,9 @@ export function AppRouter() {
           <Route index element={<MenuPage />} />
           <Route path="cart" element={<CartPage />} />
           <Route path="orders" element={<MyOrdersPage />} />
+          <Route path="payment/success" element={<PaymentSuccessPage />} />
+          <Route path="payment/cancel" element={<PaymentCancelPage />} />
+          <Route path="payment/:orderId" element={<PaymentPage />} />
           <Route path="profile" element={<ProfilePage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>

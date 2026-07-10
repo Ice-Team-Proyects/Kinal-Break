@@ -10,6 +10,7 @@ import {
     obtenerHistorial,
     cancelarPedido,
     limpiarPedidosExpirados,
+    getOrderById
     obtenerEstadoPenalizacion
 } from './order.controller.js';
 import { validateMongoId } from '../../middlewares/validate-mongo-id.js';
@@ -34,6 +35,7 @@ router.post('/pedidos/confirmar', validateJWT, confirmarPedido);
 
 router.get('/historial', validateJWT, obtenerHistorial);
 router.get('/pedidos/historial', validateJWT, obtenerHistorial);
+router.get('/detalle/:id', validateJWT, validateMongoId, getOrderById);
 
 router.get('/estado-penalizacion', validateJWT, obtenerEstadoPenalizacion);
 router.get('/pedidos/estado-penalizacion', validateJWT, obtenerEstadoPenalizacion);

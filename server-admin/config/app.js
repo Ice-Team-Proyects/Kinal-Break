@@ -22,8 +22,13 @@ import transactionRoutes from '../src/transaction/transaction.routes.js';
 import reportRoutes from '../src/Reporte/report.routes.js';
 import accompanimentRoutes from '../src/Accompaniment/accompaniment.routes.js';
 import eventsRoutes from '../src/events/events.routes.js';
+import { stripeWebhook } from '../src/Payment/stripe/stripe.controller.js';
 
 const middlewares = (app) =>{
+
+    //El webhook de strie necesita recibir el body en crudo.
+    app.post(`${BASE_PATH}/payments/webhook`, express.raw({type: 'application/json'}), stripeWebhook);
+
     app.use(express.urlencoded({extended: false, limit: '10mb'}));
     app.use(express.json({limit:'10mb'}));
     app.use(cors(corsOptions));
