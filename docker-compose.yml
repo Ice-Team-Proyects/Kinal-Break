@@ -6,7 +6,7 @@ services:
     image: mongo:7.0
     container_name: kinal-break-mongodb
     ports:
-      - "27017:27017"
+      - "27018:27017"
     volumes:
       - mongo_data:/data/db
     restart: unless-stopped

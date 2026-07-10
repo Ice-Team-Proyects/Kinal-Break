@@ -1,19 +1,20 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCartStore } from "../store/cartStore";
-import { ShoppingBag, ArrowRight, Image as ImageIcon } from "lucide-react";
+import { ShoppingBag, ArrowRight, Image as ImageIcon, AlertTriangle } from "lucide-react";
 
 export function CartPage() {
-  const { cartItems, totalTemporal, isLoading, fetchCart, confirmOrder } = useCartStore();
+  const { cartItems, totalTemporal, isLoading, fetchCart, confirmOrder, checkPenalty, penalizado } = useCartStore();
   const navigate = useNavigate();
 
   useEffect(() => {
     fetchCart();
-  }, [fetchCart]);
+    checkPenalty();
+  }, [fetchCart, checkPenalty]);
 
   const handleConfirm = async () => {
-    const success = await confirmOrder();
-    if (success) {
+    const result = await confirmOrder();
+    if (result.success) {
       navigate("/orders");
     }
   };
@@ -28,6 +29,20 @@ export function CartPage() {
           Verifica tus productos antes de confirmar
         </p>
       </div>
+
+      {penalizado && (
+        <div className="bg-red-50 border-2 border-red-500 rounded-2xl p-4 flex gap-3 items-start shadow-[2px_2px_0_0_#ef4444]">
+          <AlertTriangle size={18} className="text-red-500 shrink-0 mt-0.5" />
+          <div>
+            <p className="text-xs font-black text-red-700 uppercase tracking-wide">
+              Cuenta bloqueada
+            </p>
+            <p className="text-xs font-semibold text-red-600 mt-1">
+              Tienes un pedido sin pagar. Acércate a cafetería para resolverlo antes de hacer un nuevo pedido.
+            </p>
+          </div>
+        </div>
+      )}
 
       {isLoading ? (
         <div className="text-center py-12 font-bold text-[#031633] text-sm">
@@ -99,9 +114,14 @@ export function CartPage() {
 
             <button
               onClick={handleConfirm}
-              className="w-full bg-[#ff8928] hover:bg-[#ff9d47] text-white font-black py-4 rounded-2xl border-2 border-[#031633] shadow-[4px_4px_0_0_#031633] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[2px_2px_0_0_#031633] transition-all flex items-center justify-center gap-2 uppercase tracking-wider text-xs cursor-pointer"
+              disabled={penalizado}
+              className={`w-full font-black py-4 rounded-2xl border-2 border-[#031633] transition-all flex items-center justify-center gap-2 uppercase tracking-wider text-xs ${
+                penalizado
+                  ? "bg-slate-200 text-slate-400 shadow-none cursor-not-allowed"
+                  : "bg-[#ff8928] hover:bg-[#ff9d47] text-white shadow-[4px_4px_0_0_#031633] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[2px_2px_0_0_#031633] cursor-pointer"
+              }`}
             >
-              Confirmar Pedido <ArrowRight size={16} />
+              {penalizado ? "Pedidos bloqueados" : <>Confirmar Pedido <ArrowRight size={16} /></>}
             </button>
           </div>
         </div>
