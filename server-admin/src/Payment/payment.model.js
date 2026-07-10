@@ -15,11 +15,17 @@ const PaymentSchema = new Schema({
     },
     paymentMethod: {
         type: String,
-        enum: ["Efectivo", "Transferencia"]
+        enum: ["Efectivo", "Transferencia", "Stripe"],
+        default: "Stripe"
+    },
+    stripeSessionId: {
+        type: String,
+        default: null
     },
     status: {
         type: String,
-        enum: ["Pagado", "Pendiente", "No Pagado"]
+        enum: ["Pagado", "Pendiente", "No Pagado"],
+        default: "Pendiente"
     },
     confirmedUnpaid: {
         type: Boolean,

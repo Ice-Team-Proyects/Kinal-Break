@@ -9,7 +9,8 @@ import {
     confirmarPedido,
     obtenerHistorial,
     cancelarPedido,
-    limpiarPedidosExpirados
+    limpiarPedidosExpirados,
+    getOrderById
 } from './order.controller.js';
 import { validateMongoId } from '../../middlewares/validate-mongo-id.js';
 import { validateJWT } from '../../middlewares/validate-JWT.js';
@@ -36,6 +37,7 @@ router.post('/pedidos/confirmar', validateJWT, confirmarPedido);
 
 router.get('/historial', validateJWT, obtenerHistorial);
 router.get('/pedidos/historial', validateJWT, obtenerHistorial);
+router.get('/detalle/:id', validateJWT, validateMongoId, getOrderById);
 
 router.delete('/cancelar/:id', validateJWT, validateMongoId, cancelarPedido);
 router.delete('/pedidos/cancelar/:id', validateJWT, validateMongoId, cancelarPedido);

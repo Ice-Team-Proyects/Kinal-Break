@@ -41,7 +41,7 @@ export const updateOrderStatus = async (orderId, nuevoEstado, confirmacionDoble)
     const order = await Order.findOneAndUpdate(
         { _id: orderId, activo: { $ne: false } }, 
         { estado: nuevoEstado }, 
-        { new: true }
+        { returnDocument: 'after' }
     );
     
     if (!order) {
@@ -55,7 +55,7 @@ export const softDeleteOrder = async (orderId) => {
     const order = await Order.findByIdAndUpdate(
         orderId,
         { activo: false },
-        { new: true }
+        { returnDocument: 'after' }
     );
     
     if (!order) {
@@ -150,11 +150,21 @@ export const getUserHistory = async (usuarioId) => {
         .sort({ createdAt: -1 });
 };
 
+export const getOrderById = async (orderId, user) => {
+    const filtros = { _id: orderId, activo: { $ne: false } };
+    if (user?.role === 'USER_ROLE') {
+        filtros.usuarioId = user.id;
+    }
+    return await Order.findOne(filtros)
+        .populate('productos.productoId', 'name price photo category')
+        .populate('productos.acompanamientoId', 'name');
+};
+
 export const cancelUserOrder = async (usuarioId, orderId) => {
     const order = await Order.findOneAndUpdate(
         { _id: orderId, usuarioId, estado: 'Pendiente', activo: { $ne: false } },
         { estado: 'Cancelado' },
-        { new: true }
+        { returnDocument: 'after' }
     );
     if (!order) {
         throw new Error('Pedido no encontrado o ya procesado');

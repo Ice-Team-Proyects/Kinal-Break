@@ -40,14 +40,14 @@ export const useCartStore = create((set, get) => ({
   confirmOrder: async () => {
     set({ isLoading: true });
     try {
-      await pedidosAxios.post('/confirmar');
+      const response = await pedidosAxios.post('/confirmar');
       toast.success('Pedido confirmado con éxito');
       set({ cartItems: [], totalTemporal: 0 });
-      return true;
+      return response.data.pedido || response.data.data || null;
     } catch (error) {
       console.error(error);
       toast.error(error.response?.data?.message || 'Error al confirmar pedido');
-      return false;
+      return null;
     } finally {
       set({ isLoading: false });
     }

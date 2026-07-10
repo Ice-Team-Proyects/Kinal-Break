@@ -54,7 +54,7 @@ export function LoginPage() {
             <h1 className="text-white text-5xl lg:text-7xl font-display uppercase tracking-wider mb-6 drop-shadow-[0_4px_12px_rgba(3,22,51,0.6)]">
               Tu camino al éxito está en Kinal
             </h1>
-            <p className="text-lg lg:text-xl text-inverse-primary leading-relaxed font-normal max-w-md drop-shadow-sm">
+            <p className="text-lg lg:text-xl text-amber-200 leading-relaxed font-normal max-w-md drop-shadow-[0_2px_8px_rgba(3,22,51,0.8)]">
               Accede a Kinal-Break para consultar menús y organizar tu tiempo en
               cafetería de manera eficiente.
             </p>
