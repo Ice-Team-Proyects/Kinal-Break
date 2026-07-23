@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { loginRequest, registerRequest, verifyEmailRequest, resendVerificationRequest } from '../../../shared/api/api';
+import { loginRequest, registerRequest, verifyEmailRequest, resendVerificationRequest, forgotPasswordRequest, resetPasswordRequest } from '../../../shared/api/api';
 
 export const useAuthStore = create(
   persist(
@@ -132,6 +132,26 @@ export const useAuthStore = create(
 
       setTokens: ({ token, refreshToken }) =>
         set({ token, refreshToken, isAuthenticated: true }),
+
+      forgotPassword: async (email) => {
+        try {
+          const response = await forgotPasswordRequest(email);
+          return { success: response.data?.success, message: response.data?.message };
+        } catch (error) {
+          const errorMsg = error.response?.data?.message || error.message || 'Error de conexión';
+          return { success: false, error: errorMsg };
+        }
+      },
+
+      resetPassword: async (token, newPassword) => {
+        try {
+          const response = await resetPasswordRequest(token, newPassword);
+          return { success: response.data?.success, message: response.data?.message };
+        } catch (error) {
+          const errorMsg = error.response?.data?.message || error.message || 'Error de conexión';
+          return { success: false, error: errorMsg };
+        }
+      },
     }),
     { name: 'ice-auth-customer' }
   )

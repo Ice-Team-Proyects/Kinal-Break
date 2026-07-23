@@ -13,7 +13,9 @@ axiosInstance.interceptors.request.use((config) => {
       const { state } = JSON.parse(stored);
       if (state?.token) config.headers.Authorization = `Bearer ${state.token}`;
     }
-  } catch (_) {}
+  } catch (error) {
+    console.warn(error);
+  }
   return config;
 });
 

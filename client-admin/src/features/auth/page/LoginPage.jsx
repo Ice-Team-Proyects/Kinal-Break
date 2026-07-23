@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useAuthStore } from "../store/authStore";
 import BackLogin from "../../../assets/BackLogin.png";
 import Logo from "../../../assets/Logo.png";
 
-import { Mail, Lock, Eye, Copyright } from "lucide-react";
+import { Mail, Lock, Eye } from "lucide-react";
 
 export function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
@@ -161,7 +161,10 @@ export function LoginPage() {
 
               {/* Forgot link */}
               <div className="text-left pt-1">
-                <span className="text-xs font-semibold text-primary hover:text-secondary-container transition-colors cursor-pointer underline decoration-dotted">
+                <span 
+                  onClick={() => navigate("/forgot-password")}
+                  className="text-xs font-semibold text-primary hover:text-secondary-container transition-colors cursor-pointer underline decoration-dotted"
+                >
                   ¿Olvidaste tu contraseña?
                 </span>
               </div>

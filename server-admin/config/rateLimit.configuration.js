@@ -2,7 +2,7 @@ import rateLimit from "express-rate-limit";
 
 export const requestLimit = rateLimit({
     windowMs: 15 * 60 * 1000,
-    max: 200,
+    max: 2000,
     standardHeaders: true,
     skip: (req) => req.path.endsWith('/events'),
     handler: (req, res) => {

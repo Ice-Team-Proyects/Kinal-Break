@@ -19,7 +19,7 @@ export const createProduct = async (req,res)=>{
 
         const product = await createProductService({
             ...req.body,
-            photo: photoUrl
+            photo: photoUrl || req.body.photo || ""
         });
 
         broadcast('products', { action: 'created', product });

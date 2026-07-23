@@ -41,7 +41,7 @@ export const updateOrderStatus = async (orderId, nuevoEstado, confirmacionDoble)
     const order = await Order.findOneAndUpdate(
         { _id: orderId, activo: { $ne: false } }, 
         { estado: nuevoEstado }, 
-        { returnDocument: 'after' }
+        { new: true }
     );
     
     if (!order) {
@@ -55,7 +55,7 @@ export const softDeleteOrder = async (orderId) => {
     const order = await Order.findByIdAndUpdate(
         orderId,
         { activo: false },
-        { returnDocument: 'after' }
+        { new: true }
     );
     
     if (!order) {
@@ -111,16 +111,6 @@ export const addToCart = async (usuarioId, { productoId, cantidad, acompanamient
 };
 
 export const confirmOrderFromCart = async (usuarioId) => {
-    const pedidoPendientePago = await Order.findOne({
-        usuarioId,
-        estado: 'No pagado',
-        activo: { $ne: false }
-    });
-
-    if (pedidoPendientePago) {
-        throw new Error('USUARIO_PENALIZADO');
-    }
-
     const cart = await Cart.findOne({ usuarioId });
     if (!cart || cart.productos.length === 0) {
         throw new Error('El carrito está vacío');
@@ -160,21 +150,11 @@ export const getUserHistory = async (usuarioId) => {
         .sort({ createdAt: -1 });
 };
 
-export const getOrderById = async (orderId, user) => {
-    const filtros = { _id: orderId, activo: { $ne: false } };
-    if (user?.role === 'USER_ROLE') {
-        filtros.usuarioId = user.id;
-    }
-    return await Order.findOne(filtros)
-        .populate('productos.productoId', 'name price photo category')
-        .populate('productos.acompanamientoId', 'name');
-};
-
 export const cancelUserOrder = async (usuarioId, orderId) => {
     const order = await Order.findOneAndUpdate(
         { _id: orderId, usuarioId, estado: 'Pendiente', activo: { $ne: false } },
         { estado: 'Cancelado' },
-        { returnDocument: 'after' }
+        { new: true }
     );
     if (!order) {
         throw new Error('Pedido no encontrado o ya procesado');
@@ -189,17 +169,4 @@ export const cleanExpiredOrders = async () => {
         { $set: { estado: 'Cancelado' } }
     );
     return result.modifiedCount;
-};
-
-export const getUserPenaltyStatus = async (usuarioId) => {
-    const pedido = await Order.findOne({
-        usuarioId,
-        estado: 'No pagado',
-        activo: { $ne: false }
-    });
-    return {
-        penalizado: !!pedido,
-        pedidoId: pedido?._id || null,
-        numeroPedido: pedido?.numeroPedido || null
-    };
 };

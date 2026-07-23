@@ -11,7 +11,6 @@ import {
     restorePaymentController,
     setUnpaid
 } from "./payment.controller.js";
-import { createCheckoutSession, getPaymentSession } from "./stripe/stripe.controller.js";
 
 const router = Router();
 
@@ -87,8 +86,6 @@ router.get("/", validateJWT, requireRole("ADMIN_ROLE"), getPayments);
  *         description: Error interno del servidor.
  */
 router.get("/order/:orderId", validateJWT, requireRole("ADMIN_ROLE"), getPaymentByOrder);
-router.post("/checkout-session", validateJWT, createCheckoutSession);
-router.get("/session/:sessionId", validateJWT, getPaymentSession);
 
 /**
  * @swagger

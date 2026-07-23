@@ -26,3 +26,11 @@ export const verifyEmailRequest = async (token) => {
 export const resendVerificationRequest = async (email) => {
   return await authAxios.post('/auth/resend-verification', { email });
 };
+
+export const forgotPasswordRequest = async (email) => {
+  return await authAxios.post('/auth/forgot-password', { email });
+};
+
+export const resetPasswordRequest = async (token, newPassword) => {
+  return await authAxios.post('/auth/reset-password', { token, newPassword });
+};

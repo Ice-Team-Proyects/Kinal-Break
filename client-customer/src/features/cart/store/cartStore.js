@@ -6,18 +6,6 @@ export const useCartStore = create((set, get) => ({
   cartItems: [],
   totalTemporal: 0,
   isLoading: false,
-  penalizado: false,
-
-  checkPenalty: async () => {
-    try {
-      const response = await pedidosAxios.get('/estado-penalizacion');
-      set({ penalizado: response.data?.penalizado || false });
-      return response.data?.penalizado || false;
-    } catch (error) {
-      console.error(error);
-      return false;
-    }
-  },
 
   fetchCart: async () => {
     set({ isLoading: true });
@@ -43,7 +31,7 @@ export const useCartStore = create((set, get) => ({
       get().fetchCart();
     } catch (error) {
       console.error(error);
-      toast.error('Error al agregar al carrito');
+      toast.error(error.response?.data?.msg || error.response?.data?.message || 'Error al agregar al carrito');
     } finally {
       set({ isLoading: false });
     }
@@ -52,24 +40,14 @@ export const useCartStore = create((set, get) => ({
   confirmOrder: async () => {
     set({ isLoading: true });
     try {
-      const response = await pedidosAxios.post('/confirmar');
+      await pedidosAxios.post('/confirmar');
       toast.success('Pedido confirmado con éxito');
       set({ cartItems: [], totalTemporal: 0 });
-      return response.data.pedido || response.data.data || null;
+      return true;
     } catch (error) {
       console.error(error);
-      toast.error(error.response?.data?.message || 'Error al confirmar pedido');
-      return null;
-      return { success: true };
-    } catch (error) {
-      console.error(error);
-      if (error.response?.status === 403 && error.response?.data?.penalizado) {
-        set({ penalizado: true });
-        toast.error('Tienes un pedido sin pagar. No puedes hacer nuevos pedidos.', { duration: 5000 });
-        return { success: false, penalizado: true };
-      }
-      toast.error(error.response?.data?.msg || 'Error al confirmar pedido');
-      return { success: false };
+      toast.error(error.response?.data?.msg || error.response?.data?.message || 'Error al confirmar pedido');
+      return false;
     } finally {
       set({ isLoading: false });
     }

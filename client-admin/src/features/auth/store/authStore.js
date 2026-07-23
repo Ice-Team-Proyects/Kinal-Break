@@ -1,6 +1,6 @@
-    import { create } from 'zustand';
+import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { loginRequest, registerRequest, verifyEmailRequest, resendVerificationRequest } from '../../../shared/api/api';
+import { loginRequest, registerRequest, verifyEmailRequest, resendVerificationRequest, forgotPasswordRequest, resetPasswordRequest } from '../../../shared/api/api';
 
 export const useAuthStore = create(
   persist(
@@ -65,7 +65,7 @@ export const useAuthStore = create(
           formData.append('Phone', phone || '');
 
           const response = await registerRequest(formData);
-          const { success, message, emailVerificationRequired } = response.data;
+          const { success, message } = response.data;
 
           if (success) {
             set({
@@ -139,6 +139,26 @@ export const useAuthStore = create(
       // Used internally by axios interceptor to refresh tokens
       setTokens: ({ token, refreshToken }) =>
         set({ token, refreshToken, isAuthenticated: true }),
+
+      forgotPassword: async (email) => {
+        try {
+          const response = await forgotPasswordRequest(email);
+          return { success: response.data?.success, message: response.data?.message };
+        } catch (error) {
+          const errorMsg = error.response?.data?.message || error.message || 'Error de conexión';
+          return { success: false, error: errorMsg };
+        }
+      },
+
+      resetPassword: async (token, newPassword) => {
+        try {
+          const response = await resetPasswordRequest(token, newPassword);
+          return { success: response.data?.success, message: response.data?.message };
+        } catch (error) {
+          const errorMsg = error.response?.data?.message || error.message || 'Error de conexión';
+          return { success: false, error: errorMsg };
+        }
+      },
     }),
     { name: 'ice-auth' }
   )

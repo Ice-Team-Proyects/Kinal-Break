@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAccompanimentsStore } from '../store/accompanimentsStore';
 import { Plus, Edit2, Trash2, RotateCcw, X, Image as ImageIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
@@ -15,7 +15,7 @@ export function AccompanimentsPage() {
 
   useEffect(() => {
     fetchAccompaniments();
-  }, []);
+  }, [fetchAccompaniments]);
 
   useEffect(() => {
     if (photoFile && photoFile[0]) {

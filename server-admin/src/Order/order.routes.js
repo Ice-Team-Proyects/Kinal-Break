@@ -9,40 +9,39 @@ import {
     confirmarPedido,
     obtenerHistorial,
     cancelarPedido,
-    limpiarPedidosExpirados,
-    getOrderById
-    obtenerEstadoPenalizacion
+    limpiarPedidosExpirados
 } from './order.controller.js';
 import { validateMongoId } from '../../middlewares/validate-mongo-id.js';
 import { validateJWT } from '../../middlewares/validate-JWT.js';
 import { requireRole } from '../../middlewares/validate-role.js';
+import { checkPenalty } from '../../middlewares/check-penalty.js';
 
 const router = Router();
 
-router.post('/', validateJWT, addOrder);
+// Rutas administrativas y creación de órdenes directa
+router.post('/', validateJWT, checkPenalty, addOrder);
 router.get('/', validateJWT, listOrders);
 router.put('/:id', validateJWT, requireRole('ADMIN_ROLE'), validateMongoId, editOrder);
 router.delete('/:id', validateJWT, requireRole('ADMIN_ROLE'), validateMongoId, removeOrder);
 
+// Rutas de Carrito
 router.get('/carrito', validateJWT, obtenerCarrito);
 router.get('/pedidos/carrito', validateJWT, obtenerCarrito);
 
-router.post('/carrito', validateJWT, agregarAlCarrito);
-router.post('/pedidos/carrito', validateJWT, agregarAlCarrito);
+router.post('/carrito', validateJWT, checkPenalty, agregarAlCarrito);
+router.post('/pedidos/carrito', validateJWT, checkPenalty, agregarAlCarrito);
 
-router.post('/confirmar', validateJWT, confirmarPedido);
-router.post('/pedidos/confirmar', validateJWT, confirmarPedido);
+// Rutas de Confirmación e Historial para cliente
+router.post('/confirmar', validateJWT, checkPenalty, confirmarPedido);
+router.post('/pedidos/confirmar', validateJWT, checkPenalty, confirmarPedido);
 
 router.get('/historial', validateJWT, obtenerHistorial);
 router.get('/pedidos/historial', validateJWT, obtenerHistorial);
-router.get('/detalle/:id', validateJWT, validateMongoId, getOrderById);
-
-router.get('/estado-penalizacion', validateJWT, obtenerEstadoPenalizacion);
-router.get('/pedidos/estado-penalizacion', validateJWT, obtenerEstadoPenalizacion);
 
 router.delete('/cancelar/:id', validateJWT, validateMongoId, cancelarPedido);
 router.delete('/pedidos/cancelar/:id', validateJWT, validateMongoId, cancelarPedido);
 
+// Rutas de Limpieza
 router.post('/limpiar-expirados', limpiarPedidosExpirados);
 router.post('/pedidos/limpiar-expirados', limpiarPedidosExpirados);
 

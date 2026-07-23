@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../auth/store/authStore.js";
 import { useReportsStore } from "../../reports/store/reportsStore.js";
@@ -32,7 +32,7 @@ export default function DashboardIndex() {
   useEffect(() => {
     fetchAllReports();
     fetchOrders();
-  }, []);
+  }, [fetchAllReports, fetchOrders]);
 
   useEffect(() => {
     const fetchRecentProfiles = async () => {
@@ -48,7 +48,8 @@ export default function DashboardIndex() {
           try {
             const res = await getUserProfileByIdRequest(uid);
             newProfiles[uid] = res.data?.data || res.data;
-          } catch (err) {
+          } catch (error) {
+            console.warn(error);
             newProfiles[uid] = { username: 'Desconocido', email: 'N/A' };
           }
         }
@@ -59,7 +60,7 @@ export default function DashboardIndex() {
     if (safeOrders.length > 0) {
       fetchRecentProfiles();
     }
-  }, [orders]);
+  }, [orders, safeOrders, userProfiles]);
 
   const handleLogout = () => {
     logout();

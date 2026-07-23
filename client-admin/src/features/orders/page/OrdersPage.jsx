@@ -1,15 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useOrdersStore } from '../store/ordersStore';
 import { getUserProfileByIdRequest } from '../../../shared/api/adminApi';
 import { Check, ShieldAlert, Trash2, User, Calendar, Clock } from 'lucide-react';
 import { useAuthStore } from '../../auth/store/authStore';
-import toast from 'react-hot-toast';
 
 export function OrdersPage() {
   const { orders, isLoading, fetchOrders, updateOrderStatus, deleteOrder } = useOrdersStore();
   const user = useAuthStore((s) => s.user);
   const isAdmin = user?.role === 'ADMIN_ROLE';
-  const isUser  = user?.role === 'USER_ROLE';
   const [statusFilter, setStatusFilter] = useState('');
   
   // Cache de perfiles de usuario
@@ -18,7 +16,7 @@ export function OrdersPage() {
 
   useEffect(() => {
     fetchOrders();
-  }, []);
+  }, [fetchOrders]);
 
   // Cargar perfiles de los usuarios de las órdenes
   useEffect(() => {
@@ -36,7 +34,8 @@ export function OrdersPage() {
           try {
             const res = await getUserProfileByIdRequest(uid);
             newProfiles[uid] = res.data?.data || res.data;
-          } catch (err) {
+          } catch (error) {
+            console.warn(error);
             newProfiles[uid] = { username: 'Desconocido', email: 'N/A' };
           }
         }
@@ -47,7 +46,7 @@ export function OrdersPage() {
     if (orders.length > 0) {
       fetchMissingProfiles();
     }
-  }, [orders]);
+  }, [orders, userProfiles]);
 
   const onFilterChange = (status) => {
     setStatusFilter(status);
