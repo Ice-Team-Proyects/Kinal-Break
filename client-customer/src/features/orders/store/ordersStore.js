@@ -26,7 +26,7 @@ export const useOrdersStore = create((set, get) => ({
       return true;
     } catch (error) {
       console.error(error);
-      toast.error(error.response?.data?.message || 'No se puede cancelar el pedido');
+      toast.error(error.response?.data?.msg || error.response?.data?.message || 'No se puede cancelar el pedido');
       return false;
     }
   }

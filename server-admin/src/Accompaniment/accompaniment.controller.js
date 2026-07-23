@@ -20,7 +20,7 @@ export const createAccompaniment = async (req,res)=>{
 
         const acc = await createAccompanimentService({
             ...req.body,
-            photo: photoUrl
+            photo: photoUrl || req.body.photo || ""
         });
 
         broadcast('accompaniments', { action: 'created', accompaniment: acc });

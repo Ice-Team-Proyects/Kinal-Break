@@ -124,36 +124,47 @@ export const operationalMetrics = async () => {
 export const exportSalesExcel = async () => {
     const payments = await Payment.find({ isDeleted: false });
     const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet("Sales Report");
+    const worksheet = workbook.addWorksheet("Reporte de Ventas");
 
     worksheet.columns = [
-        { header: "Order ID", key: "orderId", width: 20 },
-        { header: "User ID", key: "userId", width: 20 },
-        { header: "Amount", key: "amount", width: 10 },
-        { header: "Status", key: "status", width: 10 },
-        { header: "Date", key: "createdAt", width: 25 }
+        { header: "ID de Pedido", key: "orderId", width: 28 },
+        { header: "ID de Usuario", key: "userId", width: 20 },
+        { header: "Monto (Q)", key: "amount", width: 14 },
+        { header: "Método de Pago", key: "paymentMethod", width: 18 },
+        { header: "Estado", key: "status", width: 14 },
+        { header: "Fecha", key: "createdAt", width: 25 }
     ];
 
     payments.forEach(payment => {
-        worksheet.addRow(payment);
+        const dateObj = payment.createdAt ? new Date(payment.createdAt) : new Date();
+        worksheet.addRow({
+            orderId: payment.orderId,
+            userId: payment.userId,
+            amount: payment.amount,
+            paymentMethod: payment.paymentMethod || "Efectivo",
+            status: payment.confirmedUnpaid ? "Pendiente" : "Pagado",
+            createdAt: dateObj.toLocaleString()
+        });
     });
 
     return workbook;
 };
 
 export const exportSalesPDF = async (payments) => {
-    const doc = new PDFDocument();
-    doc.fontSize(18).text("Sales Report", { align: "center" });
+    const doc = new PDFDocument({ margin: 30 });
+    doc.fontSize(18).text("Reporte de Ventas - Kinal Break", { align: "center" });
     doc.moveDown();
 
     payments.forEach(payment => {
-
+        const statusText = payment.confirmedUnpaid ? "Pendiente" : "Pagado";
+        const method = payment.paymentMethod || "Efectivo";
+        const dateStr = payment.createdAt ? new Date(payment.createdAt).toLocaleString() : "N/A";
         doc
-            .fontSize(12)
+            .fontSize(10)
             .text(
-                `Order: ${payment.orderId} | User: ${payment.userId} | Amount: ${payment.amount} | Status: ${payment.status}`
+                `Pedido: ${payment.orderId} | Usuario: ${payment.userId} | Monto: Q${payment.amount} | Método: ${method} | Estado: ${statusText} | Fecha: ${dateStr}`
             );
-
+        doc.moveDown(0.5);
     });
     
     return doc;

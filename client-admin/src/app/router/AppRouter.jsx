@@ -2,6 +2,8 @@ import { Navigate, Route, Routes } from "react-router-dom";
 import { LoginPage } from "../../features/auth/page/LoginPage.jsx";
 import { RegisterPage } from "../../features/auth/page/RegisterPage.jsx";
 import { VerifyEmailPage } from "../../features/auth/page/VerifyEmailPage.jsx";
+import { ForgotPasswordPage } from "../../features/auth/page/ForgotPasswordPage.jsx";
+import { ResetPasswordPage } from "../../features/auth/page/ResetPasswordPage.jsx";
 import { useAuthStore } from "../../features/auth/store/authStore.js";
 import DashboardContainer from "../../shared/component/layout/DashboardContainer.jsx";
 import { ProductsPage } from "../../features/products/page/ProductsPage.jsx";
@@ -21,6 +23,8 @@ export const AppRouter = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/verify-email" element={<VerifyEmailPage />} />
+        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/reset-password" element={<ResetPasswordPage />} />
         
         {isAuthenticated ? (
         <Route path="/" element={<DashboardContainer />}>

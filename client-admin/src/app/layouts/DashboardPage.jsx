@@ -1,8 +1,10 @@
 import { Outlet } from "react-router-dom";
 import { DasboardContainer } from "../../shared/component/layout/DashboardContainer.jsx";
 
-const DashboardPage = () => (
+export default function DashboardPage() {
+  return (
     <DasboardContainer>
-        <Outlet />
+      <Outlet />
     </DasboardContainer>
-);
+  );
+}

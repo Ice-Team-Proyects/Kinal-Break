@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useProductsStore } from '../store/productsStore';
 import { Plus, Search, Edit2, Trash2, RotateCcw, X, Image as ImageIcon, ShoppingCart, Clock, Check } from 'lucide-react';
 import { useForm } from 'react-hook-form';
@@ -33,14 +33,14 @@ export function ProductsPage() {
   const [isOrdering, setIsOrdering] = useState(false);
   const [orderConfirmOpen, setOrderConfirmOpen] = useState(false);
 
-  const { register, handleSubmit, reset, setValue, watch } = useForm();
+  const { register, handleSubmit, reset, watch } = useForm();
   const photoFile = watch('photo');
   const watchAllowAccompaniments = watch('allowAccompaniments');
   const watchCategory = watch('category');
 
   useEffect(() => {
     fetchProducts();
-  }, []);
+  }, [fetchProducts]);
 
   useEffect(() => {
     if (photoFile && photoFile[0]) {

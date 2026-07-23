@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { usePaymentsStore } from '../store/paymentsStore';
 import { useOrdersStore } from '../../orders/store/ordersStore';
 import { getUserProfileByIdRequest } from '../../../shared/api/adminApi';
-import { Plus, Trash2, ShieldAlert, X, DollarSign, CreditCard, User, Receipt } from 'lucide-react';
+import { Plus, Trash2, ShieldAlert, X } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 
 export function PaymentsPage() {
@@ -18,7 +18,7 @@ export function PaymentsPage() {
   useEffect(() => {
     fetchPayments();
     fetchOrders(); // Para tener la lista de órdenes disponibles al pagar
-  }, []);
+  }, [fetchPayments, fetchOrders]);
 
   // Cargar perfiles de los usuarios de los pagos
   useEffect(() => {
@@ -35,7 +35,8 @@ export function PaymentsPage() {
           try {
             const res = await getUserProfileByIdRequest(uid);
             newProfiles[uid] = res.data?.data || res.data;
-          } catch (err) {
+          } catch (error) {
+            console.warn(error);
             newProfiles[uid] = { username: 'Desconocido', email: 'N/A' };
           }
         }
@@ -46,7 +47,7 @@ export function PaymentsPage() {
     if (payments.length > 0) {
       fetchMissingProfiles();
     }
-  }, [payments]);
+  }, [payments, userProfiles]);
 
   const handleOpenAddModal = () => {
     reset({

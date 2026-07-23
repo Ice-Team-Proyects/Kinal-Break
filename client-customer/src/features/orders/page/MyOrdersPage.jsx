@@ -95,12 +95,14 @@ export function MyOrdersPage() {
                   </div>
 
                   {order.estado === "Pendiente" && (
-                    <button
-                      onClick={() => cancelOrder(order._id)}
-                      className="bg-[#7d0a42] hover:bg-red-800 text-white font-black px-4 py-2 rounded-xl border-2 border-[#031633] shadow-[2px_2px_0_0_#031633] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0_0_#031633] transition-all cursor-pointer text-[10px] uppercase"
-                    >
-                      Cancelar
-                    </button>
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => cancelOrder(order._id)}
+                        className="bg-[#7d0a42] hover:bg-red-800 text-white font-black px-3.5 py-2 rounded-xl border-2 border-[#031633] shadow-[2px_2px_0_0_#031633] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0_0_#031633] transition-all cursor-pointer text-[10px] uppercase"
+                      >
+                        Cancelar
+                      </button>
+                    </div>
                   )}
                 </div>
               </div>

@@ -1,4 +1,3 @@
-import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { 
   Utensils, 
@@ -7,7 +6,6 @@ import {
   Banknote,
   BarChart2,
   LogOut,
-  CupSoda,
   X 
 } from "lucide-react";
 import Logo from "../../../assets/Logo.png";

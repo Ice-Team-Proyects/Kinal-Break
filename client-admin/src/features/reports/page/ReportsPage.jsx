@@ -1,13 +1,13 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useReportsStore } from '../store/reportsStore';
 import { FileSpreadsheet, FileText, TrendingUp, BarChart2, Star, Percent, ShoppingBag } from 'lucide-react';
 
 export function ReportsPage() {
-  const { totalSales, dailySales, weeklySales, monthlySales, topProducts, averageOrder, operationalMetrics, isLoading, fetchAllReports, exportExcel, exportPdf } = useReportsStore();
+  const { totalSales, dailySales, topProducts, averageOrder, fetchAllReports, exportExcel, exportPdf } = useReportsStore();
 
   useEffect(() => {
     fetchAllReports();
-  }, []);
+  }, [fetchAllReports]);
 
   return (
     <div className="space-y-6">

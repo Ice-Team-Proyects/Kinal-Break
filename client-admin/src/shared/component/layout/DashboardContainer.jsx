@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { Outlet, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Outlet } from "react-router-dom";
 import { useAuthStore } from "../../../features/auth/store/authStore.js";
 import { Menu as MenuIcon } from "lucide-react";
 import Sidebar from "../../../shared/component/layout/Sidebar.jsx";
@@ -22,7 +22,6 @@ export default function DashboardContainer() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [closed, setClosed] = useState(false);
   const [devBypass, setDevBypass] = useState(false);
-  const navigate = useNavigate();
   const user = useAuthStore((state) => state.user);
 
   // Check service hours every minute

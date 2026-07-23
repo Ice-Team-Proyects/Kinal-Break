@@ -1,5 +1,16 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { Coffee, Moon, Clock } from "lucide-react";
+
+// Pre-generated static star positions to keep render pure
+const STARS = Array.from({ length: 18 }, (_, i) => ({
+  id: i,
+  width: `${(i % 5) + 2}px`,
+  height: `${(i % 5) + 2}px`,
+  top: `${(i * 17) % 100}%`,
+  left: `${(i * 23) % 100}%`,
+  duration: `${2 + (i % 4)}s`,
+  delay: `${(i % 3)}s`
+}));
 
 // Returns the "time remaining until opening" string
 function timeUntilOpen() {
@@ -35,17 +46,17 @@ export function ClosedOverlay({ onBypass }) {
     >
       {/* Floating stars decoration */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {[...Array(18)].map((_, i) => (
+        {STARS.map((star) => (
           <div
-            key={i}
+            key={star.id}
             className="absolute rounded-full bg-white/20"
             style={{
-              width: `${Math.random() * 4 + 2}px`,
-              height: `${Math.random() * 4 + 2}px`,
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              animation: `pulse ${2 + Math.random() * 4}s infinite ease-in-out`,
-              animationDelay: `${Math.random() * 3}s`
+              width: star.width,
+              height: star.height,
+              top: star.top,
+              left: star.left,
+              animation: `pulse ${star.duration} infinite ease-in-out`,
+              animationDelay: star.delay
             }}
           />
         ))}
