@@ -9,7 +9,7 @@ const productSchema = new mongoose.Schema({
 
     category:{
         type:String,
-        enum:["desayunos","almuerzos","bebidas","snacks","complementos"],
+        enum:["desayunos","almuerzos","refaccion","bebidas","snacks","complementos"],
         required:true
     },
 

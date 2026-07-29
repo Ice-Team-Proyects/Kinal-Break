@@ -77,7 +77,8 @@ export const agregarAlCarrito = async (req, res) => {
 export const confirmarPedido = async (req, res) => {
     try {
         const usuarioId = req.user.id;
-        const pedido = await OrderService.confirmOrderFromCart(usuarioId);
+        const { metodoPago } = req.body || {};
+        const pedido = await OrderService.confirmOrderFromCart(usuarioId, { metodoPago });
         broadcast('orders', { action: 'created', order: pedido });
         res.status(201).json({ success: true, message: 'Pedido confirmado', pedido });
     } catch (error) {

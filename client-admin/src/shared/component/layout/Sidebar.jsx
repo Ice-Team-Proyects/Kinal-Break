@@ -5,6 +5,7 @@ import {
   Package, 
   Banknote,
   BarChart2,
+  Users,
   LogOut,
   X 
 } from "lucide-react";
@@ -31,6 +32,7 @@ export default function Sidebar({ isOpen, onClose }) {
     { id: "orders", label: "Pedidos", icon: ReceiptText, path: "/orders" },
     // Pagos y Reportes solo para ADMIN_ROLE
     ...(isAdmin ? [
+      { id: "users", label: "Usuarios", icon: Users, path: "/users" },
       { id: "payments", label: "Pagos", icon: Banknote, path: "/payments" },
       { id: "reports", label: "Reportes", icon: BarChart2, path: "/reports" },
     ] : []),

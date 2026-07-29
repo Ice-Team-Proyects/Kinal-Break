@@ -33,16 +33,16 @@ export const useProductsStore = create((set, get) => ({
     }
   },
 
-  createProduct: async (formData) => {
+  createProduct: async (formData, { silent = false } = {}) => {
     set({ isLoading: true });
     try {
       await createProductRequest(formData);
-      toast.success('Producto creado con éxito');
+      if (!silent) toast.success('Producto creado con éxito');
       get().fetchProducts();
       return true;
     } catch (err) {
       console.error(err);
-      toast.error(err.response?.data?.msg || 'Error al crear producto');
+      toast.error(err.response?.data?.msg || err.response?.data?.error || 'Error al crear producto');
       return false;
     } finally {
       set({ isLoading: false });

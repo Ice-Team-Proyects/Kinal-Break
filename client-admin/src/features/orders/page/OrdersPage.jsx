@@ -144,6 +144,11 @@ export function OrdersPage() {
                     <span className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] uppercase font-black border-2 ${getStatusStyle(order.estado)}`}>
                       {order.estado}
                     </span>
+                    {order.metodoPago && (
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-[10px] uppercase font-black border-2 border-[#031633] bg-[#fff4ea] text-[#ff8928]">
+                        {order.metodoPago}
+                      </span>
+                    )}
                   </div>
 
                   <div className="flex flex-wrap items-center gap-6 text-xs font-bold text-[#031633]/70">

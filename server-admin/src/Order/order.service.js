@@ -110,11 +110,13 @@ export const addToCart = async (usuarioId, { productoId, cantidad, acompanamient
     return await cart.save();
 };
 
-export const confirmOrderFromCart = async (usuarioId) => {
+export const confirmOrderFromCart = async (usuarioId, { metodoPago } = {}) => {
     const cart = await Cart.findOne({ usuarioId });
     if (!cart || cart.productos.length === 0) {
         throw new Error('El carrito está vacío');
     }
+
+    const metodo = metodoPago === 'Transferencia' ? 'Transferencia' : 'Efectivo';
 
     for (const item of cart.productos) {
         const product = await Product.findById(item.productoId);
@@ -134,7 +136,8 @@ export const confirmOrderFromCart = async (usuarioId) => {
         })),
         totalCobrar: cart.totalTemporal,
         totalFinal: cart.totalTemporal,
-        estado: 'Pendiente'
+        estado: 'Pendiente',
+        metodoPago: metodo
     };
 
     const newOrder = new Order(orderData);

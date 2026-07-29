@@ -24,6 +24,7 @@ const CATEGORIES = [
   { id: '', label: 'Todos', icon: 'restaurant-menu' },
   { id: 'desayunos', label: 'Desayunos', icon: 'free-breakfast' },
   { id: 'almuerzos', label: 'Almuerzos', icon: 'lunch-dining' },
+  { id: 'refaccion', label: 'Refacción', icon: 'cookie' },
   { id: 'bebidas', label: 'Bebidas', icon: 'local-drink' },
   { id: 'snacks', label: 'Snacks', icon: 'fastfood' },
 ];

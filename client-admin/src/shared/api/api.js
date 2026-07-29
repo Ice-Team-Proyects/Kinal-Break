@@ -6,11 +6,32 @@ const authAxios = axios.create({
   headers: { 'Content-Type': 'application/json' },
 });
 
+authAxios.interceptors.request.use((config) => {
+  try {
+    const stored = localStorage.getItem('ice-auth');
+    if (stored) {
+      const { state } = JSON.parse(stored);
+      if (state?.token) config.headers.Authorization = `Bearer ${state.token}`;
+    }
+  } catch (error) {
+    console.warn(error);
+  }
+  return config;
+});
+
 export const loginRequest = async ({ emailOrUsername, password }) => {
   return await authAxios.post('/auth/login', {
     emailOrUsername,
     password,
   });
+};
+
+export const getUsersRequest = async () => {
+  return await authAxios.get('/users');
+};
+
+export const activateUserRequest = async (userId) => {
+  return await authAxios.post(`/users/${userId}/activate`);
 };
 
 export const registerRequest = async (formData) => {
