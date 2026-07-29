@@ -46,7 +46,11 @@ export const useAuthStore = create(
             return { success: false, error: message || 'Error al iniciar sesión' };
           }
         } catch (error) {
-          const errorMsg = error.response?.data?.message || error.message || 'Error de conexión';
+          const raw = error.response?.data?.message || error.message || 'Error de conexión';
+          const errorMsg =
+            /account is disabled|cuenta.*deshabilit|pendiente de aprobación/i.test(raw)
+              ? 'Tu cuenta está pendiente de aprobación. Un administrador debe aceptarte en Usuarios.'
+              : raw;
           return { success: false, error: errorMsg };
         }
       },
