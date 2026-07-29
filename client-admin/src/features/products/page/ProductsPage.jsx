@@ -524,6 +524,11 @@ export function ProductsPage() {
                             {p.name}
                           </label>
                         ))}
+                        {products.filter(p => p.isActive && !p.isDeleted && p.category === 'complementos').length === 0 && (
+                          <p className="col-span-2 text-[10px] font-bold text-[#031633]/50 uppercase text-center py-2">
+                            No hay complementos creados. Crea productos con categoría Complementos.
+                          </p>
+                        )}
                       </div>
                     </div>
                   )}
