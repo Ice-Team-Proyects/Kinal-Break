@@ -512,7 +512,12 @@ export function ProductsPage() {
                       </label>
                       <div className="grid grid-cols-2 gap-2 bg-[#f5f3f6] p-4 rounded-2xl border-2 border-[#031633] max-h-36 overflow-y-auto">
                         {products
-                          .filter(p => p.isActive && !p.isDeleted && p._id !== editingProduct?._id)
+                          .filter(p =>
+                            p.isActive &&
+                            !p.isDeleted &&
+                            p.category === 'complementos' &&
+                            p._id !== editingProduct?._id
+                          )
                           .map((p) => (
                           <label key={p._id} className="flex items-center gap-2 text-xs font-bold text-[#031633] cursor-pointer">
                             <input type="checkbox" value={p._id} {...register('accompaniments')} className="w-3.5 h-3.5 rounded text-[#ff8928] border-2 border-[#031633] focus:ring-0" />
