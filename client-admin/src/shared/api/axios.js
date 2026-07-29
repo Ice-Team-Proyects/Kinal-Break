@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const instance = axios.create({
   baseURL: import.meta.env.VITE_ADMIN_URL || import.meta.env.VITE_API_URL || 'http://localhost:3021/KinalBreak/v1',
-  timeout: 8000,
+  timeout: 30000,
   headers: { 'Content-Type': 'application/json' },
 });
 

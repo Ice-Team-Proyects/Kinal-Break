@@ -2,7 +2,7 @@ import axios from 'axios';
 
 const adminAxios = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  timeout: 8000,
+  timeout: 30000,
   headers: { 'Content-Type': 'application/json' },
 });
 
@@ -24,7 +24,7 @@ adminAxios.interceptors.request.use((config) => {
 
 const pedidosAxios = axios.create({
   baseURL: import.meta.env.VITE_PEDIDOS_URL,
-  timeout: 8000,
+  timeout: 30000,
   headers: { 'Content-Type': 'application/json' },
 });
 
