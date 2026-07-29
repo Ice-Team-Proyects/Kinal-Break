@@ -32,7 +32,8 @@ export function ProductsPage() {
   const [editingProduct, setEditingProduct] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [batchItems, setBatchItems] = useState([{ name: '', price: '', description: '' }]);
+  const emptyBatchItem = () => ({ name: '', price: '', description: '', photoFile: null, preview: '' });
+  const [batchItems, setBatchItems] = useState([emptyBatchItem()]);
 
   // USER_ROLE: ordering state
   const [orderProduct, setOrderProduct] = useState(null); // product to order
@@ -72,7 +73,7 @@ export function ProductsPage() {
   const handleOpenAddModal = () => {
     setEditingProduct(null);
     setImagePreview('');
-    setBatchItems([{ name: '', price: '', description: '' }]);
+    setBatchItems([emptyBatchItem()]);
     reset({ name: '', description: '', price: '', category: 'almuerzos', allowAccompaniments: false, accompaniments: [] });
     setIsModalOpen(true);
   };
@@ -80,7 +81,7 @@ export function ProductsPage() {
   const handleOpenEditModal = (product) => {
     setEditingProduct(product);
     setImagePreview(product.photo || '');
-    setBatchItems([{ name: '', price: '', description: '' }]);
+    setBatchItems([emptyBatchItem()]);
     reset({
       name: product.name,
       description: product.description || '',
@@ -92,7 +93,19 @@ export function ProductsPage() {
     setIsModalOpen(true);
   };
 
-  const buildProductFormData = (data, item) => {
+  const handleBatchPhotoChange = (idx, file) => {
+    if (!file) return;
+    const preview = URL.createObjectURL(file);
+    setBatchItems((prev) =>
+      prev.map((row, i) => {
+        if (i !== idx) return row;
+        if (row.preview) URL.revokeObjectURL(row.preview);
+        return { ...row, photoFile: file, preview };
+      })
+    );
+  };
+
+  const buildProductFormData = (data, item, { useSharedPhoto = false } = {}) => {
     const isMeal = isMealCategory(data.category);
     const allowAcc = isMeal ? !!data.allowAccompaniments : false;
     const formData = new FormData();
@@ -101,11 +114,15 @@ export function ProductsPage() {
     formData.append('price', data.category === 'complementos' ? 0 : item.price);
     formData.append('category', data.category);
     formData.append('allowAccompaniments', allowAcc);
-    if (data.photo && data.photo[0]) {
+
+    if (item.photoFile) {
+      formData.append('photo', item.photoFile);
+    } else if (useSharedPhoto && data.photo && data.photo[0]) {
       formData.append('photo', data.photo[0]);
     } else if (!editingProduct) {
       formData.append('photo', DEFAULT_PRODUCT_PHOTO);
     }
+
     if (isMeal && data.accompaniments) {
       const accList = Array.isArray(data.accompaniments) ? data.accompaniments : [data.accompaniments];
       accList.filter(Boolean).forEach((accId) => formData.append('accompaniments', accId));
@@ -121,7 +138,7 @@ export function ProductsPage() {
           name: data.name,
           price: data.price,
           description: data.description,
-        });
+        }, { useSharedPhoto: true });
         const success = await updateProduct(editingProduct._id, formData);
         if (success) setIsModalOpen(false);
         return;
@@ -150,7 +167,7 @@ export function ProductsPage() {
         name: data.name,
         price: data.price,
         description: data.description,
-      });
+      }, { useSharedPhoto: true });
       const success = await createProduct(formData);
       if (success) setIsModalOpen(false);
     } finally {
@@ -399,7 +416,7 @@ export function ProductsPage() {
                     </label>
                     <button
                       type="button"
-                      onClick={() => setBatchItems((prev) => [...prev, { name: '', price: '', description: '' }])}
+                      onClick={() => setBatchItems((prev) => [...prev, emptyBatchItem()])}
                       className="text-[10px] font-black uppercase text-[#ff8928] border-2 border-[#031633] px-3 py-1.5 rounded-xl bg-white shadow-[2px_2px_0_0_#031633] cursor-pointer"
                     >
                       + Agregar otro
@@ -410,7 +427,13 @@ export function ProductsPage() {
                       {batchItems.length > 1 && (
                         <button
                           type="button"
-                          onClick={() => setBatchItems((prev) => prev.filter((_, i) => i !== idx))}
+                          onClick={() =>
+                            setBatchItems((prev) => {
+                              const removed = prev[idx];
+                              if (removed?.preview) URL.revokeObjectURL(removed.preview);
+                              return prev.filter((_, i) => i !== idx);
+                            })
+                          }
                           className="absolute top-2 right-2 text-[#031633] hover:text-[#7d0a42] cursor-pointer"
                         >
                           <X size={16} />
@@ -449,6 +472,25 @@ export function ProductsPage() {
                           className="px-4 py-3 bg-white rounded-2xl border-2 border-[#031633] font-bold text-sm focus:outline-none"
                         />
                       </div>
+                      <div className="flex items-center gap-3">
+                        <div className="w-16 h-16 rounded-2xl border-2 border-[#031633] bg-white flex items-center justify-center overflow-hidden shrink-0">
+                          {item.preview ? (
+                            <img src={item.preview} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover" />
+                          ) : (
+                            <ImageIcon size={20} className="text-slate-400" />
+                          )}
+                        </div>
+                        <label className="flex-1 px-4 py-3 bg-white border-2 border-[#031633] border-dashed rounded-2xl cursor-pointer hover:bg-[#efedf0] transition-colors flex items-center justify-center font-bold text-xs text-[#031633]/60 gap-2">
+                          <ImageIcon size={14} />
+                          {item.photoFile ? 'Cambiar imagen' : 'Imagen de este producto'}
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => handleBatchPhotoChange(idx, e.target.files?.[0])}
+                          />
+                        </label>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -478,23 +520,21 @@ export function ProductsPage() {
                       <input type="text" {...register('description')} className="px-4 py-3 bg-[#f5f3f6] rounded-2xl border-2 border-[#031633] font-bold text-sm focus:outline-none input-focus-animation" />
                     </div>
                   </div>
+
+                  <div className="flex flex-col gap-2">
+                    <label className="text-xs font-black text-[#031633] uppercase">Foto del Producto</label>
+                    <div className="flex items-center gap-4">
+                      <div className="w-20 h-20 rounded-2xl border-2 border-[#031633] bg-[#f5f3f6] flex items-center justify-center overflow-hidden shrink-0">
+                        {imagePreview ? <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" /> : <ImageIcon size={24} className="text-slate-400" />}
+                      </div>
+                      <label className="flex-1 px-4 py-3 bg-white border-2 border-[#031633] border-dashed rounded-2xl cursor-pointer hover:bg-[#f5f3f6] transition-colors flex items-center justify-center font-bold text-xs text-[#031633]/60 gap-2">
+                        <ImageIcon size={16} /> Subir Imagen
+                        <input type="file" accept="image/*" {...register('photo')} className="hidden" />
+                      </label>
+                    </div>
+                  </div>
                 </>
               )}
-
-              <div className="flex flex-col gap-2">
-                <label className="text-xs font-black text-[#031633] uppercase">
-                  {isBatchMode ? 'Foto compartida (opcional)' : 'Foto del Producto'}
-                </label>
-                <div className="flex items-center gap-4">
-                  <div className="w-20 h-20 rounded-2xl border-2 border-[#031633] bg-[#f5f3f6] flex items-center justify-center overflow-hidden shrink-0">
-                    {imagePreview ? <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" /> : <ImageIcon size={24} className="text-slate-400" />}
-                  </div>
-                  <label className="flex-1 px-4 py-3 bg-white border-2 border-[#031633] border-dashed rounded-2xl cursor-pointer hover:bg-[#f5f3f6] transition-colors flex items-center justify-center font-bold text-xs text-[#031633]/60 gap-2">
-                    <ImageIcon size={16} /> Subir Imagen
-                    <input type="file" accept="image/*" {...register('photo')} className="hidden" />
-                  </label>
-                </div>
-              </div>
 
               {isMealCategory(watchCategory) && (
                 <>
