@@ -1,187 +1,125 @@
-
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { useAuthStore } from "../store/authStore";
-import { User, Mail, Lock, Phone } from "lucide-react";
+import BackLogin from "../../../assets/BackLogin.png";
+import Logo from "../../../assets/Logo.png";
 
 export function RegisterPage() {
-  const { register: registerAuth, isLoadingAuth } = useAuthStore();
+  const { register: registerUser, isLoadingAuth } = useAuthStore();
   const navigate = useNavigate();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    defaultValues: {
-      name: "",
-      surname: "",
-      username: "",
-      email: "",
-      password: "",
-      phone: "",
-    },
-  });
+  } = useForm({ defaultValues: { name: "", surname: "", username: "", email: "", password: "", phone: "" } });
 
   const onSubmit = async (data) => {
-    const result = await registerAuth(data);
+    const allowed = /@kinal\.(edu|org)\.gt$/i;
+    if (!allowed.test(data.email)) {
+      toast.error('Solo se permiten correos @kinal.edu.gt o @kinal.org.gt');
+      return;
+    }
+
+    if (data.password.length < 8) {
+      toast.error('La contraseña debe tener al menos 8 caracteres');
+      return;
+    }
+
+    const result = await registerUser({
+      name: data.name,
+      surname: data.surname,
+      username: data.username || data.email.split('@')[0],
+      email: data.email,
+      password: data.password,
+      phone: data.phone,
+    });
+
     if (result.success) {
-      toast.success("Registro completado. Revisa tu correo institucional para activar tu cuenta.");
-      navigate("/login");
+      toast.success(result.message || 'Registrado. Revisa tu correo para verificar.');
+      navigate('/login');
     } else {
-      toast.error(result.error || "Error al registrarse");
+      toast.error(result.error || 'Error al registrarse');
     }
   };
 
-
-
   return (
-    <div className="min-h-screen bg-background text-on-background flex flex-col justify-center items-center p-4 relative font-sans">
+    <div className="min-h-screen bg-background text-on-background flex flex-col justify-between font-sans selection:bg-secondary-container selection:text-white">
       <div className="fixed inset-0 pointer-events-none z-0 bg-[radial-gradient(var(--color-surface-container-highest)_1.5px,transparent_1.5px)] [background-size:24px_24px] opacity-80" />
 
-      <div className="w-full max-w-md space-y-5 border-4 border-primary p-6 bg-white shadow-[8px_8px_0px_0px_#031633] rounded-3xl relative z-10 max-h-[90vh] overflow-y-auto">
-        <div className="text-center flex flex-col items-center">
-          <h2 className="text-2xl text-primary font-display uppercase tracking-wide">
-            Registro de Estudiantes
-          </h2>
-          <p className="text-on-surface-variant text-xs font-semibold">
-            Crea tu cuenta institucional para Kinal Break
-          </p>
+      <main className="relative z-10 flex-grow flex flex-col md:flex-row w-full min-h-[calc(100vh-68px)]">
+        <div className="hidden md:flex md:w-1/2 lg:w-3/5 relative bg-primary items-center justify-center overflow-hidden">
+          <div className="absolute inset-0 z-0">
+            <img alt="Kinal Cafeteria Ambient" className="w-full h-full object-cover opacity-60 mix-blend-multiply" src={BackLogin} />
+          </div>
+          <div className="absolute top-1/3 left-1/4 w-[500px] h-[500px] bg-secondary-container/15 rounded-full filter blur-[120px] pointer-events-none" />
+          <div className="relative z-20 flex flex-col items-center justify-center p-12 text-center max-w-xl">
+            <h1 className="text-white text-5xl lg:text-7xl font-display uppercase tracking-wider mb-6 drop-shadow-[0_4px_12px_rgba(3,22,51,0.6)]">Únete a Kinal</h1>
+            <p className="text-lg lg:text-xl text-inverse-primary leading-relaxed font-normal max-w-md drop-shadow-sm">Registra tu cuenta con tu correo institucional para acceder a Kinal-Break.</p>
+          </div>
+          <div className="absolute bottom-0 left-0 w-full h-44 bg-gradient-to-t from-primary to-transparent pointer-events-none" />
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-3">
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1 text-left">
-              <label className="block text-[10px] font-display tracking-wider text-on-surface uppercase">Nombre</label>
-              <div className="relative">
-                <input
-                  type="text"
-                  required
-                  {...register("name", { required: "Requerido" })}
-                  className="block w-full px-3 py-2 border-2 border-primary bg-surface-bright text-on-surface rounded-xl text-xs font-medium outline-none transition-all duration-200 input-focus-animation"
-                />
+        <div className="w-full md:w-1/2 lg:w-2/5 flex flex-col justify-center items-center p-6 md:p-12 relative">
+          <div className="w-full max-w-md space-y-8 border-4 border-primary p-8 bg-white backdrop-blur-md shadow-[12px_12px_0px_0px_#03163326] rounded-[3rem] relative z-10 transition-transform duration-300">
+            <div className="text-center md:text-left flex flex-col items-center md:items-start space-y-4">
+              <div className="inline-block p-1 bg-white border-2 border-dashed border-secondary-container rounded-2xl shadow-sm">
+                <img alt="Kinal-Break Institutional Logo" className="h-20 w-auto object-contain select-none" referrerPolicy="no-referrer" src={Logo} />
+              </div>
+
+              <div className="space-y-1 w-full text-center md:text-left">
+                <h2 className="text-3xl md:text-4xl text-primary font-display uppercase tracking-wide">Registrar cuenta</h2>
+                <p className="text-on-surface-variant text-sm font-semibold tracking-wide">Usa tu correo institucional @kinal.edu.gt o @kinal.org.gt</p>
               </div>
             </div>
 
-            <div className="space-y-1 text-left">
-              <label className="block text-[10px] font-display tracking-wider text-on-surface uppercase">Apellido</label>
-              <div className="relative">
-                <input
-                  type="text"
-                  required
-                  {...register("surname", { required: "Requerido" })}
-                  className="block w-full px-3 py-2 border-2 border-primary bg-surface-bright text-on-surface rounded-xl text-xs font-medium outline-none transition-all duration-200 input-focus-animation"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div className="space-y-1 text-left">
-            <label className="block text-[10px] font-display tracking-wider text-on-surface uppercase">Nombre de Usuario</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <User className="w-3.5 h-3.5 text-primary/70" />
-              </div>
-              <input
-                type="text"
-                required
-                {...register("username", { required: "Requerido" })}
-                className="block w-full pl-9 pr-3 py-2.5 border-2 border-primary bg-surface-bright text-on-surface rounded-xl text-xs font-medium outline-none transition-all duration-200 input-focus-animation"
-              />
-            </div>
-          </div>
-
-          <div className="space-y-1 text-left">
-            <label className="block text-[10px] font-display tracking-wider text-on-surface uppercase">Correo Institucional</label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Mail className="w-3.5 h-3.5 text-primary/70" />
-              </div>
-              <input
-                type="email"
-                required
-                {...register("email", { 
-                  required: "Requerido",
-                  validate: value => 
-                    value.endsWith("@kinal.edu.gt") || value.endsWith("@kinal.org.gt") || "Debe ser correo @kinal.edu.gt o @kinal.org.gt"
-                })}
-                className="block w-full pl-9 pr-3 py-2.5 border-2 border-primary bg-surface-bright text-on-surface rounded-xl text-xs font-medium outline-none transition-all duration-200 input-focus-animation"
-              />
-            </div>
-            {errors.email && (
-              <p className="text-[9px] text-status-error font-semibold pl-2">{errors.email.message}</p>
-            )}
-          </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <div className="space-y-1 text-left">
-              <label className="block text-[10px] font-display tracking-wider text-on-surface uppercase">Teléfono (8 dígitos)</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Phone className="w-3.5 h-3.5 text-primary/70" />
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5 text-left group">
+                  <label className="block text-sm font-display tracking-wider text-on-surface uppercase">Nombre</label>
+                  <input {...register('name', { required: 'Nombre requerido', maxLength: { value: 25, message: 'Máx 25 caracteres' } })} className="block w-full py-3.5 border-2 border-primary bg-surface-bright text-on-surface placeholder-on-surface-variant/50 rounded-full px-4" />
+                  {errors.name && <p className="text-xs text-status-error font-semibold">{errors.name.message}</p>}
                 </div>
-                <input
-                  type="text"
-                  required
-                  {...register("phone", { 
-                    required: "Requerido",
-                    pattern: {
-                      value: /^[0-9]{8}$/,
-                      message: "Debe tener 8 dígitos"
-                    }
-                  })}
-                  className="block w-full pl-9 pr-3 py-2.5 border-2 border-primary bg-surface-bright text-on-surface rounded-xl text-xs font-medium outline-none transition-all duration-200 input-focus-animation"
-                />
-              </div>
-              {errors.phone && (
-                <p className="text-[9px] text-status-error font-semibold pl-2">{errors.phone.message}</p>
-              )}
-            </div>
-
-            <div className="space-y-1 text-left">
-              <label className="block text-[10px] font-display tracking-wider text-on-surface uppercase">Contraseña</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="w-3.5 h-3.5 text-primary/70" />
+                <div className="space-y-1.5 text-left group">
+                  <label className="block text-sm font-display tracking-wider text-on-surface uppercase">Apellido</label>
+                  <input {...register('surname', { required: 'Apellido requerido', maxLength: { value: 25, message: 'Máx 25 caracteres' } })} className="block w-full py-3.5 border-2 border-primary bg-surface-bright text-on-surface placeholder-on-surface-variant/50 rounded-full px-4" />
+                  {errors.surname && <p className="text-xs text-status-error font-semibold">{errors.surname.message}</p>}
                 </div>
-                <input
-                  type="password"
-                  required
-                  {...register("password", { 
-                    required: "Requerido",
-                    minLength: {
-                      value: 8,
-                      message: "Mínimo 8 caracteres"
-                    }
-                  })}
-                  className="block w-full pl-9 pr-3 py-2.5 border-2 border-primary bg-surface-bright text-on-surface rounded-xl text-xs font-medium outline-none transition-all duration-200 input-focus-animation"
-                />
               </div>
-              {errors.password && (
-                <p className="text-[9px] text-status-error font-semibold pl-2">{errors.password.message}</p>
-              )}
-            </div>
-          </div>
 
-          <button
-            type="submit"
-            disabled={isLoadingAuth}
-            className="w-full flex justify-center items-center py-3 px-4 border border-transparent shadow-[4px_4px_0px_0px_var(--color-primary)] text-base font-display text-white bg-primary active:translate-y-0.5 active:translate-x-0.5 active:shadow-none transition-all duration-150 uppercase tracking-widest rounded-2xl cursor-pointer hover:bg-primary-container disabled:opacity-70 disabled:cursor-not-allowed mt-2"
-          >
-            {isLoadingAuth ? "Registrando..." : "Registrarse"}
-          </button>
+              <div className="space-y-1.5 text-left group">
+                <label className="block text-sm font-display tracking-wider text-on-surface uppercase">Correo Institucional</label>
+                <input type="email" placeholder="usuario@kinal.edu.gt" {...register('email', { required: 'El correo es requerido' })} className="block w-full py-3.5 border-2 border-primary bg-surface-bright text-on-surface rounded-full px-4" />
+                {errors.email && <p className="text-xs text-status-error font-semibold">{errors.email.message}</p>}
+              </div>
 
-          <div className="text-center pt-2">
-            <span className="text-xs font-medium text-on-surface-variant">
-              ¿Ya tienes cuenta?
-            </span>
-            <span onClick={() => navigate('/login')} className="text-xs font-bold text-secondary-container hover:text-secondary transition-colors ml-1.5 cursor-pointer">
-              Inicia sesión aquí
-            </span>
+              <div className="space-y-1.5 text-left group">
+                <label className="block text-sm font-display tracking-wider text-on-surface uppercase">Contraseña</label>
+                <input type="password" {...register('password', { required: 'La contraseña es requerida', minLength: { value: 8, message: 'Mínimo 8 caracteres' } })} className="block w-full py-3.5 border-2 border-primary bg-surface-bright text-on-surface rounded-full px-4" />
+                {errors.password && <p className="text-xs text-status-error font-semibold">{errors.password.message}</p>}
+              </div>
+
+              <div className="space-y-1.5 text-left group">
+                <label className="block text-sm font-display tracking-wider text-on-surface uppercase">Teléfono (8 dígitos)</label>
+                <input {...register('phone', { required: 'Teléfono requerido', minLength: { value: 8, message: 'Debe tener 8 dígitos' }, maxLength: { value: 8, message: 'Debe tener 8 dígitos' }, pattern: { value: /^\d{8}$/, message: 'Solo dígitos' } })} className="block w-full py-3.5 border-2 border-primary bg-surface-bright text-on-surface rounded-full px-4" />
+                {errors.phone && <p className="text-xs text-status-error font-semibold">{errors.phone.message}</p>}
+              </div>
+
+              <button type="submit" disabled={isLoadingAuth} className="w-full py-4 px-4 border border-transparent shadow-[4px_4px_0px_0px_var(--color-primary)] text-xl font-display text-white bg-primary transition-all duration-150 uppercase tracking-widest rounded-full">
+                {isLoadingAuth ? 'Registrando...' : 'Registrar'}
+              </button>
+
+              <div className="text-center pt-3">
+                <span className="text-sm font-medium text-on-surface-variant">¿Ya tienes cuenta?</span>
+                <span onClick={() => navigate('/login')} className="text-sm font-bold text-secondary-container hover:text-secondary transition-colors ml-1.5 cursor-pointer">Iniciar Sesión</span>
+              </div>
+            </form>
           </div>
-        </form>
-      </div>
+        </div>
+      </main>
     </div>
   );
 }
+
+export default RegisterPage;
