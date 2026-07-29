@@ -54,4 +54,44 @@ public class UsersController(IUserManagementService userManagementService) : Con
         var users = await userManagementService.GetUsersByRoleAsync(roleName);
         return Ok(users);
     }
+
+    [HttpGet]
+    [Authorize]
+    [EnableRateLimiting("ApiPolicy")]
+    public async Task<ActionResult<object>> GetAllUsers()
+    {
+        if (!await CurrentUserIsAdmin())
+        {
+            return StatusCode(403, new { success = false, message = "Forbidden" });
+        }
+
+        var users = await userManagementService.GetAllUsersAsync();
+        return Ok(new { success = true, data = users });
+    }
+
+    [HttpPost("{userId}/activate")]
+    [Authorize]
+    [EnableRateLimiting("ApiPolicy")]
+    public async Task<ActionResult<object>> ActivateUser(string userId)
+    {
+        if (!await CurrentUserIsAdmin())
+        {
+            return StatusCode(403, new { success = false, message = "Forbidden" });
+        }
+
+        try
+        {
+            var user = await userManagementService.ActivateUserAsync(userId);
+            return Ok(new
+            {
+                success = true,
+                message = "Usuario activado exitosamente",
+                data = user
+            });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(new { success = false, message = ex.Message });
+        }
+    }
 }

@@ -38,6 +38,11 @@ const orderSchema = new Schema(
             enum: ['Pendiente', 'Pagado', 'Entregado', 'No pagado', 'Cancelado'],
             default: 'Pendiente'
         },
+        metodoPago: {
+            type: String,
+            enum: ['Efectivo', 'Transferencia'],
+            default: 'Efectivo'
+        },
         totalCobrar: {
             type: Number,
             default: 0

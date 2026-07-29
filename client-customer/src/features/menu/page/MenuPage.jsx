@@ -7,7 +7,7 @@ import toast from "react-hot-toast";
 // Hora válida para desayunos/almuerzos: 10:00 AM – 3:00 PM
 function isOrderingAllowed(category) {
   const mealCategories = ["desayunos", "almuerzos"];
-  if (!mealCategories.includes(category)) return true; // bebidas/snacks sin restricción de hora
+  if (!mealCategories.includes(category)) return true; // bebidas/snacks/refaccion sin restricción de hora
   const now = new Date();
   const total = now.getHours() * 60 + now.getMinutes();
   return total >= 10 * 60 && total < 15 * 60; // 10:00 - 15:00
@@ -35,6 +35,7 @@ export function MenuPage() {
     { value: "", label: "Todos" },
     { value: "desayunos", label: "Desayunos" },
     { value: "almuerzos", label: "Almuerzos" },
+    { value: "refaccion", label: "Refacción" },
     { value: "bebidas", label: "Bebidas" },
     { value: "snacks", label: "Snacks" },
     { value: "complementos", label: "Complementos" }
@@ -79,11 +80,17 @@ export function MenuPage() {
 
   const handleConfirmOrder = async () => {
     if (!orderProduct) return;
+    const options = getAccompanimentOptions(orderProduct);
+    if (orderProduct.allowAccompaniments && options.length > 0 && !selectedAcomp) {
+      toast.error("Selecciona un acompañamiento");
+      return;
+    }
     setIsAddingToCart(true);
     try {
       await addToCart(orderProduct._id, 1, selectedAcomp || undefined);
       setOrderConfirmOpen(false);
       setOrderProduct(null);
+      setSelectedAcomp(null);
     } catch (err) {
       console.error(err);
     } finally {
@@ -252,9 +259,8 @@ export function MenuPage() {
                   {getAccompanimentOptions(orderProduct).map((acomp) => (
                     <button
                       key={acomp._id}
-                      onClick={() =>
-                        setSelectedAcomp(selectedAcomp === acomp._id ? null : acomp._id)
-                      }
+                      type="button"
+                      onClick={() => setSelectedAcomp(acomp._id)}
                       className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border-2 font-bold text-xs transition-all cursor-pointer ${
                         selectedAcomp === acomp._id
                           ? "border-[#ff8928] bg-[#fff4ea] text-[#031633] shadow-[2px_2px_0_0_#ff8928]"
@@ -268,6 +274,9 @@ export function MenuPage() {
                     </button>
                   ))}
                 </div>
+                <p className="text-[10px] font-bold text-[#031633]/50 uppercase mt-2">
+                  Solo puedes elegir un acompañamiento
+                </p>
               </div>
 
               <div className="flex gap-3 pt-2">
@@ -279,7 +288,7 @@ export function MenuPage() {
                 </button>
                 <button
                   onClick={handleConfirmOrder}
-                  disabled={isAddingToCart}
+                  disabled={isAddingToCart || !selectedAcomp}
                   className="flex-1 bg-[#ff8928] hover:bg-[#ff9d47] text-white border-2 border-[#031633] font-black py-3 rounded-2xl shadow-[2px_2px_0_0_#031633] cursor-pointer text-xs uppercase flex items-center justify-center gap-1.5 disabled:opacity-60"
                 >
                   {isAddingToCart ? "Agregando..." : "Agregar al Carrito"}

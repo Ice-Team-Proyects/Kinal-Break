@@ -9,11 +9,16 @@ import toast from 'react-hot-toast';
 // Hora válida para desayunos/almuerzos: 10:00 AM – 3:00 PM
 function isOrderingAllowed(category) {
   const mealCategories = ['desayunos', 'almuerzos'];
-  if (!mealCategories.includes(category)) return true; // bebidas/snacks sin restricción de hora
+  if (!mealCategories.includes(category)) return true; // bebidas/snacks/refaccion sin restricción de hora
   const now = new Date();
   const total = now.getHours() * 60 + now.getMinutes();
   return total >= 10 * 60 && total < 15 * 60; // 10:00 - 15:00
 }
+
+const DEFAULT_PRODUCT_PHOTO =
+  'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&auto=format&fit=crop&q=80';
+
+const isMealCategory = (category) => category === 'desayunos' || category === 'almuerzos';
 
 export function ProductsPage() {
   const { products, isLoading, fetchProducts, createProduct, updateProduct, deleteProduct, restoreProduct } = useProductsStore();
@@ -26,6 +31,8 @@ export function ProductsPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [imagePreview, setImagePreview] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [batchItems, setBatchItems] = useState([{ name: '', price: '', description: '' }]);
 
   // USER_ROLE: ordering state
   const [orderProduct, setOrderProduct] = useState(null); // product to order
@@ -37,6 +44,7 @@ export function ProductsPage() {
   const photoFile = watch('photo');
   const watchAllowAccompaniments = watch('allowAccompaniments');
   const watchCategory = watch('category');
+  const isBatchMode = !editingProduct && isMealCategory(watchCategory);
 
   useEffect(() => {
     fetchProducts();
@@ -64,6 +72,7 @@ export function ProductsPage() {
   const handleOpenAddModal = () => {
     setEditingProduct(null);
     setImagePreview('');
+    setBatchItems([{ name: '', price: '', description: '' }]);
     reset({ name: '', description: '', price: '', category: 'almuerzos', allowAccompaniments: false, accompaniments: [] });
     setIsModalOpen(true);
   };
@@ -71,6 +80,7 @@ export function ProductsPage() {
   const handleOpenEditModal = (product) => {
     setEditingProduct(product);
     setImagePreview(product.photo || '');
+    setBatchItems([{ name: '', price: '', description: '' }]);
     reset({
       name: product.name,
       description: product.description || '',
@@ -82,24 +92,70 @@ export function ProductsPage() {
     setIsModalOpen(true);
   };
 
-  const onSubmit = async (data) => {
-    const isMeal = data.category === 'desayunos' || data.category === 'almuerzos';
-    const allowAcc = isMeal ? data.allowAccompaniments : false;
-
+  const buildProductFormData = (data, item) => {
+    const isMeal = isMealCategory(data.category);
+    const allowAcc = isMeal ? !!data.allowAccompaniments : false;
     const formData = new FormData();
-    formData.append('name', data.name);
-    formData.append('description', data.description);
-    formData.append('price', data.category === 'complementos' ? 0 : data.price);
+    formData.append('name', item.name);
+    formData.append('description', item.description || '');
+    formData.append('price', data.category === 'complementos' ? 0 : item.price);
     formData.append('category', data.category);
     formData.append('allowAccompaniments', allowAcc);
-    if (data.photo && data.photo[0]) formData.append('photo', data.photo[0]);
-    if (isMeal && data.accompaniments) {
-      data.accompaniments.forEach((accId) => formData.append('accompaniments[]', accId));
+    if (data.photo && data.photo[0]) {
+      formData.append('photo', data.photo[0]);
+    } else if (!editingProduct) {
+      formData.append('photo', DEFAULT_PRODUCT_PHOTO);
     }
-    const success = editingProduct
-      ? await updateProduct(editingProduct._id, formData)
-      : await createProduct(formData);
-    if (success) setIsModalOpen(false);
+    if (isMeal && data.accompaniments) {
+      const accList = Array.isArray(data.accompaniments) ? data.accompaniments : [data.accompaniments];
+      accList.filter(Boolean).forEach((accId) => formData.append('accompaniments', accId));
+    }
+    return formData;
+  };
+
+  const onSubmit = async (data) => {
+    setIsSubmitting(true);
+    try {
+      if (editingProduct) {
+        const formData = buildProductFormData(data, {
+          name: data.name,
+          price: data.price,
+          description: data.description,
+        });
+        const success = await updateProduct(editingProduct._id, formData);
+        if (success) setIsModalOpen(false);
+        return;
+      }
+
+      if (isMealCategory(data.category)) {
+        const validItems = batchItems.filter((i) => i.name?.trim() && i.price !== '' && i.price !== null);
+        if (validItems.length === 0) {
+          toast.error('Agrega al menos un producto con nombre y precio');
+          return;
+        }
+        let okCount = 0;
+        for (const item of validItems) {
+          const formData = buildProductFormData(data, item);
+          const success = await createProduct(formData, { silent: true });
+          if (success) okCount += 1;
+        }
+        if (okCount > 0) {
+          toast.success(`${okCount} producto(s) creado(s)`);
+          setIsModalOpen(false);
+        }
+        return;
+      }
+
+      const formData = buildProductFormData(data, {
+        name: data.name,
+        price: data.price,
+        description: data.description,
+      });
+      const success = await createProduct(formData);
+      if (success) setIsModalOpen(false);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   // USER_ROLE ordering flow
@@ -146,6 +202,7 @@ export function ProductsPage() {
     { value: '', label: 'Todos' },
     { value: 'desayunos', label: 'Desayunos' },
     { value: 'almuerzos', label: 'Almuerzos' },
+    { value: 'refaccion', label: 'Refacción' },
     { value: 'bebidas', label: 'Bebidas' },
     { value: 'snacks', label: 'Snacks' },
     { value: 'complementos', label: 'Complementos' }
@@ -323,43 +380,111 @@ export function ProductsPage() {
 
             <form onSubmit={handleSubmit(onSubmit)} className="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
               <div className="flex flex-col gap-2">
-                <label className="text-xs font-black text-[#031633] uppercase">Nombre del Producto</label>
-                <input type="text" required {...register('name')} className="px-4 py-3 bg-[#f5f3f6] rounded-2xl border-2 border-[#031633] font-bold text-sm focus:outline-none input-focus-animation" />
+                <label className="text-xs font-black text-[#031633] uppercase">Categoría</label>
+                <select {...register('category')} className="px-4 py-3 bg-[#f5f3f6] rounded-2xl border-2 border-[#031633] font-bold text-sm focus:outline-none input-focus-animation cursor-pointer">
+                  <option value="desayunos">Desayunos</option>
+                  <option value="almuerzos">Almuerzos</option>
+                  <option value="refaccion">Refacción</option>
+                  <option value="bebidas">Bebidas</option>
+                  <option value="snacks">Snacks</option>
+                  <option value="complementos">Complementos</option>
+                </select>
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
-                {watchCategory !== 'complementos' ? (
-                  <div className="flex flex-col gap-2">
-                    <label className="text-xs font-black text-[#031633] uppercase">Precio (Q)</label>
-                    <input type="number" step="0.01" required {...register('price')} className="px-4 py-3 bg-[#f5f3f6] rounded-2xl border-2 border-[#031633] font-bold text-sm focus:outline-none input-focus-animation" />
+              {isBatchMode ? (
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <label className="text-xs font-black text-[#031633] uppercase">
+                      Productos a crear ({batchItems.length})
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => setBatchItems((prev) => [...prev, { name: '', price: '', description: '' }])}
+                      className="text-[10px] font-black uppercase text-[#ff8928] border-2 border-[#031633] px-3 py-1.5 rounded-xl bg-white shadow-[2px_2px_0_0_#031633] cursor-pointer"
+                    >
+                      + Agregar otro
+                    </button>
                   </div>
-                ) : (
+                  {batchItems.map((item, idx) => (
+                    <div key={idx} className="bg-[#f5f3f6] border-2 border-[#031633] rounded-2xl p-4 space-y-3 relative">
+                      {batchItems.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => setBatchItems((prev) => prev.filter((_, i) => i !== idx))}
+                          className="absolute top-2 right-2 text-[#031633] hover:text-[#7d0a42] cursor-pointer"
+                        >
+                          <X size={16} />
+                        </button>
+                      )}
+                      <p className="text-[10px] font-black uppercase text-[#ff8928]">Ítem {idx + 1}</p>
+                      <input
+                        type="text"
+                        required
+                        placeholder="Nombre"
+                        value={item.name}
+                        onChange={(e) =>
+                          setBatchItems((prev) => prev.map((row, i) => (i === idx ? { ...row, name: e.target.value } : row)))
+                        }
+                        className="w-full px-4 py-3 bg-white rounded-2xl border-2 border-[#031633] font-bold text-sm focus:outline-none"
+                      />
+                      <div className="grid grid-cols-2 gap-3">
+                        <input
+                          type="number"
+                          step="0.01"
+                          required
+                          placeholder="Precio (Q)"
+                          value={item.price}
+                          onChange={(e) =>
+                            setBatchItems((prev) => prev.map((row, i) => (i === idx ? { ...row, price: e.target.value } : row)))
+                          }
+                          className="px-4 py-3 bg-white rounded-2xl border-2 border-[#031633] font-bold text-sm focus:outline-none"
+                        />
+                        <input
+                          type="text"
+                          placeholder="Descripción (opcional)"
+                          value={item.description}
+                          onChange={(e) =>
+                            setBatchItems((prev) => prev.map((row, i) => (i === idx ? { ...row, description: e.target.value } : row)))
+                          }
+                          className="px-4 py-3 bg-white rounded-2xl border-2 border-[#031633] font-bold text-sm focus:outline-none"
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <>
                   <div className="flex flex-col gap-2">
-                    <label className="text-xs font-black text-[#031633] uppercase">Precio (Q)</label>
-                    <div className="px-4 py-3 bg-[#f5f3f6] rounded-2xl border-2 border-dashed border-[#031633]/30 font-bold text-sm text-[#ff8928] uppercase select-none flex items-center justify-center h-[46px]">
-                      Incluido en Almuerzo/Desayuno
+                    <label className="text-xs font-black text-[#031633] uppercase">Nombre del Producto</label>
+                    <input type="text" required={!isBatchMode} {...register('name')} className="px-4 py-3 bg-[#f5f3f6] rounded-2xl border-2 border-[#031633] font-bold text-sm focus:outline-none input-focus-animation" />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    {watchCategory !== 'complementos' ? (
+                      <div className="flex flex-col gap-2">
+                        <label className="text-xs font-black text-[#031633] uppercase">Precio (Q)</label>
+                        <input type="number" step="0.01" required={!isBatchMode} {...register('price')} className="px-4 py-3 bg-[#f5f3f6] rounded-2xl border-2 border-[#031633] font-bold text-sm focus:outline-none input-focus-animation" />
+                      </div>
+                    ) : (
+                      <div className="flex flex-col gap-2">
+                        <label className="text-xs font-black text-[#031633] uppercase">Precio (Q)</label>
+                        <div className="px-4 py-3 bg-[#f5f3f6] rounded-2xl border-2 border-dashed border-[#031633]/30 font-bold text-sm text-[#ff8928] uppercase select-none flex items-center justify-center h-[46px]">
+                          Incluido en Almuerzo/Desayuno
+                        </div>
+                      </div>
+                    )}
+                    <div className="flex flex-col gap-2">
+                      <label className="text-xs font-black text-[#031633] uppercase">Descripción</label>
+                      <input type="text" {...register('description')} className="px-4 py-3 bg-[#f5f3f6] rounded-2xl border-2 border-[#031633] font-bold text-sm focus:outline-none input-focus-animation" />
                     </div>
                   </div>
-                )}
-                <div className="flex flex-col gap-2">
-                  <label className="text-xs font-black text-[#031633] uppercase">Categoría</label>
-                  <select {...register('category')} className="px-4 py-3 bg-[#f5f3f6] rounded-2xl border-2 border-[#031633] font-bold text-sm focus:outline-none input-focus-animation cursor-pointer">
-                    <option value="desayunos">Desayunos</option>
-                    <option value="almuerzos">Almuerzos</option>
-                    <option value="bebidas">Bebidas</option>
-                    <option value="snacks">Snacks</option>
-                    <option value="complementos">Complementos</option>
-                  </select>
-                </div>
-              </div>
+                </>
+              )}
 
               <div className="flex flex-col gap-2">
-                <label className="text-xs font-black text-[#031633] uppercase">Descripción</label>
-                <textarea {...register('description')} className="px-4 py-3 bg-[#f5f3f6] rounded-2xl border-2 border-[#031633] font-bold text-sm focus:outline-none input-focus-animation h-20 resize-none" />
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <label className="text-xs font-black text-[#031633] uppercase">Foto del Producto</label>
+                <label className="text-xs font-black text-[#031633] uppercase">
+                  {isBatchMode ? 'Foto compartida (opcional)' : 'Foto del Producto'}
+                </label>
                 <div className="flex items-center gap-4">
                   <div className="w-20 h-20 rounded-2xl border-2 border-[#031633] bg-[#f5f3f6] flex items-center justify-center overflow-hidden shrink-0">
                     {imagePreview ? <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" /> : <ImageIcon size={24} className="text-slate-400" />}
@@ -371,8 +496,7 @@ export function ProductsPage() {
                 </div>
               </div>
 
-              {/* Accompaniments — now selects from other Products */}
-              {(watchCategory === 'desayunos' || watchCategory === 'almuerzos') && (
+              {isMealCategory(watchCategory) && (
                 <>
                   <div className="flex items-center gap-3 py-2 border-t border-b border-slate-100">
                     <input type="checkbox" id="allowAccompaniments" {...register('allowAccompaniments')} className="w-4 h-4 rounded text-[#ff8928] border-2 border-[#031633] focus:ring-0 cursor-pointer" />
@@ -383,7 +507,9 @@ export function ProductsPage() {
 
                   {watchAllowAccompaniments && (
                     <div className="flex flex-col gap-2">
-                      <label className="text-xs font-black text-[#031633] uppercase">Selecciona productos como acompañamientos</label>
+                      <label className="text-xs font-black text-[#031633] uppercase">
+                        Selecciona acompañamientos {isBatchMode ? '(aplican a todos)' : ''}
+                      </label>
                       <div className="grid grid-cols-2 gap-2 bg-[#f5f3f6] p-4 rounded-2xl border-2 border-[#031633] max-h-36 overflow-y-auto">
                         {products
                           .filter(p => p.isActive && !p.isDeleted && p._id !== editingProduct?._id)
@@ -399,8 +525,18 @@ export function ProductsPage() {
                 </>
               )}
 
-              <button type="submit" className="w-full bg-[#ff8928] hover:bg-[#ff9d47] text-white font-black py-4 rounded-2xl border-2 border-[#031633] shadow-[4px_4px_0_0_#031633] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[2px_2px_0_0_#031633] transition-all uppercase tracking-wider text-sm cursor-pointer mt-4">
-                {editingProduct ? 'Guardar Cambios' : 'Crear Producto'}
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="w-full bg-[#ff8928] hover:bg-[#ff9d47] text-white font-black py-4 rounded-2xl border-2 border-[#031633] shadow-[4px_4px_0_0_#031633] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[2px_2px_0_0_#031633] transition-all uppercase tracking-wider text-sm cursor-pointer mt-4 disabled:opacity-60"
+              >
+                {isSubmitting
+                  ? 'Guardando...'
+                  : editingProduct
+                    ? 'Guardar Cambios'
+                    : isBatchMode
+                      ? `Crear ${batchItems.length} Producto(s)`
+                      : 'Crear Producto'}
               </button>
             </form>
           </div>

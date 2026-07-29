@@ -28,6 +28,7 @@ try {
 const CATEGORIES = [
   { id: 'desayunos', label: 'Desayunos' },
   { id: 'almuerzos', label: 'Almuerzos' },
+  { id: 'refaccion', label: 'Refacción' },
   { id: 'bebidas', label: 'Bebidas' },
   { id: 'snacks', label: 'Snacks' },
   { id: 'complementos', label: 'Complementos' },

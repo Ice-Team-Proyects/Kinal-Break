@@ -8,6 +8,30 @@ import {
 } from "../Products/product.service.js";
 import { broadcast } from "../events/sse.js";
 
+const normalizeProductBody = (body) => {
+    const data = { ...body };
+
+    // Multer/FormData often sends accompaniments[] instead of accompaniments
+    const rawAcc = data.accompaniments ?? data['accompaniments[]'];
+    if (rawAcc !== undefined) {
+        data.accompaniments = Array.isArray(rawAcc) ? rawAcc : [rawAcc];
+    }
+    delete data['accompaniments[]'];
+
+    if (data.allowAccompaniments !== undefined) {
+        data.allowAccompaniments =
+            data.allowAccompaniments === true ||
+            data.allowAccompaniments === 'true' ||
+            data.allowAccompaniments === 'on';
+    }
+
+    if (data.price !== undefined) {
+        data.price = Number(data.price);
+    }
+
+    return data;
+};
+
 export const createProduct = async (req,res)=>{
     try{
 
@@ -18,7 +42,7 @@ export const createProduct = async (req,res)=>{
         }
 
         const product = await createProductService({
-            ...req.body,
+            ...normalizeProductBody(req.body),
             photo: photoUrl || req.body.photo || ""
         });
 
@@ -45,7 +69,7 @@ export const getProducts = async(req,res)=>{
 export const updateProduct = async(req,res)=>{
 
     try{
-        const updateData = { ...req.body };
+        const updateData = normalizeProductBody(req.body);
 
         if (req.file) {
             // si llegó un archivo nuevo, obtenemos la URL del objeto multer

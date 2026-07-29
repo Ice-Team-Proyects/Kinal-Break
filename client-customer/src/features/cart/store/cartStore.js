@@ -37,10 +37,10 @@ export const useCartStore = create((set, get) => ({
     }
   },
 
-  confirmOrder: async () => {
+  confirmOrder: async (metodoPago = 'Efectivo') => {
     set({ isLoading: true });
     try {
-      await pedidosAxios.post('/confirmar');
+      await pedidosAxios.post('/confirmar', { metodoPago });
       toast.success('Pedido confirmado con éxito');
       set({ cartItems: [], totalTemporal: 0 });
       return true;

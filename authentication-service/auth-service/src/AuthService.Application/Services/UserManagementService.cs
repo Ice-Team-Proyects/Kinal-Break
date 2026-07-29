@@ -71,7 +71,41 @@ public class UserManagementService(IUserRepository users, IRoleRepository roles,
     {
         roleName = roleName?.Trim().ToUpperInvariant() ?? string.Empty;
         var usersInRole = await roles.GetUsersByRoleAsync(roleName);
-        return usersInRole.Select(u => new UserResponseDto
+        return usersInRole.Select(u => MapUser(u, roleName)).ToList();
+    }
+
+    public async Task<IReadOnlyList<UserResponseDto>> GetAllUsersAsync()
+    {
+        var all = await users.GetAllAsync();
+        return all.Select(u => MapUser(u)).ToList();
+    }
+
+    public async Task<UserResponseDto> ActivateUserAsync(string userId)
+    {
+        if (string.IsNullOrWhiteSpace(userId))
+            throw new ArgumentException("Invalid userId", nameof(userId));
+
+        var user = await users.GetByIdAsync(userId);
+
+        user.Status = true;
+        if (user.UserEmail != null)
+        {
+            user.UserEmail.EmailVerified = true;
+            user.UserEmail.EmailVerificationToken = null;
+            user.UserEmail.EmailVerificationTokenExpiry = null;
+        }
+
+        await users.UpdateUserAsync(user);
+        return MapUser(user);
+    }
+
+    private UserResponseDto MapUser(User u, string? roleOverride = null)
+    {
+        var role = roleOverride
+            ?? u.UserRoles.FirstOrDefault()?.Role?.Name
+            ?? RoleConstants.USER_ROLE;
+
+        return new UserResponseDto
         {
             Id = u.Id,
             Name = u.Name,
@@ -80,11 +114,11 @@ public class UserManagementService(IUserRepository users, IRoleRepository roles,
             Email = u.Email,
             ProfilePicture = cloudinary.GetFullImageUrl(u.UserProfile?.ProfilePicture ?? string.Empty),
             Phone = u.UserProfile?.Phone ?? string.Empty,
-            Role = roleName,
+            Role = role,
             Status = u.Status,
             IsEmailVerified = u.UserEmail?.EmailVerified ?? false,
             CreatedAt = u.CreatedAt,
             UpdatedAt = u.UpdatedAt
-        }).ToList();
+        };
     }
 }

@@ -33,6 +33,7 @@ export const createProductValidator = [
         .isIn([
             "desayunos",
             "almuerzos",
+            "refaccion",
             "bebidas",
             "snacks",
             "complementos"
@@ -60,6 +61,7 @@ export const updateProductValidator = [
         .isIn([
             "desayunos",
             "almuerzos",
+            "refaccion",
             "bebidas",
             "snacks",
             "complementos"
@@ -89,6 +91,7 @@ export const queryProductValidator = [
         .isIn([
             "desayunos",
             "almuerzos",
+            "refaccion",
             "bebidas",
             "snacks",
             "complementos"

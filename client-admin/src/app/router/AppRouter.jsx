@@ -10,6 +10,7 @@ import { ProductsPage } from "../../features/products/page/ProductsPage.jsx";
 import { OrdersPage } from "../../features/orders/page/OrdersPage.jsx";
 import { PaymentsPage } from "../../features/payments/page/PaymentsPage.jsx";
 import { ReportsPage } from "../../features/reports/page/ReportsPage.jsx";
+import { UsersPage } from "../../features/users/page/UsersPage.jsx";
 import DashboardIndex from "../../features/dashboard/page/DashboardIndex.jsx";
 
 export const AppRouter = () => {
@@ -33,6 +34,7 @@ export const AppRouter = () => {
             <Route path="products" element={<ProductsPage />} />
             <Route path="orders" element={<OrdersPage />} />
             {/* Admin-only routes */}
+            {isAdmin && <Route path="users" element={<UsersPage />} />}
             {isAdmin && <Route path="payments" element={<PaymentsPage />} />}
             {isAdmin && <Route path="reports" element={<ReportsPage />} />}
             
