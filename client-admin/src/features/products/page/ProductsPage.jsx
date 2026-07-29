@@ -41,10 +41,19 @@ export function ProductsPage() {
   const [isOrdering, setIsOrdering] = useState(false);
   const [orderConfirmOpen, setOrderConfirmOpen] = useState(false);
 
-  const { register, handleSubmit, reset, watch } = useForm();
+  const { register, handleSubmit, reset, watch } = useForm({
+    defaultValues: {
+      name: '',
+      description: '',
+      price: '',
+      category: 'almuerzos',
+      allowAccompaniments: false,
+      accompaniments: [],
+    },
+  });
   const photoFile = watch('photo');
   const watchAllowAccompaniments = watch('allowAccompaniments');
-  const watchCategory = watch('category');
+  const watchCategory = watch('category') || 'almuerzos';
   const isBatchMode = !editingProduct && isMealCategory(watchCategory);
 
   useEffect(() => {
@@ -73,7 +82,8 @@ export function ProductsPage() {
   const handleOpenAddModal = () => {
     setEditingProduct(null);
     setImagePreview('');
-    setBatchItems([emptyBatchItem()]);
+    // Empieza con 2 filas para que se note que cada una tiene su imagen
+    setBatchItems([emptyBatchItem(), emptyBatchItem()]);
     reset({ name: '', description: '', price: '', category: 'almuerzos', allowAccompaniments: false, accompaniments: [] });
     setIsModalOpen(true);
   };
@@ -385,10 +395,10 @@ export function ProductsPage() {
       {/* =================== ADMIN: Add/Edit Product Modal =================== */}
       {isAdmin && isModalOpen && (
         <div className="fixed inset-0 bg-[#031633]/60 backdrop-blur-[4px] flex items-center justify-center z-50 p-4 overflow-y-auto">
-          <div className="bg-white rounded-3xl border-2 border-[#031633] shadow-[8px_8px_0_0_#031633] w-full max-w-lg overflow-hidden my-8">
+          <div className={`bg-white rounded-3xl border-2 border-[#031633] shadow-[8px_8px_0_0_#031633] w-full overflow-hidden my-8 ${isBatchMode ? 'max-w-2xl' : 'max-w-lg'}`}>
             <div className="p-6 bg-[#f5f3f6] border-b-2 border-[#031633] flex justify-between items-center">
               <h2 className="text-xl font-black text-[#031633] uppercase font-display tracking-wider">
-                {editingProduct ? 'Editar Producto' : 'Nuevo Producto'}
+                {editingProduct ? 'Editar Producto' : isBatchMode ? 'Crear varios productos' : 'Nuevo Producto'}
               </h2>
               <button onClick={() => setIsModalOpen(false)} className="text-[#031633] hover:text-[#ff8928] transition-colors cursor-pointer">
                 <X size={20} />
@@ -409,21 +419,26 @@ export function ProductsPage() {
               </div>
 
               {isBatchMode ? (
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <label className="text-xs font-black text-[#031633] uppercase">
-                      Productos a crear ({batchItems.length})
-                    </label>
+                <div className="space-y-4">
+                  <div className="flex items-center justify-between gap-2">
+                    <div>
+                      <label className="text-xs font-black text-[#031633] uppercase block">
+                        Productos a crear ({batchItems.length})
+                      </label>
+                      <p className="text-[10px] font-bold text-[#ff8928] uppercase mt-0.5">
+                        Cada uno tiene su propia imagen
+                      </p>
+                    </div>
                     <button
                       type="button"
                       onClick={() => setBatchItems((prev) => [...prev, emptyBatchItem()])}
-                      className="text-[10px] font-black uppercase text-[#ff8928] border-2 border-[#031633] px-3 py-1.5 rounded-xl bg-white shadow-[2px_2px_0_0_#031633] cursor-pointer"
+                      className="text-[10px] font-black uppercase text-white bg-[#ff8928] border-2 border-[#031633] px-3 py-2 rounded-xl shadow-[2px_2px_0_0_#031633] cursor-pointer shrink-0"
                     >
                       + Agregar otro
                     </button>
                   </div>
                   {batchItems.map((item, idx) => (
-                    <div key={idx} className="bg-[#f5f3f6] border-2 border-[#031633] rounded-2xl p-4 space-y-3 relative">
+                    <div key={idx} className="bg-[#f5f3f6] border-2 border-[#031633] rounded-2xl p-4 space-y-3 relative shadow-[3px_3px_0_0_#031633]">
                       {batchItems.length > 1 && (
                         <button
                           type="button"
@@ -434,12 +449,14 @@ export function ProductsPage() {
                               return prev.filter((_, i) => i !== idx);
                             })
                           }
-                          className="absolute top-2 right-2 text-[#031633] hover:text-[#7d0a42] cursor-pointer"
+                          className="absolute top-2 right-2 text-[#031633] hover:text-[#7d0a42] cursor-pointer z-10"
                         >
                           <X size={16} />
                         </button>
                       )}
-                      <p className="text-[10px] font-black uppercase text-[#ff8928]">Ítem {idx + 1}</p>
+                      <p className="text-[10px] font-black uppercase text-[#ff8928]">
+                        {watchCategory === 'desayunos' ? 'Desayuno' : 'Almuerzo'} #{idx + 1}
+                      </p>
                       <input
                         type="text"
                         required
@@ -472,17 +489,27 @@ export function ProductsPage() {
                           className="px-4 py-3 bg-white rounded-2xl border-2 border-[#031633] font-bold text-sm focus:outline-none"
                         />
                       </div>
-                      <div className="flex items-center gap-3">
-                        <div className="w-16 h-16 rounded-2xl border-2 border-[#031633] bg-white flex items-center justify-center overflow-hidden shrink-0">
+
+                      {/* Foto individual de ESTE producto */}
+                      <div className="space-y-2">
+                        <label className="text-[10px] font-black text-[#031633] uppercase">
+                          Foto de este {watchCategory === 'desayunos' ? 'desayuno' : 'almuerzo'}
+                        </label>
+                        <label className="flex flex-col items-center justify-center gap-2 w-full min-h-[120px] px-4 py-4 bg-white border-2 border-dashed border-[#031633] rounded-2xl cursor-pointer hover:bg-[#fff4ea] transition-colors">
                           {item.preview ? (
-                            <img src={item.preview} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover" />
+                            <img
+                              src={item.preview}
+                              alt={`Foto producto ${idx + 1}`}
+                              className="w-full max-h-40 object-cover rounded-xl border-2 border-[#031633]"
+                            />
                           ) : (
-                            <ImageIcon size={20} className="text-slate-400" />
+                            <>
+                              <ImageIcon size={28} className="text-[#ff8928]" />
+                              <span className="text-xs font-black text-[#031633] uppercase text-center">
+                                Subir imagen #{idx + 1}
+                              </span>
+                            </>
                           )}
-                        </div>
-                        <label className="flex-1 px-4 py-3 bg-white border-2 border-[#031633] border-dashed rounded-2xl cursor-pointer hover:bg-[#efedf0] transition-colors flex items-center justify-center font-bold text-xs text-[#031633]/60 gap-2">
-                          <ImageIcon size={14} />
-                          {item.photoFile ? 'Cambiar imagen' : 'Imagen de este producto'}
                           <input
                             type="file"
                             accept="image/*"
