@@ -39,7 +39,10 @@ export function RegisterPage() {
     });
 
     if (result.success) {
-      toast.success(result.message || 'Registrado. Revisa tu correo para verificar.');
+      toast.success(
+        result.message ||
+          'Registrado. Espera a que un administrador acepte la cuenta en Usuarios.'
+      );
       navigate('/login');
     } else {
       toast.error(result.error || 'Error al registrarse');
