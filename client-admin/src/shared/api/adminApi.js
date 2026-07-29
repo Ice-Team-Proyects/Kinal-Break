@@ -4,7 +4,7 @@ import axios from 'axios';
 // Axios instance for pedidos-service (port 3010)
 const pedidosAxios = axios.create({
   baseURL: import.meta.env.VITE_PEDIDOS_URL || 'http://localhost:3010/api',
-  timeout: 8000,
+  timeout: 30000,
   headers: { 'Content-Type': 'application/json' },
 });
 pedidosAxios.interceptors.request.use((config) => {
