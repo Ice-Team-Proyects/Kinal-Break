@@ -55,6 +55,8 @@ app.UseSerilogRequestLogging();
 // Add Security Headers using NetEscapades package
 app.UseSecurityHeaders(policies => policies
     .AddDefaultSecurityHeaders()
+    // API is consumed cross-site from Render frontends (*.onrender.com are different sites).
+    .AddCrossOriginResourcePolicy(builder => builder.CrossOrigin())
     .RemoveServerHeader()
     .AddFrameOptionsDeny()
     .AddXssProtectionBlock()

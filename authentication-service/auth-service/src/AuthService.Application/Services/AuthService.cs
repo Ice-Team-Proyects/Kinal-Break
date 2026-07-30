@@ -144,7 +144,7 @@ public class AuthService(
             {
                 Success = true,
                 User = MapToUserResponseDto(createdUser),
-                Message = "Usuario registrado, pero no se pudo enviar el email de verificación. Usa 'Reenviar verificación'.",
+                Message = "Usuario registrado. Un administrador debe aceptar tu cuenta en Usuarios antes de iniciar sesión.",
                 EmailVerificationRequired = true
             };
         }
@@ -153,7 +153,7 @@ public class AuthService(
         {
             Success = true,
             User = MapToUserResponseDto(createdUser),
-            Message = "Usuario registrado exitosamente. Por favor, verifica tu email para activar la cuenta.",
+            Message = "Usuario registrado. Un administrador debe aceptar tu cuenta en Usuarios antes de iniciar sesión.",
             EmailVerificationRequired = true
         };
     }
@@ -186,7 +186,8 @@ public class AuthService(
         {
             logger.LogDisabledAccountLogin(user.Username);
             logger.LogFailedLoginAttempt();
-            throw new UnauthorizedAccessException("User account is disabled");
+            throw new UnauthorizedAccessException(
+                "Tu cuenta está pendiente de aprobación. Un administrador debe aceptarte en Usuarios.");
         }
 
         // Verificar contraseña

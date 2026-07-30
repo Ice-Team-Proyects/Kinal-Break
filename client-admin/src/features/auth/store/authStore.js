@@ -74,7 +74,7 @@ export const useAuthStore = create(
             });
             return { 
               success: true, 
-              message: message || 'Usuario registrado. Por favor verifica tu email.',
+              message: message || 'Usuario registrado. Un administrador debe aceptar la cuenta en Usuarios.',
               requiresVerification: true,
               email,
             };
