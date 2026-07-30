@@ -9,7 +9,7 @@ import {
     exportSalesExcel,
     exportSalesPDF
 } from "./report.service.js";
-import Payment from "../Payment/payment.model.js";
+import Order from "../Order/order.model.js";
 
 
 export const totalSalesReport = async (req, res) => {
@@ -89,8 +89,8 @@ export const exportExcelReport = async (req, res) => {
 
 export const exportPDFReport = async (req, res) => {
     try {
-        const payments = await Payment.find({ isDeleted: false });
-        const doc = await exportSalesPDF(payments);
+        const orders = await Order.find({ activo: { $ne: false }, estado: "Entregado" }).sort({ updatedAt: -1 });
+        const doc = await exportSalesPDF(orders);
 
         res.setHeader("Content-Type", "application/pdf");
         res.setHeader("Content-Disposition", "attachment; filename=sales_report.pdf");

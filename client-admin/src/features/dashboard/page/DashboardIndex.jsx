@@ -128,6 +128,9 @@ export default function DashboardIndex() {
             <span className="text-3xl text-primary leading-none font-black tracking-tight anime-glow-text">
               Q{(totalSales.totalVentas || 0).toFixed(2)}
             </span>
+            <p className="text-[10px] font-bold text-[#031633]/50 uppercase mt-2">
+              Solo pedidos pagados y entregados
+            </p>
           </div>
         </div>
 

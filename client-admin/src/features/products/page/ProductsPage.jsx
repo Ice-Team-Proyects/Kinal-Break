@@ -311,7 +311,7 @@ export function ProductsPage() {
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
           {products
-            .filter(p => isUser ? (p.isActive && !p.isDeleted) : true) // USER_ROLE only sees active
+            .filter(p => isUser ? (p.isActive && !p.isDeleted && p.category !== 'complementos') : true) // USER_ROLE: no complementos sueltos
             .map((product) => (
             <div
               key={product._id}
