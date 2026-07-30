@@ -6,7 +6,7 @@ import { useAuthStore } from '../../auth/store/authStore';
 import { agregarAlCarritoRequest, confirmarPedidoRequest } from '../../../shared/api/adminApi';
 import toast from 'react-hot-toast';
 
-// Desayunos: 8:55–9:20 | Almuerzos: 14:55–15:20
+// Desayunos: 8:55–9:20 | Almuerzos: 11:45–15:25
 function isOrderingAllowed(category) {
   if (category !== 'desayunos' && category !== 'almuerzos') return true;
   const now = new Date();
@@ -14,12 +14,12 @@ function isOrderingAllowed(category) {
   if (category === 'desayunos') {
     return total >= 8 * 60 + 55 && total <= 9 * 60 + 20;
   }
-  return total >= 14 * 60 + 55 && total <= 15 * 60 + 20;
+  return total >= 11 * 60 + 45 && total <= 15 * 60 + 25;
 }
 
 function mealHoursLabel(category) {
   if (category === 'desayunos') return '8:55 a.m. y 9:20 a.m.';
-  if (category === 'almuerzos') return '2:55 p.m. y 3:20 p.m.';
+  if (category === 'almuerzos') return '11:45 a.m. y 3:25 p.m.';
   return 'el horario permitido';
 }
 
@@ -271,7 +271,7 @@ export function ProductsPage() {
         {isUser && (
           <div className="flex items-center gap-2 bg-white border-2 border-[#031633] rounded-2xl px-4 py-2 shadow-[2px_2px_0_0_#031633] text-xs font-black text-[#031633] uppercase">
             <Clock size={14} className="text-[#ff8928]" />
-            Desayuno 8:55–9:20 · Almuerzo 2:55–3:20
+            Desayuno 8:55–9:20 · Almuerzo 11:45–15:25
           </div>
         )}
       </div>

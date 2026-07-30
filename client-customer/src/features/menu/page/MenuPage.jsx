@@ -4,7 +4,7 @@ import { useCartStore } from "../../cart/store/cartStore";
 import { Search, Plus, Image as ImageIcon, Clock, Check, X } from "lucide-react";
 import toast from "react-hot-toast";
 
-// Desayunos: 8:55–9:20 | Almuerzos: 14:55–15:20
+// Desayunos: 8:55–9:20 | Almuerzos: 11:45–15:25
 function isOrderingAllowed(category) {
   if (category !== "desayunos" && category !== "almuerzos") return true;
   const now = new Date();
@@ -13,12 +13,12 @@ function isOrderingAllowed(category) {
     return total >= 8 * 60 + 55 && total <= 9 * 60 + 20;
   }
   // almuerzos
-  return total >= 14 * 60 + 55 && total <= 15 * 60 + 20;
+  return total >= 11 * 60 + 45 && total <= 15 * 60 + 25;
 }
 
 function mealHoursLabel(category) {
   if (category === "desayunos") return "8:55 a.m. y 9:20 a.m.";
-  if (category === "almuerzos") return "2:55 p.m. y 3:20 p.m.";
+  if (category === "almuerzos") return "11:45 a.m. y 3:25 p.m.";
   return "el horario permitido";
 }
 
@@ -123,7 +123,7 @@ export function MenuPage() {
         </div>
         <div className="flex items-center gap-1.5 bg-white border-2 border-[#031633] rounded-xl px-3 py-1.5 shadow-[2px_2px_0_0_#031633] text-[9px] font-black text-[#031633] uppercase shrink-0">
           <Clock size={12} className="text-[#ff8928]" />
-          Comidas: desayuno 8:55–9:20 · almuerzo 2:55–3:20
+          Comidas: desayuno 8:55–9:20 · almuerzo 11:45–15:25
         </div>
       </div>
 
