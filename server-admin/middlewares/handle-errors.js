@@ -65,7 +65,7 @@ export const errorHandler = (err, req, res, next) => {
   // Error por defecto del servidor
   res.status(500).json({
     success: false,
-    message: 'Error interno del servidor',
+    message: err.message || 'Error interno del servidor',
     error: 'INTERNAL_SERVER_ERROR',
     ...(process.env.NODE_ENV === 'development' && {
       details: err.message,
