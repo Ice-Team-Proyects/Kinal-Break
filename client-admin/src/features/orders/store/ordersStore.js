@@ -4,6 +4,7 @@ import {
   updateOrderStatusRequest, 
   deleteOrderRequest 
 } from '../../../shared/api/adminApi';
+import { useReportsStore } from '../../reports/store/reportsStore';
 import toast from 'react-hot-toast';
 
 export const useOrdersStore = create((set, get) => ({
@@ -35,14 +36,9 @@ export const useOrdersStore = create((set, get) => ({
       await updateOrderStatusRequest(id, { estado, confirmacionDoble });
       toast.success(`Pedido actualizado a: ${estado}`);
       get().fetchOrders();
+      // Income only counts Entregado; refresh metrics after relevant transitions
       if (estado === 'Entregado' || estado === 'Pagado' || estado === 'No pagado' || estado === 'Cancelado') {
-        // Refresh income metrics after status changes that affect reports
-        try {
-          const { useReportsStore } = await import('../../reports/store/reportsStore');
-          useReportsStore.getState().fetchAllReports();
-        } catch (e) {
-          console.warn(e);
-        }
+        useReportsStore.getState().fetchAllReports();
       }
       return { success: true };
     } catch (err) {
