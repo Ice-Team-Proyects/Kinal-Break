@@ -6,13 +6,19 @@ import { useAuthStore } from '../../auth/store/authStore';
 import { agregarAlCarritoRequest, confirmarPedidoRequest } from '../../../shared/api/adminApi';
 import toast from 'react-hot-toast';
 
-// Hora válida para desayunos/almuerzos: 10:00 AM – 3:00 PM
+// Desayunos: 10:00–15:00 | Almuerzos: 9:00–15:00
 function isOrderingAllowed(category) {
-  const mealCategories = ['desayunos', 'almuerzos'];
-  if (!mealCategories.includes(category)) return true; // bebidas/snacks/refaccion sin restricción de hora
+  if (category !== 'desayunos' && category !== 'almuerzos') return true;
   const now = new Date();
   const total = now.getHours() * 60 + now.getMinutes();
-  return total >= 10 * 60 && total < 15 * 60; // 10:00 - 15:00
+  const start = category === 'almuerzos' ? 9 * 60 : 10 * 60;
+  return total >= start && total < 15 * 60;
+}
+
+function mealHoursLabel(category) {
+  if (category === 'almuerzos') return '9:00 a.m. y 3:00 p.m.';
+  if (category === 'desayunos') return '10:00 a.m. y 3:00 p.m.';
+  return 'el horario permitido';
 }
 
 const DEFAULT_PRODUCT_PHOTO =
@@ -187,10 +193,14 @@ export function ProductsPage() {
 
   // USER_ROLE ordering flow
   const handleOrderClick = (product) => {
+    if (product.category === 'complementos') {
+      toast.error('Los complementos solo se eligen junto a un desayuno o almuerzo');
+      return;
+    }
     if (!isOrderingAllowed(product.category)) {
       toast.error(
-        `Los ${product.category} solo se pueden pedir entre 10:00 a.m. y 3:00 p.m.`,
-        { icon: '🕙', duration: 4000 }
+        `Los ${product.category} solo se pueden pedir entre ${mealHoursLabel(product.category)}`,
+        { duration: 4000 }
       );
       return;
     }
@@ -232,7 +242,7 @@ export function ProductsPage() {
     { value: 'refaccion', label: 'Refacción' },
     { value: 'bebidas', label: 'Bebidas' },
     { value: 'snacks', label: 'Snacks' },
-    { value: 'complementos', label: 'Complementos' }
+    ...(isAdmin ? [{ value: 'complementos', label: 'Complementos' }] : []),
   ];
 
   return (
@@ -259,7 +269,7 @@ export function ProductsPage() {
         {isUser && (
           <div className="flex items-center gap-2 bg-white border-2 border-[#031633] rounded-2xl px-4 py-2 shadow-[2px_2px_0_0_#031633] text-xs font-black text-[#031633] uppercase">
             <Clock size={14} className="text-[#ff8928]" />
-            Desayunos / Almuerzos: 10:00 a.m. – 3:00 p.m.
+            Desayuno 10:00–15:00 · Almuerzo 9:00–15:00
           </div>
         )}
       </div>
