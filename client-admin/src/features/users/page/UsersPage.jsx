@@ -1,22 +1,32 @@
 import { useEffect, useState } from 'react';
 import { Users, CheckCircle2, RefreshCw, Search } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { activateUserRequest, getUsersRequest } from '../../../shared/api/api';
+import {
+  activateUserRequest,
+  getAuthErrorMessage,
+  getUsersRequest,
+} from '../../../shared/api/api';
 
 export function UsersPage() {
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [activatingId, setActivatingId] = useState(null);
   const [search, setSearch] = useState('');
-  const [filter, setFilter] = useState('pending'); // pending | active | all
+  const [filter, setFilter] = useState('all'); // pending | active | all
+  const [loadError, setLoadError] = useState('');
 
   const fetchUsers = async () => {
     setIsLoading(true);
+    setLoadError('');
     try {
       const res = await getUsersRequest();
-      setUsers(res.data?.data || []);
+      const list = Array.isArray(res.data?.data) ? res.data.data : [];
+      setUsers(list);
     } catch (error) {
-      toast.error(error.response?.data?.message || 'Error al cargar usuarios');
+      const message = getAuthErrorMessage(error, 'Error al cargar usuarios');
+      setLoadError(message);
+      setUsers([]);
+      toast.error(message);
     } finally {
       setIsLoading(false);
     }
@@ -33,7 +43,7 @@ export function UsersPage() {
       toast.success('Usuario activado');
       await fetchUsers();
     } catch (error) {
-      toast.error(error.response?.data?.message || 'No se pudo activar');
+      toast.error(getAuthErrorMessage(error, 'No se pudo activar'));
     } finally {
       setActivatingId(null);
     }
@@ -104,12 +114,38 @@ export function UsersPage() {
         </div>
       </div>
 
+      {loadError && (
+        <div className="bg-[#fff4ea] border-2 border-[#031633] rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <p className="text-sm font-bold text-[#031633]">{loadError}</p>
+          <button
+            onClick={() => fetchUsers({ silent: true })}
+            className="bg-[#ff8928] text-white font-black px-4 py-2 rounded-xl border-2 border-[#031633] uppercase text-[10px] cursor-pointer"
+          >
+            Reintentar
+          </button>
+        </div>
+      )}
+
       {isLoading ? (
         <div className="text-center py-12 font-bold text-[#031633]">Cargando usuarios...</div>
       ) : filtered.length === 0 ? (
         <div className="text-center py-16 bg-white rounded-3xl border-2 border-dashed border-slate-200 space-y-3">
           <Users className="mx-auto text-[#ff8928]" size={28} />
-          <p className="text-sm font-black uppercase text-[#031633]">No hay usuarios en esta vista</p>
+          <p className="text-sm font-black uppercase text-[#031633]">
+            {loadError
+              ? 'No se pudieron cargar los usuarios'
+              : filter === 'pending'
+                ? 'No hay usuarios pendientes'
+                : 'No hay usuarios en esta vista'}
+          </p>
+          {!loadError && filter === 'pending' && (
+            <button
+              onClick={() => setFilter('all')}
+              className="text-xs font-black uppercase text-[#ff8928] underline cursor-pointer"
+            >
+              Ver todos
+            </button>
+          )}
         </div>
       ) : (
         <div className="space-y-3">

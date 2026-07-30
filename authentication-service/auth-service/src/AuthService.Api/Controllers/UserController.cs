@@ -13,7 +13,17 @@ public class UsersController(IUserManagementService userManagementService) : Con
 {
     private async Task<bool> CurrentUserIsAdmin()
     {
-        var userId = User.Claims.FirstOrDefault(c => c.Type == "sub" || c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
+        var roleClaim = User.Claims.FirstOrDefault(c =>
+            c.Type == "role" ||
+            c.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.Value;
+        if (string.Equals(roleClaim, RoleConstants.ADMIN_ROLE, StringComparison.OrdinalIgnoreCase))
+        {
+            return true;
+        }
+
+        var userId = User.Claims.FirstOrDefault(c =>
+            c.Type == "sub" ||
+            c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier")?.Value;
         if (string.IsNullOrEmpty(userId)) return false;
         var roles = await userManagementService.GetUserRolesAsync(userId);
         return roles.Contains(RoleConstants.ADMIN_ROLE);
