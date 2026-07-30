@@ -42,7 +42,7 @@ export const useProductsStore = create((set, get) => ({
       return true;
     } catch (err) {
       console.error(err);
-      toast.error(err.response?.data?.msg || err.response?.data?.error || 'Error al crear producto');
+      toast.error(err.response?.data?.msg || err.response?.data?.message || err.response?.data?.error || 'Error al crear producto');
       return false;
     } finally {
       set({ isLoading: false });

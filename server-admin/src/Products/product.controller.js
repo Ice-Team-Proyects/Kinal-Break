@@ -32,6 +32,9 @@ const normalizeProductBody = (body) => {
     return data;
 };
 
+const DEFAULT_PRODUCT_PHOTO =
+  'https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=600&auto=format&fit=crop&q=80';
+
 export const createProduct = async (req,res)=>{
     try{
 
@@ -41,16 +44,25 @@ export const createProduct = async (req,res)=>{
             photoUrl = req.file.path || req.file.secure_url || req.file.url || "";
         }
 
+        const body = normalizeProductBody(req.body);
+        const photo = photoUrl || body.photo || DEFAULT_PRODUCT_PHOTO;
+
         const product = await createProductService({
-            ...normalizeProductBody(req.body),
-            photo: photoUrl || req.body.photo || ""
+            ...body,
+            photo
         });
 
         broadcast('products', { action: 'created', product });
-        res.json(product);
+        res.status(201).json(product);
 
     }catch(error){
-        res.status(500).json({error:error.message});
+        console.error('createProduct error:', error);
+        const status = error.name === 'ValidationError' ? 400 : 500;
+        res.status(status).json({
+            success: false,
+            error: error.message,
+            message: error.message
+        });
     }
 };
 

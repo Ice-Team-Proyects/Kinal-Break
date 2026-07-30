@@ -28,10 +28,28 @@ const uploadPhotoOrImage = (req, res, next) => {
         if (err && err.code === 'LIMIT_UNEXPECTED_FILE') {
             // field not 'photo', try 'image'
             const uploadImage = uploadProductImage.single('image');
-            uploadImage(req, res, next);
-        } else {
-            next(err);
+            uploadImage(req, res, (err2) => {
+                if (err2) {
+                    console.error('upload image error:', err2);
+                    return res.status(400).json({
+                        success: false,
+                        message: err2.message || 'Error al subir la imagen',
+                        error: err2.message || 'UPLOAD_ERROR',
+                    });
+                }
+                next();
+            });
+            return;
         }
+        if (err) {
+            console.error('upload photo error:', err);
+            return res.status(400).json({
+                success: false,
+                message: err.message || 'Error al subir la imagen',
+                error: err.message || 'UPLOAD_ERROR',
+            });
+        }
+        next();
     });
 };
 
