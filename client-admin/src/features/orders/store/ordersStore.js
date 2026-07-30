@@ -35,6 +35,15 @@ export const useOrdersStore = create((set, get) => ({
       await updateOrderStatusRequest(id, { estado, confirmacionDoble });
       toast.success(`Pedido actualizado a: ${estado}`);
       get().fetchOrders();
+      if (estado === 'Entregado' || estado === 'Pagado' || estado === 'No pagado' || estado === 'Cancelado') {
+        // Refresh income metrics after status changes that affect reports
+        try {
+          const { useReportsStore } = await import('../../reports/store/reportsStore');
+          useReportsStore.getState().fetchAllReports();
+        } catch (e) {
+          console.warn(e);
+        }
+      }
       return { success: true };
     } catch (err) {
       console.error(err);
