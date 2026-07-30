@@ -118,7 +118,7 @@ export function UsersPage() {
         <div className="bg-[#fff4ea] border-2 border-[#031633] rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <p className="text-sm font-bold text-[#031633]">{loadError}</p>
           <button
-            onClick={() => fetchUsers({ silent: true })}
+            onClick={fetchUsers}
             className="bg-[#ff8928] text-white font-black px-4 py-2 rounded-xl border-2 border-[#031633] uppercase text-[10px] cursor-pointer"
           >
             Reintentar

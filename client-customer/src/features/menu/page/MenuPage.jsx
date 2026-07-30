@@ -4,13 +4,19 @@ import { useCartStore } from "../../cart/store/cartStore";
 import { Search, Plus, Image as ImageIcon, Clock, Check, X } from "lucide-react";
 import toast from "react-hot-toast";
 
-// Hora válida para desayunos/almuerzos: 10:00 AM – 3:00 PM
+// Desayunos: 10:00–15:00 | Almuerzos: 9:00–15:00
 function isOrderingAllowed(category) {
-  const mealCategories = ["desayunos", "almuerzos"];
-  if (!mealCategories.includes(category)) return true; // bebidas/snacks/refaccion sin restricción de hora
+  if (category !== "desayunos" && category !== "almuerzos") return true;
   const now = new Date();
   const total = now.getHours() * 60 + now.getMinutes();
-  return total >= 10 * 60 && total < 15 * 60; // 10:00 - 15:00
+  const start = category === "almuerzos" ? 9 * 60 : 10 * 60;
+  return total >= start && total < 15 * 60;
+}
+
+function mealHoursLabel(category) {
+  if (category === "almuerzos") return "9:00 a.m. y 3:00 p.m.";
+  if (category === "desayunos") return "10:00 a.m. y 3:00 p.m.";
+  return "el horario permitido";
 }
 
 export function MenuPage() {
@@ -38,14 +44,12 @@ export function MenuPage() {
     { value: "refaccion", label: "Refacción" },
     { value: "bebidas", label: "Bebidas" },
     { value: "snacks", label: "Snacks" },
-    { value: "complementos", label: "Complementos" }
   ];
 
   const filteredProducts = products.filter((p) => {
-    // Si la categoría seleccionada es vacía (Todos), excluimos los complementos para no mostrarlos como platos principales de Q0.00
-    const matchesCategory = selectedCategory
-      ? p.category === selectedCategory
-      : p.category !== "complementos";
+    // Los complementos solo se eligen como acompañamiento de un desayuno/almuerzo
+    if (p.category === "complementos") return false;
+    const matchesCategory = selectedCategory ? p.category === selectedCategory : true;
     const matchesSearch = searchQuery
       ? p.name.toLowerCase().includes(searchQuery.toLowerCase())
       : true;
@@ -60,10 +64,15 @@ export function MenuPage() {
   };
 
   const handleOrderClick = (product) => {
+    if (product.category === "complementos") {
+      toast.error("Los complementos solo se eligen junto a un desayuno o almuerzo");
+      return;
+    }
+
     if (!isOrderingAllowed(product.category)) {
       toast.error(
-        `Los ${product.category} solo se pueden pedir entre 10:00 a.m. y 3:00 p.m.`,
-        { icon: "🕙", duration: 4000 }
+        `Los ${product.category} solo se pueden pedir entre ${mealHoursLabel(product.category)}`,
+        { duration: 4000 }
       );
       return;
     }
@@ -111,7 +120,7 @@ export function MenuPage() {
         </div>
         <div className="flex items-center gap-1.5 bg-white border-2 border-[#031633] rounded-xl px-3 py-1.5 shadow-[2px_2px_0_0_#031633] text-[9px] font-black text-[#031633] uppercase shrink-0">
           <Clock size={12} className="text-[#ff8928]" />
-          Comidas: 10:00 a.m. – 3:00 p.m.
+          Comidas: desayuno 10:00–15:00 · almuerzo 9:00–15:00
         </div>
       </div>
 

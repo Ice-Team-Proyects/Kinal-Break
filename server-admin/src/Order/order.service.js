@@ -81,11 +81,22 @@ export const addToCart = async (usuarioId, { productoId, cantidad, acompanamient
         throw new Error('Producto no disponible');
     }
 
+    if (product.category === 'complementos') {
+        throw new Error('Los complementos solo se pueden elegir como acompañamiento de un desayuno o almuerzo');
+    }
+
     if (acompanamientoId) {
         const accompaniment = await Product.findById(acompanamientoId);
         if (!accompaniment || !accompaniment.isActive || accompaniment.isDeleted) {
             throw new Error('Acompañamiento no disponible');
         }
+        if (accompaniment.category !== 'complementos') {
+            throw new Error('El acompañamiento seleccionado no es válido');
+        }
+    }
+
+    if (product.allowAccompaniments && Array.isArray(product.accompaniments) && product.accompaniments.length > 0 && !acompanamientoId) {
+        throw new Error('Debes seleccionar un acompañamiento');
     }
 
     let cart = await Cart.findOne({ usuarioId });
