@@ -1,18 +1,22 @@
 import { useEffect, useState } from 'react';
-import { Users, CheckCircle2, RefreshCw, Search } from 'lucide-react';
+import { Users, CheckCircle2, RefreshCw, Search, XCircle, Ban, Unlock } from 'lucide-react';
 import toast from 'react-hot-toast';
 import {
   activateUserRequest,
+  denyUserRequest,
+  blockUserRequest,
+  unblockUserRequest,
   getAuthErrorMessage,
   getUsersRequest,
 } from '../../../shared/api/api';
+import { clearUserPenaltyRequest } from '../../../shared/api/adminApi';
 
 export function UsersPage() {
   const [users, setUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [activatingId, setActivatingId] = useState(null);
+  const [actionId, setActionId] = useState(null);
   const [search, setSearch] = useState('');
-  const [filter, setFilter] = useState('all'); // pending | active | all
+  const [filter, setFilter] = useState('pending'); // pending | active | blocked | all
   const [loadError, setLoadError] = useState('');
 
   const fetchUsers = async () => {
@@ -36,16 +40,32 @@ export function UsersPage() {
     fetchUsers();
   }, []);
 
-  const handleActivate = async (userId) => {
-    setActivatingId(userId);
+  const runAction = async (userId, action) => {
+    setActionId(userId);
     try {
-      await activateUserRequest(userId);
-      toast.success('Usuario activado');
+      if (action === 'activate') {
+        await activateUserRequest(userId);
+        toast.success('Usuario activado');
+      } else if (action === 'deny') {
+        await denyUserRequest(userId);
+        toast.success('Acceso denegado');
+      } else if (action === 'block') {
+        await blockUserRequest(userId);
+        toast.success('Usuario bloqueado');
+      } else if (action === 'unblock') {
+        await unblockUserRequest(userId);
+        try {
+          await clearUserPenaltyRequest(userId);
+        } catch (e) {
+          console.warn(e);
+        }
+        toast.success('Usuario rehabilitado');
+      }
       await fetchUsers();
     } catch (error) {
-      toast.error(getAuthErrorMessage(error, 'No se pudo activar'));
+      toast.error(getAuthErrorMessage(error, 'No se pudo completar la acción'));
     } finally {
-      setActivatingId(null);
+      setActionId(null);
     }
   };
 
@@ -59,10 +79,21 @@ export function UsersPage() {
       u.surname?.toLowerCase().includes(q);
 
     if (!matchesSearch) return false;
-    if (filter === 'pending') return !u.status;
-    if (filter === 'active') return !!u.status;
+    if (filter === 'pending') return !u.status && !u.isBlocked;
+    if (filter === 'active') return !!u.status && !u.isBlocked;
+    if (filter === 'blocked') return !!u.isBlocked;
     return true;
   });
+
+  const statusBadge = (user) => {
+    if (user.isBlocked) {
+      return { label: 'Bloqueado', className: 'bg-[#ffd6d6] text-[#7d0a42]' };
+    }
+    if (user.status) {
+      return { label: 'Activo', className: 'bg-emerald-100 text-emerald-800' };
+    }
+    return { label: 'Pendiente', className: 'bg-[#fff4ea] text-[#ff8928]' };
+  };
 
   return (
     <div className="space-y-6">
@@ -72,12 +103,12 @@ export function UsersPage() {
             Usuarios
           </h1>
           <p className="text-sm font-bold text-[#ff8928] uppercase tracking-wide">
-            Aprueba manualmente a quienes se registren
+            Aprueba, niega o rehabilita cuentas
           </p>
         </div>
         <button
           onClick={fetchUsers}
-          className="bg-white hover:bg-[#f5f3f6] text-[#031633] font-black px-5 py-3 rounded-2xl border-2 border-[#031633] shadow-[3px_3px_0_0_#031633] active:translate-x-0.5 active:translate-y-0.5 uppercase text-xs cursor-pointer flex items-center gap-2"
+          className="bg-white hover:bg-[#f5f3f6] text-[#031633] font-black px-5 py-3 rounded-2xl border-2 border-[#031633] shadow-[3px_3px_0_0_#031633] uppercase text-xs cursor-pointer flex items-center gap-2"
         >
           <RefreshCw size={14} /> Actualizar
         </button>
@@ -97,6 +128,7 @@ export function UsersPage() {
           {[
             { id: 'pending', label: 'Pendientes' },
             { id: 'active', label: 'Activos' },
+            { id: 'blocked', label: 'Bloqueados' },
             { id: 'all', label: 'Todos' },
           ].map((f) => (
             <button
@@ -131,63 +163,77 @@ export function UsersPage() {
       ) : filtered.length === 0 ? (
         <div className="text-center py-16 bg-white rounded-3xl border-2 border-dashed border-slate-200 space-y-3">
           <Users className="mx-auto text-[#ff8928]" size={28} />
-          <p className="text-sm font-black uppercase text-[#031633]">
-            {loadError
-              ? 'No se pudieron cargar los usuarios'
-              : filter === 'pending'
-                ? 'No hay usuarios pendientes'
-                : 'No hay usuarios en esta vista'}
-          </p>
-          {!loadError && filter === 'pending' && (
-            <button
-              onClick={() => setFilter('all')}
-              className="text-xs font-black uppercase text-[#ff8928] underline cursor-pointer"
-            >
-              Ver todos
-            </button>
-          )}
+          <p className="text-sm font-black uppercase text-[#031633]">No hay usuarios en esta vista</p>
         </div>
       ) : (
         <div className="space-y-3">
-          {filtered.map((user) => (
-            <div
-              key={user.id}
-              className="bg-white rounded-3xl border-2 border-[#031633] shadow-[3px_3px_0_0_#031633] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
-            >
-              <div className="min-w-0">
-                <p className="text-sm font-black uppercase text-[#031633] truncate">
-                  {user.name} {user.surname}
-                </p>
-                <p className="text-xs font-bold text-[#ff8928] truncate">{user.email}</p>
-                <p className="text-[10px] font-bold text-[#031633]/60 uppercase mt-1">
-                  @{user.username} · {user.role}
-                </p>
-              </div>
+          {filtered.map((user) => {
+            const badge = statusBadge(user);
+            const busy = actionId === user.id;
+            return (
+              <div
+                key={user.id}
+                className="bg-white rounded-3xl border-2 border-[#031633] shadow-[3px_3px_0_0_#031633] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+              >
+                <div className="min-w-0">
+                  <p className="text-sm font-black uppercase text-[#031633] truncate">
+                    {user.name} {user.surname}
+                  </p>
+                  <p className="text-xs font-bold text-[#ff8928] truncate">{user.email}</p>
+                  <p className="text-[10px] font-bold text-[#031633]/60 uppercase mt-1">
+                    @{user.username} · {user.role}
+                  </p>
+                </div>
 
-              <div className="flex items-center gap-3 shrink-0">
-                <span
-                  className={`text-[10px] font-black uppercase px-3 py-1.5 rounded-full border-2 border-[#031633] ${
-                    user.status
-                      ? 'bg-emerald-100 text-emerald-800'
-                      : 'bg-[#fff4ea] text-[#ff8928]'
-                  }`}
-                >
-                  {user.status ? 'Activo' : 'Pendiente'}
-                </span>
-
-                {!user.status && (
-                  <button
-                    onClick={() => handleActivate(user.id)}
-                    disabled={activatingId === user.id}
-                    className="bg-[#ff8928] hover:bg-[#ff9d47] text-white font-black px-4 py-2.5 rounded-xl border-2 border-[#031633] shadow-[2px_2px_0_0_#031633] uppercase text-[10px] cursor-pointer flex items-center gap-1.5 disabled:opacity-60"
+                <div className="flex items-center gap-2 shrink-0 flex-wrap justify-end">
+                  <span
+                    className={`text-[10px] font-black uppercase px-3 py-1.5 rounded-full border-2 border-[#031633] ${badge.className}`}
                   >
-                    <CheckCircle2 size={14} />
-                    {activatingId === user.id ? 'Activando...' : 'Aceptar'}
-                  </button>
-                )}
+                    {badge.label}
+                  </span>
+
+                  {!user.status && !user.isBlocked && (
+                    <>
+                      <button
+                        onClick={() => runAction(user.id, 'activate')}
+                        disabled={busy}
+                        className="bg-[#ff8928] text-white font-black px-3 py-2 rounded-xl border-2 border-[#031633] shadow-[2px_2px_0_0_#031633] uppercase text-[10px] cursor-pointer flex items-center gap-1 disabled:opacity-60"
+                      >
+                        <CheckCircle2 size={14} /> Aceptar
+                      </button>
+                      <button
+                        onClick={() => runAction(user.id, 'deny')}
+                        disabled={busy}
+                        className="bg-white text-[#7d0a42] font-black px-3 py-2 rounded-xl border-2 border-[#031633] uppercase text-[10px] cursor-pointer flex items-center gap-1 disabled:opacity-60"
+                      >
+                        <XCircle size={14} /> Negar
+                      </button>
+                    </>
+                  )}
+
+                  {user.status && !user.isBlocked && user.role !== 'ADMIN_ROLE' && (
+                    <button
+                      onClick={() => runAction(user.id, 'block')}
+                      disabled={busy}
+                      className="bg-white text-[#7d0a42] font-black px-3 py-2 rounded-xl border-2 border-[#031633] uppercase text-[10px] cursor-pointer flex items-center gap-1 disabled:opacity-60"
+                    >
+                      <Ban size={14} /> Bloquear
+                    </button>
+                  )}
+
+                  {user.isBlocked && (
+                    <button
+                      onClick={() => runAction(user.id, 'unblock')}
+                      disabled={busy}
+                      className="bg-emerald-600 text-white font-black px-3 py-2 rounded-xl border-2 border-[#031633] shadow-[2px_2px_0_0_#031633] uppercase text-[10px] cursor-pointer flex items-center gap-1 disabled:opacity-60"
+                    >
+                      <Unlock size={14} /> Habilitar
+                    </button>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
     </div>

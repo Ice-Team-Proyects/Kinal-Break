@@ -55,6 +55,7 @@ public class UserManagementService(IUserRepository users, IRoleRepository roles,
             Phone = user.UserProfile?.Phone ?? string.Empty,
             Role = role.Name,
             Status = user.Status,
+            IsBlocked = user.IsBlocked,
             IsEmailVerified = user.UserEmail?.EmailVerified ?? false,
             CreatedAt = user.CreatedAt,
             UpdatedAt = user.UpdatedAt
@@ -88,6 +89,7 @@ public class UserManagementService(IUserRepository users, IRoleRepository roles,
         var user = await users.GetByIdAsync(userId);
 
         user.Status = true;
+        user.IsBlocked = false;
         if (user.UserEmail != null)
         {
             user.UserEmail.EmailVerified = true;
@@ -95,6 +97,46 @@ public class UserManagementService(IUserRepository users, IRoleRepository roles,
             user.UserEmail.EmailVerificationTokenExpiry = null;
         }
 
+        await users.UpdateUserAsync(user);
+        return MapUser(user);
+    }
+
+    public async Task<UserResponseDto> DenyUserAsync(string userId)
+    {
+        if (string.IsNullOrWhiteSpace(userId))
+            throw new ArgumentException("Invalid userId", nameof(userId));
+
+        var user = await users.GetByIdAsync(userId);
+        user.Status = false;
+        user.IsBlocked = true;
+        await users.UpdateUserAsync(user);
+        return MapUser(user);
+    }
+
+    public async Task<UserResponseDto> BlockUserAsync(string userId)
+    {
+        if (string.IsNullOrWhiteSpace(userId))
+            throw new ArgumentException("Invalid userId", nameof(userId));
+
+        var user = await users.GetByIdAsync(userId);
+        user.Status = false;
+        user.IsBlocked = true;
+        await users.UpdateUserAsync(user);
+        return MapUser(user);
+    }
+
+    public async Task<UserResponseDto> UnblockUserAsync(string userId)
+    {
+        if (string.IsNullOrWhiteSpace(userId))
+            throw new ArgumentException("Invalid userId", nameof(userId));
+
+        var user = await users.GetByIdAsync(userId);
+        user.IsBlocked = false;
+        user.Status = true;
+        if (user.UserEmail != null)
+        {
+            user.UserEmail.EmailVerified = true;
+        }
         await users.UpdateUserAsync(user);
         return MapUser(user);
     }
@@ -116,6 +158,7 @@ public class UserManagementService(IUserRepository users, IRoleRepository roles,
             Phone = u.UserProfile?.Phone ?? string.Empty,
             Role = role,
             Status = u.Status,
+            IsBlocked = u.IsBlocked,
             IsEmailVerified = u.UserEmail?.EmailVerified ?? false,
             CreatedAt = u.CreatedAt,
             UpdatedAt = u.UpdatedAt

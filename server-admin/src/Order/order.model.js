@@ -30,6 +30,10 @@ const orderSchema = new Schema(
                     type: Schema.Types.ObjectId,
                     ref: 'Product',
                     default: null
+                },
+                horaReserva: {
+                    type: String,
+                    default: null
                 }
             }
         ],
@@ -43,24 +47,30 @@ const orderSchema = new Schema(
             enum: ['Efectivo', 'Transferencia'],
             default: 'Efectivo'
         },
+        horaReserva: {
+            type: String,
+            default: null
+        },
+        comprobanteUrl: {
+            type: String,
+            default: null
+        },
         totalCobrar: {
             type: Number,
             default: 0
         },
-        // Alias used by pedidos-service
         totalFinal: {
             type: Number,
             default: 0
         },
         activo: {
             type: Boolean,
-            default: true // Usado para el Soft Delete
+            default: true
         }
     },
     {
         timestamps: true,
         versionKey: false,
-        // Share the same 'pedidos' collection with pedidos-service
         collection: 'pedidos'
     }
 );

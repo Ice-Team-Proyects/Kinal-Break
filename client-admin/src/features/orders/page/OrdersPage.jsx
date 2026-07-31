@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useOrdersStore } from '../store/ordersStore';
 import { getUserProfileByIdRequest } from '../../../shared/api/adminApi';
+import { blockUserRequest } from '../../../shared/api/api';
 import { Check, ShieldAlert, Trash2, User, Calendar, Clock } from 'lucide-react';
 import { useAuthStore } from '../../auth/store/authStore';
+import toast from 'react-hot-toast';
 
 export function OrdersPage() {
   const { orders, isLoading, fetchOrders, updateOrderStatus, deleteOrder } = useOrdersStore();
@@ -61,10 +63,19 @@ export function OrdersPage() {
   };
 
   const handleConfirmDouble = async () => {
-    if (doubleConfirmOrder) {
-      await updateOrderStatus(doubleConfirmOrder, 'No pagado', true);
-      setDoubleConfirmOrder(null);
+    if (!doubleConfirmOrder) return;
+    const order = orders.find((o) => o._id === doubleConfirmOrder);
+    await updateOrderStatus(doubleConfirmOrder, 'No pagado', true);
+    if (order?.usuarioId) {
+      try {
+        await blockUserRequest(order.usuarioId);
+        toast.success('Usuario bloqueado por pedido no pagado');
+      } catch (e) {
+        console.warn(e);
+        toast.error('Pedido marcado No pagado, pero no se pudo bloquear al usuario');
+      }
     }
+    setDoubleConfirmOrder(null);
   };
 
   const filters = [
@@ -176,9 +187,31 @@ export function OrdersPage() {
                           {p.acompanamientoId && (
                             <span className="ml-1 text-[#ff8928]">+ {p.acompanamientoId?.name || 'acompañamiento'}</span>
                           )}
+                          {p.horaReserva && (
+                            <span className="ml-1 text-[#031633]/60">@{p.horaReserva}</span>
+                          )}
                         </span>
                       ))}
                     </div>
+                    {(order.horaReserva || order.comprobanteUrl) && (
+                      <div className="flex flex-wrap gap-3 mt-2 text-[10px] font-black uppercase text-[#031633]">
+                        {order.horaReserva && (
+                          <span className="bg-[#fff4ea] border border-[#031633] px-2 py-1 rounded-lg">
+                            Reserva {order.horaReserva}
+                          </span>
+                        )}
+                        {order.comprobanteUrl && (
+                          <a
+                            href={order.comprobanteUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="bg-white border border-[#031633] px-2 py-1 rounded-lg text-[#ff8928] underline"
+                          >
+                            Ver comprobante
+                          </a>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
 

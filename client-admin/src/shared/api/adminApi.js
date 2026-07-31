@@ -89,6 +89,10 @@ export const deleteOrderRequest = async (id) => {
   return await adminAxios.delete(`/orders/${id}`);
 };
 
+export const clearUserPenaltyRequest = async (usuarioId) => {
+  return await adminAxios.post(`/orders/penalizacion/${usuarioId}/limpiar`);
+};
+
 // --- PAGOS ---
 export const getPaymentsRequest = async () => {
   return await adminAxios.get('/payments');

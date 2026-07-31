@@ -104,4 +104,67 @@ public class UsersController(IUserManagementService userManagementService) : Con
             return NotFound(new { success = false, message = ex.Message });
         }
     }
+
+    [HttpPost("{userId}/deny")]
+    [Authorize]
+    [EnableRateLimiting("ApiPolicy")]
+    public async Task<ActionResult<object>> DenyUser(string userId)
+    {
+        if (!await CurrentUserIsAdmin())
+        {
+            return StatusCode(403, new { success = false, message = "Forbidden" });
+        }
+
+        try
+        {
+            var user = await userManagementService.DenyUserAsync(userId);
+            return Ok(new { success = true, message = "Acceso denegado", data = user });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(new { success = false, message = ex.Message });
+        }
+    }
+
+    [HttpPost("{userId}/block")]
+    [Authorize]
+    [EnableRateLimiting("ApiPolicy")]
+    public async Task<ActionResult<object>> BlockUser(string userId)
+    {
+        if (!await CurrentUserIsAdmin())
+        {
+            return StatusCode(403, new { success = false, message = "Forbidden" });
+        }
+
+        try
+        {
+            var user = await userManagementService.BlockUserAsync(userId);
+            return Ok(new { success = true, message = "Usuario bloqueado", data = user });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(new { success = false, message = ex.Message });
+        }
+    }
+
+    [HttpPost("{userId}/unblock")]
+    [Authorize]
+    [EnableRateLimiting("ApiPolicy")]
+    public async Task<ActionResult<object>> UnblockUser(string userId)
+    {
+        if (!await CurrentUserIsAdmin())
+        {
+            return StatusCode(403, new { success = false, message = "Forbidden" });
+        }
+
+        try
+        {
+            var user = await userManagementService.UnblockUserAsync(userId);
+            return Ok(new { success = true, message = "Usuario rehabilitado", data = user });
+        }
+        catch (InvalidOperationException ex)
+        {
+            return NotFound(new { success = false, message = ex.Message });
+        }
+    }
 }
