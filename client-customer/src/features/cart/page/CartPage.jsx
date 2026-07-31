@@ -177,13 +177,16 @@ export function CartPage() {
             {metodoPago === "Transferencia" && (
               <div className="space-y-3 border-2 border-[#031633] rounded-2xl p-4 bg-[#f5f3f6]">
                 <p className="text-[10px] font-black uppercase text-[#031633]">
-                  Paga por transferencia bancaria
+                  Pago con transferencia (cuik)
+                </p>
+                <p className="text-[10px] font-bold text-[#031633]/80">
+                  {TRANSFER_PAYMENT.instruccion}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 items-center">
                   <img
                     src={TRANSFER_PAYMENT.qrUrl}
-                    alt="QR transferencia cafetería"
-                    className="w-40 h-40 object-contain bg-white border-2 border-[#031633] rounded-xl"
+                    alt="Datos y QR transferencia cafetería"
+                    className="w-full max-w-[220px] object-contain bg-white border-2 border-[#031633] rounded-xl"
                     onError={(e) => {
                       e.currentTarget.style.display = "none";
                     }}
@@ -205,8 +208,7 @@ export function CartPage() {
                       {TRANSFER_PAYMENT.titular}
                     </p>
                     <p className="text-[10px] text-[#031633]/70 pt-1">
-                      Usa tu correo o número de carné como referencia. Monto: Q
-                      {totalTemporal.toFixed(2)}
+                      Referencia: tu correo o carné. Monto: Q{totalTemporal.toFixed(2)}
                     </p>
                   </div>
                 </div>

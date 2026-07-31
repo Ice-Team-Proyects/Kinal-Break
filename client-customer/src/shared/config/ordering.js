@@ -1,13 +1,15 @@
-/** Datos bancarios para pago por transferencia (cafetería).
- *  Sustituye VITE_* en Render o edita los defaults.
- *  Coloca tu QR en: client-customer/public/transferencia-qr.png
+/** Datos bancarios para pago por transferencia (cafetería / cuik).
+ *  Sustituye VITE_* en Render si cambian. Imagen: public/transferencia-qr.png
  */
 export const TRANSFER_PAYMENT = {
-  banco: import.meta.env.VITE_BANK_NAME || 'Banrural',
-  tipoCuenta: import.meta.env.VITE_BANK_ACCOUNT_TYPE || 'Monetaria',
-  numeroCuenta: import.meta.env.VITE_BANK_ACCOUNT_NUMBER || '0000000000',
-  titular: import.meta.env.VITE_BANK_HOLDER || 'Cafetería Kinal',
+  banco: import.meta.env.VITE_BANK_NAME || 'Banco Industrial',
+  tipoCuenta: import.meta.env.VITE_BANK_ACCOUNT_TYPE || 'Cuenta de ahorro',
+  numeroCuenta: import.meta.env.VITE_BANK_ACCOUNT_NUMBER || '1228604',
+  titular: import.meta.env.VITE_BANK_HOLDER || 'Huit Escobar',
   qrUrl: import.meta.env.VITE_BANK_QR_URL || '/transferencia-qr.png',
+  instruccion:
+    import.meta.env.VITE_BANK_INSTRUCTION ||
+    'Transfiere con cuik · Escanea el QR desde tu App Bancaria o usa estos datos',
 };
 
 /** Ventanas de recogida (HH:MM) */
