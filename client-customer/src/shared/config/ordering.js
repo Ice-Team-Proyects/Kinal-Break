@@ -1,15 +1,19 @@
-/** Datos bancarios para pago por transferencia (cafetería / cuik).
+/** Datos bancarios para pago por transferencia (cafetería / cuik / BelApp BI).
  *  Sustituye VITE_* en Render si cambian. Imagen: public/transferencia-qr.png
  */
+const DEFAULT_TRANSFER_LINK =
+  'https://belappgt.bi.com.gt/qr?type=tm&qrdata=6a5a4879080850317573673afc9affd7cc26246035a9043b2838e71fb1bb0557';
+
 export const TRANSFER_PAYMENT = {
   banco: import.meta.env.VITE_BANK_NAME || 'Banco Industrial',
   tipoCuenta: import.meta.env.VITE_BANK_ACCOUNT_TYPE || 'Cuenta de ahorro',
   numeroCuenta: import.meta.env.VITE_BANK_ACCOUNT_NUMBER || '1228604',
   titular: import.meta.env.VITE_BANK_HOLDER || 'Huit Escobar',
   qrUrl: import.meta.env.VITE_BANK_QR_URL || '/transferencia-qr.png',
+  transferLink: import.meta.env.VITE_BANK_TRANSFER_LINK || DEFAULT_TRANSFER_LINK,
   instruccion:
     import.meta.env.VITE_BANK_INSTRUCTION ||
-    'Transfiere con cuik · Escanea el QR desde tu App Bancaria o usa estos datos',
+    'Escanea el QR con tu app bancaria o abre el enlace para pagar con BelApp / cuik',
 };
 
 /** Ventanas de recogida (HH:MM) */

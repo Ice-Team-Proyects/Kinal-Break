@@ -10,6 +10,7 @@ import {
   Trash2,
   Clock,
   Upload,
+  ExternalLink,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { TRANSFER_PAYMENT } from "../../../shared/config/ordering";
@@ -177,20 +178,28 @@ export function CartPage() {
             {metodoPago === "Transferencia" && (
               <div className="space-y-3 border-2 border-[#031633] rounded-2xl p-4 bg-[#f5f3f6]">
                 <p className="text-[10px] font-black uppercase text-[#031633]">
-                  Pago con transferencia (cuik)
+                  Pago con transferencia (BelApp / cuik)
                 </p>
                 <p className="text-[10px] font-bold text-[#031633]/80">
                   {TRANSFER_PAYMENT.instruccion}
                 </p>
                 <div className="flex flex-col sm:flex-row gap-4 items-center">
-                  <img
-                    src={TRANSFER_PAYMENT.qrUrl}
-                    alt="Datos y QR transferencia cafetería"
-                    className="w-full max-w-[220px] object-contain bg-white border-2 border-[#031633] rounded-xl"
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                    }}
-                  />
+                  <a
+                    href={TRANSFER_PAYMENT.transferLink}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="shrink-0"
+                    title="Abrir enlace de transferencia"
+                  >
+                    <img
+                      src={TRANSFER_PAYMENT.qrUrl}
+                      alt="QR transferencia Banco Industrial"
+                      className="w-full max-w-[220px] object-contain bg-white border-2 border-[#031633] rounded-xl"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                      }}
+                    />
+                  </a>
                   <div className="text-xs font-bold text-[#031633] space-y-1 w-full">
                     <p>
                       <span className="uppercase text-[#ff8928]">Banco:</span> {TRANSFER_PAYMENT.banco}
@@ -210,6 +219,14 @@ export function CartPage() {
                     <p className="text-[10px] text-[#031633]/70 pt-1">
                       Referencia: tu correo o carné. Monto: Q{totalTemporal.toFixed(2)}
                     </p>
+                    <a
+                      href={TRANSFER_PAYMENT.transferLink}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="mt-2 inline-flex items-center gap-1.5 bg-[#5c2d91] text-white font-black px-3 py-2.5 rounded-xl border-2 border-[#031633] shadow-[2px_2px_0_0_#031633] uppercase text-[10px] cursor-pointer"
+                    >
+                      Abrir enlace de transferencia <ExternalLink size={12} />
+                    </a>
                   </div>
                 </div>
 
