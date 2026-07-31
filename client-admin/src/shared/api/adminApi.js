@@ -3,7 +3,7 @@ import axios from 'axios';
 
 // Axios instance for pedidos-service (port 3010)
 const pedidosAxios = axios.create({
-  baseURL: import.meta.env.VITE_PEDIDOS_URL || 'http://localhost:3010/api',
+  baseURL: import.meta.env.VITE_PEDIDOS_URL || 'http://localhost:3021/KinalBreak/v1/orders',
   timeout: 30000,
   headers: { 'Content-Type': 'application/json' },
 });
@@ -16,6 +16,13 @@ pedidosAxios.interceptors.request.use((config) => {
     }
   } catch (error) {
     console.warn(error);
+  }
+  if (typeof FormData !== 'undefined' && config.data instanceof FormData) {
+    if (config.headers && typeof config.headers.delete === 'function') {
+      config.headers.delete('Content-Type');
+    } else if (config.headers) {
+      delete config.headers['Content-Type'];
+    }
   }
   return config;
 });
@@ -162,13 +169,18 @@ export const getUserProfileByIdRequest = async (userId) => {
 
 // --- PEDIDOS (pedidos-service, port 3010) ---
 export const getCarritoRequest = async () =>
-  await pedidosAxios.get('/pedidos/carrito');
+  await pedidosAxios.get('/carrito');
 
-export const agregarAlCarritoRequest = async ({ productoId, cantidad, acompanamientoId }) =>
-  await pedidosAxios.post('/pedidos/carrito', { productoId, cantidad, acompanamientoId });
+export const agregarAlCarritoRequest = async ({ productoId, cantidad, acompanamientoId, horaReserva }) =>
+  await pedidosAxios.post('/carrito', { productoId, cantidad, acompanamientoId, horaReserva });
 
-export const confirmarPedidoRequest = async () =>
-  await pedidosAxios.post('/pedidos/confirmar');
+export const confirmarPedidoRequest = async ({ metodoPago = 'Efectivo', horaReserva, comprobanteFile } = {}) => {
+  const formData = new FormData();
+  formData.append('metodoPago', metodoPago);
+  if (horaReserva) formData.append('horaReserva', horaReserva);
+  if (comprobanteFile) formData.append('comprobante', comprobanteFile);
+  return await pedidosAxios.post('/confirmar', formData);
+};
 
 export const getHistorialPedidosRequest = async () =>
-  await pedidosAxios.get('/pedidos/historial');
+  await pedidosAxios.get('/historial');

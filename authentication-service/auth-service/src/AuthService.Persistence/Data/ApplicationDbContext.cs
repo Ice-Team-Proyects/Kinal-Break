@@ -80,6 +80,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             entity.Property(e => e.Status)
               .HasDefaultValue(false);
             entity.Property(e => e.IsBlocked)
+              .HasColumnName("is_blocked")
               .HasDefaultValue(false);
             entity.Property(e => e.CreatedAt)
               .IsRequired();
