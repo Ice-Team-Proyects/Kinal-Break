@@ -6,21 +6,44 @@ import { useAuthStore } from '../../auth/store/authStore';
 import { agregarAlCarritoRequest, confirmarPedidoRequest } from '../../../shared/api/adminApi';
 import toast from 'react-hot-toast';
 
-// Desayunos: 8:55–9:20 | Almuerzos: 11:45–15:25
+// Reserva: desde apertura (6:15) hasta fin de ventana de esa comida.
+// Recogida: desayunos 8:55–9:20 | almuerzos 11:45–15:25
 function isOrderingAllowed(category) {
   if (category !== 'desayunos' && category !== 'almuerzos') return true;
   const now = new Date();
   const total = now.getHours() * 60 + now.getMinutes();
+  const open = 6 * 60 + 15;
   if (category === 'desayunos') {
-    return total >= 8 * 60 + 55 && total <= 9 * 60 + 20;
+    return total >= open && total <= 9 * 60 + 20;
   }
-  return total >= 11 * 60 + 45 && total <= 15 * 60 + 25;
+  return total >= open && total <= 15 * 60 + 25;
 }
 
 function mealHoursLabel(category) {
   if (category === 'desayunos') return '8:55 a.m. y 9:20 a.m.';
   if (category === 'almuerzos') return '11:45 a.m. y 3:25 p.m.';
   return 'el horario permitido';
+}
+
+function formatMinutes(total) {
+  const h = Math.floor(total / 60);
+  const m = total % 60;
+  return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+}
+
+function buildPickupSlots(category, stepMinutes = 5) {
+  const windows = {
+    desayunos: { start: 8 * 60 + 55, end: 9 * 60 + 20 },
+    almuerzos: { start: 11 * 60 + 45, end: 15 * 60 + 25 },
+  };
+  const window = windows[category];
+  if (!window) return [];
+  const nowMinutes = new Date().getHours() * 60 + new Date().getMinutes();
+  const slots = [];
+  for (let t = window.start; t <= window.end; t += stepMinutes) {
+    if (t >= nowMinutes) slots.push(formatMinutes(t));
+  }
+  return slots;
 }
 
 const DEFAULT_PRODUCT_PHOTO =
@@ -46,6 +69,7 @@ export function ProductsPage() {
   // USER_ROLE: ordering state
   const [orderProduct, setOrderProduct] = useState(null); // product to order
   const [selectedAcomp, setSelectedAcomp] = useState(null);
+  const [horaReserva, setHoraReserva] = useState('');
   const [isOrdering, setIsOrdering] = useState(false);
   const [orderConfirmOpen, setOrderConfirmOpen] = useState(false);
 
@@ -208,24 +232,35 @@ export function ProductsPage() {
     }
     setOrderProduct(product);
     setSelectedAcomp(null);
+    setHoraReserva('');
     setOrderConfirmOpen(true);
   };
 
   const handleConfirmOrder = async () => {
     if (!orderProduct) return;
+    const needsTime = isMealCategory(orderProduct.category);
+    if (needsTime && !horaReserva) {
+      toast.error('Selecciona la hora de reserva');
+      return;
+    }
     setIsOrdering(true);
     try {
       await agregarAlCarritoRequest({
         productoId: orderProduct._id,
         cantidad: 1,
-        acompanamientoId: selectedAcomp || undefined
+        acompanamientoId: selectedAcomp || undefined,
+        horaReserva: needsTime ? horaReserva : undefined,
       });
-      await confirmarPedidoRequest();
-      toast.success(`¡Pedido de ${orderProduct.name} confirmado! 🎉`);
+      await confirmarPedidoRequest({
+        metodoPago: 'Efectivo',
+        horaReserva: needsTime ? horaReserva : undefined,
+      });
+      toast.success(`¡Pedido de ${orderProduct.name} confirmado!`);
       setOrderConfirmOpen(false);
       setOrderProduct(null);
+      setHoraReserva('');
     } catch (err) {
-      toast.error(err.response?.data?.message || 'Error al hacer el pedido');
+      toast.error(err.response?.data?.msg || err.response?.data?.message || 'Error al hacer el pedido');
     } finally {
       setIsOrdering(false);
     }
@@ -656,6 +691,29 @@ export function ProductsPage() {
                 </div>
               </div>
 
+              {isMealCategory(orderProduct.category) && (
+                <div>
+                  <p className="text-xs font-black text-[#031633] uppercase mb-2 flex items-center gap-2">
+                    <Clock size={14} className="text-[#ff8928]" />
+                    Hora de reserva / recogida
+                  </p>
+                  {buildPickupSlots(orderProduct.category).length === 0 ? (
+                    <p className="text-xs font-bold text-[#7d0a42]">Ya no hay horarios disponibles hoy.</p>
+                  ) : (
+                    <select
+                      value={horaReserva}
+                      onChange={(e) => setHoraReserva(e.target.value)}
+                      className="w-full px-4 py-3 rounded-xl border-2 border-[#031633] bg-[#f5f3f6] font-bold text-sm focus:outline-none"
+                    >
+                      <option value="">Selecciona una hora</option>
+                      {buildPickupSlots(orderProduct.category).map((slot) => (
+                        <option key={slot} value={slot}>{slot}</option>
+                      ))}
+                    </select>
+                  )}
+                </div>
+              )}
+
               {/* Accompaniment selection */}
               {orderProduct.allowAccompaniments && getAccompanimentOptions(orderProduct).length > 0 && (
                 <div>
@@ -691,7 +749,10 @@ export function ProductsPage() {
                 </button>
                 <button
                   onClick={handleConfirmOrder}
-                  disabled={isOrdering}
+                  disabled={
+                    isOrdering ||
+                    (isMealCategory(orderProduct.category) && !horaReserva)
+                  }
                   className="flex-1 bg-[#ff8928] hover:bg-[#ff9d47] text-white border-2 border-[#031633] font-black py-3 rounded-2xl shadow-[2px_2px_0_0_#031633] cursor-pointer text-sm uppercase flex items-center justify-center gap-2 disabled:opacity-60"
                 >
                   {isOrdering ? 'Pidiendo...' : <><ShoppingCart size={16} /> Pedir Ahora</>}

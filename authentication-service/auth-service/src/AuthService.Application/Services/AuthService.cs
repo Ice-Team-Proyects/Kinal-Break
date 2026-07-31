@@ -269,7 +269,7 @@ public class AuthService(
         }
 
         user.UserEmail.EmailVerified = true;
-        user.Status = true;
+        // Status lo controla el admin (Aceptar / Negar / Habilitar), no la verificación de correo
         user.UserEmail.EmailVerificationToken = null;
         user.UserEmail.EmailVerificationTokenExpiry = null;
 

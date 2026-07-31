@@ -133,15 +133,16 @@ using (var scope = app.Services.CreateScope())
         // Garantizar que la base de datos se crea (similar a Sequelize sync en Node.js)
         await context.Database.EnsureCreatedAsync();
 
-        // Columna nueva en DBs ya existentes (EnsureCreated no altera tablas)
+        // Columna nueva en DBs ya existentes (EnsureCreated no altera tablas).
+        // EF + NamingConventions usan snake_case: tabla users, columna is_blocked.
         try
         {
             await context.Database.ExecuteSqlRawAsync(
-                @"ALTER TABLE ""Users"" ADD COLUMN IF NOT EXISTS ""IsBlocked"" boolean NOT NULL DEFAULT false;");
+                @"ALTER TABLE users ADD COLUMN IF NOT EXISTS is_blocked boolean NOT NULL DEFAULT false;");
         }
         catch (Exception alterEx)
         {
-            logger.LogWarning(alterEx, "No se pudo asegurar la columna IsBlocked (puede existir ya)");
+            logger.LogWarning(alterEx, "No se pudo asegurar la columna is_blocked (puede existir ya)");
         }
 
         logger.LogInformation("Base de datos lista. Ejecutando datos semilla...");

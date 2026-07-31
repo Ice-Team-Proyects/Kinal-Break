@@ -48,7 +48,9 @@ export const useAuthStore = create(
         } catch (error) {
           const raw = error.response?.data?.message || error.message || 'Error de conexión';
           const errorMsg =
-            /account is disabled|cuenta.*deshabilit|pendiente de aprobación/i.test(raw)
+            /bloquead/i.test(raw)
+              ? 'Tu cuenta está bloqueada. Acércate a la cafetería para rehabilitarla.'
+              : /account is disabled|cuenta.*deshabilit|pendiente de aprobación/i.test(raw)
               ? 'Tu cuenta está pendiente de aprobación. Un administrador debe aceptarte en Usuarios.'
               : raw;
           return { success: false, error: errorMsg };
