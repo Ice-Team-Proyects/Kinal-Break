@@ -51,6 +51,18 @@ export const activateUserRequest = async (userId) => {
   return await authAxios.post(`/users/${userId}/activate`);
 };
 
+export const denyUserRequest = async (userId) => {
+  return await authAxios.post(`/users/${userId}/deny`);
+};
+
+export const blockUserRequest = async (userId) => {
+  return await authAxios.post(`/users/${userId}/block`);
+};
+
+export const unblockUserRequest = async (userId) => {
+  return await authAxios.post(`/users/${userId}/unblock`);
+};
+
 export const registerRequest = async (formData) => {
   return await authAxios.post('/auth/register', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },

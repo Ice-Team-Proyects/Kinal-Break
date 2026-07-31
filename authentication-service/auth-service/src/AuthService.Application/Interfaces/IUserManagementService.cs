@@ -9,4 +9,7 @@ public interface IUserManagementService
     Task<IReadOnlyList<UserResponseDto>> GetUsersByRoleAsync(string roleName);
     Task<IReadOnlyList<UserResponseDto>> GetAllUsersAsync();
     Task<UserResponseDto> ActivateUserAsync(string userId);
+    Task<UserResponseDto> DenyUserAsync(string userId);
+    Task<UserResponseDto> BlockUserAsync(string userId);
+    Task<UserResponseDto> UnblockUserAsync(string userId);
 }

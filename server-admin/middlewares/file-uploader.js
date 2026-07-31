@@ -64,4 +64,8 @@ export const uploadAcompanimentImage = createCloudinaryUploader(
   "Kinal_Break/Acompaniment",
 );
 
+export const uploadPaymentProof = createCloudinaryUploader(
+  "Kinal_Break/Comprobantes",
+);
+
 export { cloudinary };

@@ -75,7 +75,7 @@ export const getCart = async (usuarioId) => {
     return cart;
 };
 
-export const addToCart = async (usuarioId, { productoId, cantidad, acompanamientoId }) => {
+export const addToCart = async (usuarioId, { productoId, cantidad, acompanamientoId, horaReserva }) => {
     const product = await Product.findById(productoId).populate('accompaniments', 'name');
     if (!product || !product.isActive || product.isDeleted) {
         throw new Error('Producto no disponible');
@@ -99,12 +99,18 @@ export const addToCart = async (usuarioId, { productoId, cantidad, acompanamient
         throw new Error('Debes seleccionar un acompañamiento');
     }
 
+    const isMeal = product.category === 'desayunos' || product.category === 'almuerzos';
+    if (isMeal && !horaReserva) {
+        throw new Error('Debes indicar la hora de reserva para desayunos y almuerzos');
+    }
+
     let cart = await Cart.findOne({ usuarioId });
     const item = {
         productoId,
         cantidad,
         precioUnitario: product.price,
-        acompanamientoId: acompanamientoId || null
+        acompanamientoId: acompanamientoId || null,
+        horaReserva: isMeal ? horaReserva : null
     };
 
     if (!cart) {
@@ -121,13 +127,34 @@ export const addToCart = async (usuarioId, { productoId, cantidad, acompanamient
     return await cart.save();
 };
 
-export const confirmOrderFromCart = async (usuarioId, { metodoPago } = {}) => {
+export const removeFromCart = async (usuarioId, itemId) => {
+    const cart = await Cart.findOne({ usuarioId });
+    if (!cart) {
+        throw new Error('El carrito está vacío');
+    }
+
+    const item = cart.productos.id(itemId);
+    if (!item) {
+        throw new Error('Ítem no encontrado en el carrito');
+    }
+
+    cart.totalTemporal = Math.max(0, cart.totalTemporal - (item.precioUnitario * item.cantidad));
+    item.deleteOne();
+    await cart.save();
+    return cart;
+};
+
+export const confirmOrderFromCart = async (usuarioId, { metodoPago, horaReserva, comprobanteUrl } = {}) => {
     const cart = await Cart.findOne({ usuarioId });
     if (!cart || cart.productos.length === 0) {
         throw new Error('El carrito está vacío');
     }
 
     const metodo = metodoPago === 'Transferencia' ? 'Transferencia' : 'Efectivo';
+
+    if (metodo === 'Transferencia' && !comprobanteUrl) {
+        throw new Error('Debes subir el comprobante de transferencia');
+    }
 
     for (const item of cart.productos) {
         const product = await Product.findById(item.productoId);
@@ -136,6 +163,12 @@ export const confirmOrderFromCart = async (usuarioId, { metodoPago } = {}) => {
         }
     }
 
+    const mealItems = cart.productos.filter((i) => i.horaReserva);
+    const orderHora =
+        horaReserva ||
+        mealItems[0]?.horaReserva ||
+        null;
+
     const orderData = {
         numeroPedido: uuidv4(),
         usuarioId: cart.usuarioId,
@@ -143,12 +176,15 @@ export const confirmOrderFromCart = async (usuarioId, { metodoPago } = {}) => {
             productoId: item.productoId,
             cantidad: item.cantidad,
             precioUnitario: item.precioUnitario,
-            acompanamientoId: item.acompanamientoId || null
+            acompanamientoId: item.acompanamientoId || null,
+            horaReserva: item.horaReserva || orderHora || null
         })),
         totalCobrar: cart.totalTemporal,
         totalFinal: cart.totalTemporal,
         estado: 'Pendiente',
-        metodoPago: metodo
+        metodoPago: metodo,
+        horaReserva: orderHora,
+        comprobanteUrl: metodo === 'Transferencia' ? comprobanteUrl : null
     };
 
     const newOrder = new Order(orderData);
@@ -174,6 +210,14 @@ export const cancelUserOrder = async (usuarioId, orderId) => {
         throw new Error('Pedido no encontrado o ya procesado');
     }
     return order;
+};
+
+export const clearUserPenalties = async (usuarioId) => {
+    const result = await Order.updateMany(
+        { usuarioId, estado: 'No pagado', activo: { $ne: false } },
+        { $set: { estado: 'Cancelado' } }
+    );
+    return result.modifiedCount;
 };
 
 export const cleanExpiredOrders = async () => {

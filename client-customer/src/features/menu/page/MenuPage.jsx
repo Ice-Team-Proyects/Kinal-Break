@@ -3,24 +3,13 @@ import { useMenuStore } from "../store/menuStore";
 import { useCartStore } from "../../cart/store/cartStore";
 import { Search, Plus, Image as ImageIcon, Clock, Check, X } from "lucide-react";
 import toast from "react-hot-toast";
+import {
+  buildPickupSlots,
+  canReserveMealNow,
+  mealHoursLabel,
+} from "../../../shared/config/ordering";
 
-// Desayunos: 8:55–9:20 | Almuerzos: 11:45–15:25
-function isOrderingAllowed(category) {
-  if (category !== "desayunos" && category !== "almuerzos") return true;
-  const now = new Date();
-  const total = now.getHours() * 60 + now.getMinutes();
-  if (category === "desayunos") {
-    return total >= 8 * 60 + 55 && total <= 9 * 60 + 20;
-  }
-  // almuerzos
-  return total >= 11 * 60 + 45 && total <= 15 * 60 + 25;
-}
-
-function mealHoursLabel(category) {
-  if (category === "desayunos") return "8:55 a.m. y 9:20 a.m.";
-  if (category === "almuerzos") return "11:45 a.m. y 3:25 p.m.";
-  return "el horario permitido";
-}
+const isMealCategory = (category) => category === "desayunos" || category === "almuerzos";
 
 export function MenuPage() {
   const { products, isLoading, fetchProducts } = useMenuStore();
@@ -29,9 +18,9 @@ export function MenuPage() {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
 
-  // States for accompaniment modal (similar to client-admin)
   const [orderProduct, setOrderProduct] = useState(null);
   const [selectedAcomp, setSelectedAcomp] = useState(null);
+  const [horaReserva, setHoraReserva] = useState("");
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [orderConfirmOpen, setOrderConfirmOpen] = useState(false);
 
@@ -50,7 +39,6 @@ export function MenuPage() {
   ];
 
   const filteredProducts = products.filter((p) => {
-    // Los complementos solo se eligen como acompañamiento de un desayuno/almuerzo
     if (p.category === "complementos") return false;
     const matchesCategory = selectedCategory ? p.category === selectedCategory : true;
     const matchesSearch = searchQuery
@@ -66,25 +54,30 @@ export function MenuPage() {
       .filter(Boolean);
   };
 
+  const openOrderModal = (product) => {
+    setOrderProduct(product);
+    setSelectedAcomp(null);
+    setHoraReserva("");
+    setOrderConfirmOpen(true);
+  };
+
   const handleOrderClick = (product) => {
     if (product.category === "complementos") {
       toast.error("Los complementos solo se eligen junto a un desayuno o almuerzo");
       return;
     }
 
-    if (!isOrderingAllowed(product.category)) {
+    if (isMealCategory(product.category) && !canReserveMealNow(product.category)) {
       toast.error(
-        `Los ${product.category} solo se pueden pedir entre ${mealHoursLabel(product.category)}`,
+        `Los ${product.category} solo se pueden reservar mientras el servicio esté abierto (recogida ${mealHoursLabel(product.category)})`,
         { duration: 4000 }
       );
       return;
     }
 
     const accompaniments = getAccompanimentOptions(product);
-    if (product.allowAccompaniments && accompaniments.length > 0) {
-      setOrderProduct(product);
-      setSelectedAcomp(null);
-      setOrderConfirmOpen(true);
+    if (isMealCategory(product.category) || (product.allowAccompaniments && accompaniments.length > 0)) {
+      openOrderModal(product);
     } else {
       addToCart(product._id, 1);
     }
@@ -93,22 +86,41 @@ export function MenuPage() {
   const handleConfirmOrder = async () => {
     if (!orderProduct) return;
     const options = getAccompanimentOptions(orderProduct);
-    if (orderProduct.allowAccompaniments && options.length > 0 && !selectedAcomp) {
+    const needsAcomp = orderProduct.allowAccompaniments && options.length > 0;
+    if (needsAcomp && !selectedAcomp) {
       toast.error("Selecciona un acompañamiento");
       return;
     }
+    if (isMealCategory(orderProduct.category) && !horaReserva) {
+      toast.error("Selecciona la hora de reserva");
+      return;
+    }
+
     setIsAddingToCart(true);
     try {
-      await addToCart(orderProduct._id, 1, selectedAcomp || undefined);
-      setOrderConfirmOpen(false);
-      setOrderProduct(null);
-      setSelectedAcomp(null);
-    } catch (err) {
-      console.error(err);
+      const ok = await addToCart(
+        orderProduct._id,
+        1,
+        selectedAcomp || undefined,
+        isMealCategory(orderProduct.category) ? horaReserva : undefined
+      );
+      if (ok) {
+        setOrderConfirmOpen(false);
+        setOrderProduct(null);
+        setSelectedAcomp(null);
+        setHoraReserva("");
+      }
     } finally {
       setIsAddingToCart(false);
     }
   };
+
+  const pickupSlots = orderProduct ? buildPickupSlots(orderProduct.category) : [];
+  const needsAcomp =
+    orderProduct &&
+    orderProduct.allowAccompaniments &&
+    getAccompanimentOptions(orderProduct).length > 0;
+  const needsTime = orderProduct && isMealCategory(orderProduct.category);
 
   return (
     <div className="space-y-4">
@@ -123,7 +135,7 @@ export function MenuPage() {
         </div>
         <div className="flex items-center gap-1.5 bg-white border-2 border-[#031633] rounded-xl px-3 py-1.5 shadow-[2px_2px_0_0_#031633] text-[9px] font-black text-[#031633] uppercase shrink-0">
           <Clock size={12} className="text-[#ff8928]" />
-          Comidas: desayuno 8:55–9:20 · almuerzo 11:45–15:25
+          Recogida: desayuno 8:55–9:20 · almuerzo 11:45–15:25
         </div>
       </div>
 
@@ -157,9 +169,7 @@ export function MenuPage() {
       </div>
 
       {isLoading ? (
-        <div className="text-center py-12 font-bold text-[#031633] text-sm">
-          Cargando menú...
-        </div>
+        <div className="text-center py-12 font-bold text-[#031633] text-sm">Cargando menú...</div>
       ) : filteredProducts.length === 0 ? (
         <div className="text-center py-12 font-bold text-slate-400 bg-white rounded-3xl border-2 border-dashed border-slate-200 text-xs">
           No hay productos disponibles.
@@ -171,14 +181,12 @@ export function MenuPage() {
               key={p._id}
               className="bg-white rounded-3xl border-2 border-[#031633] shadow-[4px_4px_0_0_#031633] overflow-hidden flex flex-col transition-all relative"
             >
-              {/* Accompaniment badge */}
               {p.allowAccompaniments && getAccompanimentOptions(p).length > 0 && (
                 <span className="absolute top-4 left-4 bg-[#ff8928] text-white font-black text-[10px] uppercase border-2 border-[#031633] px-2.5 py-1 rounded-full z-10 shadow-[2px_2px_0_0_#031633]">
                   + Acompañamiento
                 </span>
               )}
 
-              {/* Image */}
               <div className="h-48 border-b-2 border-[#031633] bg-[#efedf0] relative overflow-hidden flex items-center justify-center">
                 {p.photo ? (
                   <img src={p.photo} alt={p.name} className="w-full h-full object-cover" />
@@ -187,7 +195,6 @@ export function MenuPage() {
                 )}
               </div>
 
-              {/* Content */}
               <div className="p-5 flex-1 flex flex-col justify-between">
                 <div>
                   <span className="text-[10px] font-black uppercase text-[#ff8928] tracking-widest">
@@ -202,9 +209,7 @@ export function MenuPage() {
                 </div>
 
                 <div className="mt-4 pt-4 border-t-2 border-[#efedf0] flex items-center justify-between">
-                  <span className="text-2xl font-black text-[#031633]">
-                    Q{p.price.toFixed(2)}
-                  </span>
+                  <span className="text-2xl font-black text-[#031633]">Q{p.price.toFixed(2)}</span>
                   <button
                     onClick={() => handleOrderClick(p)}
                     className="bg-[#ff8928] hover:bg-[#ff9d47] text-white p-2.5 rounded-xl border-2 border-[#031633] shadow-[2px_2px_0_0_#031633] active:translate-x-0.5 active:translate-y-0.5 active:shadow-[1px_1px_0_0_#031633] transition-all cursor-pointer flex items-center justify-center"
@@ -218,13 +223,12 @@ export function MenuPage() {
         </div>
       )}
 
-      {/* =================== Modal de Confirmación y Selección de Acompañamiento =================== */}
       {orderConfirmOpen && orderProduct && (
         <div className="fixed inset-0 bg-[#031633]/60 backdrop-blur-[4px] flex items-center justify-center z-50 p-4">
-          <div className="bg-white rounded-3xl border-2 border-[#031633] shadow-[8px_8px_0_0_#031633] w-full max-w-sm overflow-hidden animate-in fade-in zoom-in duration-200">
-            <div className="p-5 bg-[#f5f3f6] border-b-2 border-[#031633] flex justify-between items-center">
+          <div className="bg-white rounded-3xl border-2 border-[#031633] shadow-[8px_8px_0_0_#031633] w-full max-w-sm overflow-hidden max-h-[90vh] overflow-y-auto">
+            <div className="p-5 bg-[#f5f3f6] border-b-2 border-[#031633] flex justify-between items-center sticky top-0">
               <h2 className="text-lg font-black text-[#031633] uppercase tracking-wider">
-                Elige tu Acompañamiento
+                {needsTime ? "Reservar" : "Agregar"}
               </h2>
               <button
                 onClick={() => setOrderConfirmOpen(false)}
@@ -238,11 +242,7 @@ export function MenuPage() {
               <div className="flex items-center gap-4">
                 <div className="w-16 h-16 rounded-2xl border-2 border-[#031633] overflow-hidden bg-[#efedf0] shrink-0">
                   {orderProduct.photo ? (
-                    <img
-                      src={orderProduct.photo}
-                      alt={orderProduct.name}
-                      className="w-full h-full object-cover"
-                    />
+                    <img src={orderProduct.photo} alt={orderProduct.name} className="w-full h-full object-cover" />
                   ) : (
                     <ImageIcon size={24} className="text-slate-400" />
                   )}
@@ -251,57 +251,78 @@ export function MenuPage() {
                   <p className="text-[10px] uppercase font-black text-[#ff8928] tracking-widest">
                     {orderProduct.category}
                   </p>
-                  <p className="font-extrabold text-sm text-[#031633] uppercase">
-                    {orderProduct.name}
-                  </p>
-                  <p className="text-base font-black text-[#031633]">
-                    Q{orderProduct.price.toFixed(2)}
-                  </p>
+                  <p className="font-extrabold text-sm text-[#031633] uppercase">{orderProduct.name}</p>
+                  <p className="text-base font-black text-[#031633]">Q{orderProduct.price.toFixed(2)}</p>
                 </div>
               </div>
 
-              <div>
-                <p className="text-[10px] font-black text-[#031633] uppercase mb-3 flex items-center gap-1.5">
-                  <span className="w-4 h-4 rounded-full bg-[#ff8928] text-white flex items-center justify-center text-[9px] font-black">
-                    +
-                  </span>
-                  Acompañamiento <span className="text-[#031633]/50 font-semibold lowercase">(gratis)</span>
-                </p>
-                <div className="space-y-2 max-h-[180px] overflow-y-auto pr-1">
-                  {getAccompanimentOptions(orderProduct).map((acomp) => (
-                    <button
-                      key={acomp._id}
-                      type="button"
-                      onClick={() => setSelectedAcomp(acomp._id)}
-                      className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border-2 font-bold text-xs transition-all cursor-pointer ${
-                        selectedAcomp === acomp._id
-                          ? "border-[#ff8928] bg-[#fff4ea] text-[#031633] shadow-[2px_2px_0_0_#ff8928]"
-                          : "border-[#031633]/20 bg-[#f5f3f6] text-[#031633] hover:border-[#031633]"
-                      }`}
+              {needsTime && (
+                <div>
+                  <p className="text-[10px] font-black text-[#031633] uppercase mb-2 flex items-center gap-1.5">
+                    <Clock size={12} className="text-[#ff8928]" />
+                    Hora de reserva / recogida
+                  </p>
+                  {pickupSlots.length === 0 ? (
+                    <p className="text-xs font-bold text-[#7d0a42]">
+                      Ya no hay horarios disponibles para hoy en este servicio.
+                    </p>
+                  ) : (
+                    <select
+                      value={horaReserva}
+                      onChange={(e) => setHoraReserva(e.target.value)}
+                      className="w-full px-4 py-3 rounded-xl border-2 border-[#031633] bg-[#f5f3f6] font-bold text-sm focus:outline-none"
                     >
-                      <span>{acomp.name}</span>
-                      {selectedAcomp === acomp._id && (
-                        <Check size={14} className="text-[#ff8928]" />
-                      )}
-                    </button>
-                  ))}
+                      <option value="">Selecciona una hora</option>
+                      {pickupSlots.map((slot) => (
+                        <option key={slot} value={slot}>
+                          {slot}
+                        </option>
+                      ))}
+                    </select>
+                  )}
                 </div>
-                <p className="text-[10px] font-bold text-[#031633]/50 uppercase mt-2">
-                  Solo puedes elegir un acompañamiento
-                </p>
-              </div>
+              )}
+
+              {needsAcomp && (
+                <div>
+                  <p className="text-[10px] font-black text-[#031633] uppercase mb-3">
+                    Acompañamiento <span className="text-[#031633]/50 lowercase">(gratis)</span>
+                  </p>
+                  <div className="space-y-2 max-h-[160px] overflow-y-auto pr-1">
+                    {getAccompanimentOptions(orderProduct).map((acomp) => (
+                      <button
+                        key={acomp._id}
+                        type="button"
+                        onClick={() => setSelectedAcomp(acomp._id)}
+                        className={`w-full flex items-center justify-between px-4 py-3 rounded-xl border-2 font-bold text-xs transition-all cursor-pointer ${
+                          selectedAcomp === acomp._id
+                            ? "border-[#ff8928] bg-[#fff4ea] text-[#031633] shadow-[2px_2px_0_0_#ff8928]"
+                            : "border-[#031633]/20 bg-[#f5f3f6] text-[#031633]"
+                        }`}
+                      >
+                        <span>{acomp.name}</span>
+                        {selectedAcomp === acomp._id && <Check size={14} className="text-[#ff8928]" />}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="flex gap-3 pt-2">
                 <button
                   onClick={() => setOrderConfirmOpen(false)}
-                  className="flex-1 bg-white border-2 border-[#031633] text-[#031633] font-black py-3 rounded-2xl cursor-pointer hover:bg-[#efedf0] text-xs uppercase"
+                  className="flex-1 bg-white border-2 border-[#031633] text-[#031633] font-black py-3 rounded-2xl cursor-pointer text-xs uppercase"
                 >
                   Cancelar
                 </button>
                 <button
                   onClick={handleConfirmOrder}
-                  disabled={isAddingToCart || !selectedAcomp}
-                  className="flex-1 bg-[#ff8928] hover:bg-[#ff9d47] text-white border-2 border-[#031633] font-black py-3 rounded-2xl shadow-[2px_2px_0_0_#031633] cursor-pointer text-xs uppercase flex items-center justify-center gap-1.5 disabled:opacity-60"
+                  disabled={
+                    isAddingToCart ||
+                    (needsAcomp && !selectedAcomp) ||
+                    (needsTime && !horaReserva)
+                  }
+                  className="flex-1 bg-[#ff8928] hover:bg-[#ff9d47] text-white border-2 border-[#031633] font-black py-3 rounded-2xl shadow-[2px_2px_0_0_#031633] cursor-pointer text-xs uppercase disabled:opacity-60"
                 >
                   {isAddingToCart ? "Agregando..." : "Agregar al Carrito"}
                 </button>

@@ -2,6 +2,7 @@ using AuthService.Api.Extensions;
 using AuthService.Api.Middlewares;
 using AuthService.Api.ModelBinders;
 using AuthService.Persistence.Data;
+using Microsoft.EntityFrameworkCore;
 using NetEscapades.AspNetCore.SecurityHeaders.Infrastructure;
 using Serilog;
 using Microsoft.AspNetCore.Hosting.Server;
@@ -131,6 +132,17 @@ using (var scope = app.Services.CreateScope())
 
         // Garantizar que la base de datos se crea (similar a Sequelize sync en Node.js)
         await context.Database.EnsureCreatedAsync();
+
+        // Columna nueva en DBs ya existentes (EnsureCreated no altera tablas)
+        try
+        {
+            await context.Database.ExecuteSqlRawAsync(
+                @"ALTER TABLE ""Users"" ADD COLUMN IF NOT EXISTS ""IsBlocked"" boolean NOT NULL DEFAULT false;");
+        }
+        catch (Exception alterEx)
+        {
+            logger.LogWarning(alterEx, "No se pudo asegurar la columna IsBlocked (puede existir ya)");
+        }
 
         logger.LogInformation("Base de datos lista. Ejecutando datos semilla...");
         await DataSeeder.SeedAsync(context);

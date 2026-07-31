@@ -19,6 +19,10 @@ const cartItemSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Product',
         default: null
+    },
+    horaReserva: {
+        type: String,
+        default: null
     }
 });
 

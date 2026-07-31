@@ -66,19 +66,46 @@ export const obtenerCarrito = async (req, res) => {
 export const agregarAlCarrito = async (req, res) => {
     try {
         const usuarioId = req.user.id;
-        const { productoId, cantidad, acompanamientoId } = req.body;
-        const carrito = await OrderService.addToCart(usuarioId, { productoId, cantidad, acompanamientoId });
+        const { productoId, cantidad, acompanamientoId, horaReserva } = req.body;
+        const carrito = await OrderService.addToCart(usuarioId, {
+            productoId,
+            cantidad,
+            acompanamientoId,
+            horaReserva,
+        });
         res.status(200).json({ success: true, carrito });
     } catch (error) {
-        res.status(500).json({ success: false, msg: error.message });
+        res.status(400).json({ success: false, msg: error.message });
+    }
+};
+
+export const eliminarDelCarrito = async (req, res) => {
+    try {
+        const usuarioId = req.user.id;
+        const { itemId } = req.params;
+        const carrito = await OrderService.removeFromCart(usuarioId, itemId);
+        res.status(200).json({ success: true, carrito });
+    } catch (error) {
+        res.status(400).json({ success: false, msg: error.message });
     }
 };
 
 export const confirmarPedido = async (req, res) => {
     try {
         const usuarioId = req.user.id;
-        const { metodoPago } = req.body || {};
-        const pedido = await OrderService.confirmOrderFromCart(usuarioId, { metodoPago });
+        const metodoPago = req.body?.metodoPago;
+        const horaReserva = req.body?.horaReserva;
+
+        let comprobanteUrl = req.body?.comprobanteUrl || null;
+        if (req.file) {
+            comprobanteUrl = req.file.path || req.file.secure_url || req.file.url || null;
+        }
+
+        const pedido = await OrderService.confirmOrderFromCart(usuarioId, {
+            metodoPago,
+            horaReserva,
+            comprobanteUrl,
+        });
         broadcast('orders', { action: 'created', order: pedido });
         res.status(201).json({ success: true, message: 'Pedido confirmado', pedido });
     } catch (error) {
@@ -103,6 +130,20 @@ export const cancelarPedido = async (req, res) => {
         const pedido = await OrderService.cancelUserOrder(usuarioId, id);
         broadcast('orders', { action: 'cancelled', order: pedido });
         res.status(200).json({ success: true, pedido });
+    } catch (error) {
+        res.status(400).json({ success: false, msg: error.message });
+    }
+};
+
+export const limpiarPenalizacionUsuario = async (req, res) => {
+    try {
+        const { usuarioId } = req.params;
+        const count = await OrderService.clearUserPenalties(usuarioId);
+        res.status(200).json({
+            success: true,
+            message: `Se liberaron ${count} pedido(s) en No pagado`,
+            count,
+        });
     } catch (error) {
         res.status(400).json({ success: false, msg: error.message });
     }

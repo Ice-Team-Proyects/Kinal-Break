@@ -23,24 +23,52 @@ export const useCartStore = create((set, get) => ({
     }
   },
 
-  addToCart: async (productoId, cantidad, acompanamientoId) => {
+  addToCart: async (productoId, cantidad, acompanamientoId, horaReserva) => {
     set({ isLoading: true });
     try {
-      await pedidosAxios.post('/carrito', { productoId, cantidad, acompanamientoId });
+      await pedidosAxios.post('/carrito', {
+        productoId,
+        cantidad,
+        acompanamientoId,
+        horaReserva,
+      });
       toast.success('Producto agregado al carrito');
       get().fetchCart();
+      return true;
     } catch (error) {
       console.error(error);
       toast.error(error.response?.data?.msg || error.response?.data?.message || 'Error al agregar al carrito');
+      return false;
     } finally {
       set({ isLoading: false });
     }
   },
 
-  confirmOrder: async (metodoPago = 'Efectivo') => {
+  removeFromCart: async (itemId) => {
     set({ isLoading: true });
     try {
-      await pedidosAxios.post('/confirmar', { metodoPago });
+      await pedidosAxios.delete(`/carrito/${itemId}`);
+      toast.success('Producto eliminado');
+      get().fetchCart();
+      return true;
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.msg || 'No se pudo eliminar el ítem');
+      return false;
+    } finally {
+      set({ isLoading: false });
+    }
+  },
+
+  confirmOrder: async ({ metodoPago = 'Efectivo', horaReserva, comprobanteFile } = {}) => {
+    set({ isLoading: true });
+    try {
+      const formData = new FormData();
+      formData.append('metodoPago', metodoPago);
+      if (horaReserva) formData.append('horaReserva', horaReserva);
+      if (comprobanteFile) formData.append('comprobante', comprobanteFile);
+
+      await pedidosAxios.post('/confirmar', formData);
       toast.success('Pedido confirmado con éxito');
       set({ cartItems: [], totalTemporal: 0 });
       return true;

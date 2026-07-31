@@ -33,6 +33,11 @@ public class User
 
     public bool Status { get; set; } = false;
 
+    /// <summary>
+    /// Bloqueado por admin (pedido falso / denegado). No puede iniciar sesión.
+    /// </summary>
+    public bool IsBlocked { get; set; } = false;
+
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
     public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;

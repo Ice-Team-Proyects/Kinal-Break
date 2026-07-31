@@ -181,6 +181,15 @@ public class AuthService(
             throw new UnauthorizedAccessException("Invalid credentials");
         }
 
+        // Verificar si el usuario está bloqueado
+        if (user.IsBlocked)
+        {
+            logger.LogDisabledAccountLogin(user.Username);
+            logger.LogFailedLoginAttempt();
+            throw new UnauthorizedAccessException(
+                "Tu cuenta está bloqueada. Acércate a la cafetería para rehabilitarla.");
+        }
+
         // Verificar si el usuario está activo
         if (!user.Status)
         {
@@ -228,6 +237,7 @@ public class AuthService(
             Phone = user.UserProfile?.Phone ?? string.Empty,
             Role = userRole,
             Status = user.Status,
+            IsBlocked = user.IsBlocked,
             IsEmailVerified = user.UserEmail?.EmailVerified ?? false,
             CreatedAt = user.CreatedAt,
             UpdatedAt = user.UpdatedAt
